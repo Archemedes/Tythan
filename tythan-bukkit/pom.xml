@@ -18,6 +18,14 @@
     <project.build.sourceEncodeing>UTF-8</project.build.sourceEncodeing>
   </properties>
 
+	<repositories>
+		<!-- ProtocolLib -->
+		<repository>
+			<id>dmulloy2-repo</id>
+			<url>http://repo.dmulloy2.net/content/groups/public</url>
+		</repository>
+	</repositories>
+
    <dependencies>
 	<dependency>
 		<groupId>org.spigotmc</groupId>
@@ -29,7 +37,12 @@
 		<artifactId>tythan-common</artifactId>
 		<version>${project.version}</version>
 	</dependency>
-  </dependencies>
+	<dependency>
+		<groupId>com.comphenix.protocol</groupId>
+		<artifactId>ProtocolLib-API</artifactId>
+		<version>4.4.0</version>
+	</dependency>
+   </dependencies>
 
   <build>
     <defaultGoal>clean package install</defaultGoal>
