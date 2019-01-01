@@ -6,7 +6,7 @@
 
   <groupId>co.lotc</groupId>
   <artifactId>tythan</artifactId>
-  <version>0.1</version>
+  <version>${globalversion}</version>
   <name>Tythan</name>
   <packaging>pom</packaging>
 
@@ -19,6 +19,7 @@
 
   <properties>
     <project.build.sourceEncodeing>UTF-8</project.build.sourceEncodeing>
+    <globalversion>0.1</globalversion>
   </properties>
 
   <distributionManagement>
