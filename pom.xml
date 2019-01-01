@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>co.lotc</groupId>
+  <artifactId>tythan</artifactId>
+  <version>0.1</version>
+  <name>Tythan</name>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>tythan-common</module>
+    <module>tythan-bungee</module>
+    <module>tythan-bukkit</module>
+    <module>tythan-dist</module>
+  </modules>
+
+  <properties>
+    <project.build.sourceEncodeing>UTF-8</project.build.sourceEncodeing>
+  </properties>
+
+  <distributionManagement>
+      <repository>
+          <id>lotc-release</id>
+          <url>https://repo.lordofthecraft.net/artifactory/lotc-releases/</url>
+      </repository>
+  </distributionManagement>
+
+  <repositories>
+    <repository>
+	    <id>bungeecord-repo</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </repository>
+    <repository>
+      <id>spigot-repo</id>
+      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+    </repository> 
+  </repositories>
+
+
+  <dependencies>
+    <!-- The Bungeecord Chat Module is imported into Spigot as well, so can be used always -->
+    <dependency>
+    	<groupId>net.md-5</groupId>
+    	<artifactId>bungeecord-chat</artifactId>
+    	<version>1.13-SNAPSHOT</version>
+    </dependency>
+	  <dependency>
+		  <groupId>org.projectlombok</groupId>
+		  <artifactId>lombok</artifactId>
+		  <version>1.18.2</version>
+	  	<scope>provided</scope>
+  	</dependency>
+  </dependencies>
+
+  <build>
+    <defaultGoal>clean package install</defaultGoal>
+    <finalName>${project.name}</finalName>
+  </build>
+
+</project>
