@@ -22,12 +22,12 @@
 	  <dependency>
 		  <groupId>co.lotc</groupId>
 		  <artifactId>tythan-bungee</artifactId>
-		  <version>0.1</version>
+		  <version>${project.version}</version>
 	  </dependency>
 	  <dependency>
 		  <groupId>co.lotc</groupId>
 		  <artifactId>tythan-bukkit</artifactId>
-		  <version>0.1</version>
+		  <version>${project.version}</version>
 	  </dependency>
   </dependencies>
 
