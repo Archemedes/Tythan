@@ -18,6 +18,33 @@
     <project.build.sourceEncodeing>UTF-8</project.build.sourceEncodeing>
   </properties>
 
+	<dependencies>
+		<!-- The Bungeecord Chat Module is imported into Spigot as well, so can be used always -->
+		<dependency>
+			<groupId>net.md-5</groupId>
+			<artifactId>bungeecord-chat</artifactId>
+			<version>1.13-SNAPSHOT</version>
+		</dependency>
+		<!-- Exists in Paper as shaded, not in Bungee (provide this: DependencyLoader or shading in tythan-bungee both work) -->
+		<!-- 2.6 matches spigot's- If we need to start using lang3 let's discuss it first-->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongodb-driver-sync</artifactId>
+			<version>3.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.2</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
   <build>
     <defaultGoal>clean package install</defaultGoal>
     <sourceDirectory>src/main/java</sourceDirectory>
