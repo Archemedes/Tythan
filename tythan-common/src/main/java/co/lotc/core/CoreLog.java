@@ -20,6 +20,11 @@ public class CoreLog {
 		get().severe(msg);
 	}
 	
+	public static void severe(String msg, Throwable throwable) {
+		get().log(Level.SEVERE, msg, throwable);
+	}
+	
+	
 	public static void warning(String msg) {
 		get().warning(msg);
 	}
