@@ -14,7 +14,8 @@
  <unpack>true</unpack>
  <useTransitiveDependencies>false</useTransitiveDependencies>
  <excludes>
- <exclude>net.md-5:bungeecord-chat</exclude>
+  <exclude>net.md-5:bungeecord-chat</exclude>
+  <exclude>commons-lang:commons-lang</exclude>
  </excludes>
  </dependencySet>
  </dependencySets>
