@@ -2,7 +2,7 @@ package co.lotc.core.save;
 
 import java.util.concurrent.Executor;
 
-import co.lotc.core.save.rows.ArcheRow;
+import co.lotc.core.save.rows.Row;
 import co.lotc.core.save.rows.FlexibleRow;
 
 public interface Consumer {
@@ -13,7 +13,7 @@ public interface Consumer {
 		
     void queueRow(Runnable row);
     void queueRow(java.util.function.Consumer<MongoConnection> row);
-    void queueRow(ArcheRow row);
+    void queueRow(Row row);
 
     int getQueueSize();
     
@@ -28,6 +28,5 @@ public interface Consumer {
      */
 		void runForced();
 		
-		
-		
+		boolean isDebugging();
 }

@@ -3,31 +3,28 @@ package co.lotc.core.save;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Arrays;
 import java.util.Queue;
 import java.util.TimerTask;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import co.lotc.core.CoreLog;
-import co.lotc.core.save.rows.ArcheRow;
+import co.lotc.core.save.rows.Row;
 import co.lotc.core.save.rows.ConsumerRow;
 import co.lotc.core.save.rows.FlexibleDeleteRow;
 import co.lotc.core.save.rows.FlexibleInsertRow;
 import co.lotc.core.save.rows.FlexibleUpdateRow;
 import co.lotc.core.save.rows.LambdaRow;
-import co.lotc.core.util.SQLUtilBase;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.var;
 
 public final class ArcheConsumer extends TimerTask implements Consumer {
-	private final Queue<ArcheRow> queue = new LinkedBlockingQueue<>();
+	private final Queue<Row> queue = new LinkedBlockingQueue<>();
 	@Getter private final MongoHandler mongo;
 	@Getter private final Executor executor;
+	
+	@Getter @Setter private boolean debugging;
 	
 	private final int timePerRun;
 	private final int forceToProcess;
@@ -82,7 +79,7 @@ public final class ArcheConsumer extends TimerTask implements Consumer {
 	}
 	
 	@Override
-	public void queueRow(ArcheRow row) {
+	public void queueRow(Row row) {
 		queue.add(row);
 	}
 
@@ -116,7 +113,7 @@ public final class ArcheConsumer extends TimerTask implements Consumer {
 		try(var session = mongo.open()) {
 			MongoConnection connection = session.getConnection();
 			while (bypassForce || System.currentTimeMillis() - starttime < timePerRun|| count < forceToProcess) {
-				ArcheRow row = queue.poll();
+				Row row = queue.poll();
 				if (row == null) break;
 				
 				try { CoreLog.debug("[Consumer] Beginning process for " + row.toString());}

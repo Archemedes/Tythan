@@ -7,7 +7,7 @@ import co.lotc.core.save.MongoConnection;
 /**
  * Be either a consumer or runnable, but not both
  */
-public class LambdaRow implements ArcheRow {
+public class LambdaRow implements Row {
 	private final Consumer<MongoConnection> consumer;
 	private final Runnable runnable;
 	

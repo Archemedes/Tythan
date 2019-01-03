@@ -2,12 +2,21 @@ package co.lotc.core.save.rows;
 
 import co.lotc.core.save.Consumer;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
-public abstract class ConsumerRow implements ArcheRow {
+public abstract class ConsumerRow implements Row {
 	@Getter private final Consumer consumer;
+	private String briefStackTrace = null;
 	
+	public ConsumerRow(Consumer consumer) {
+		this.consumer = consumer;
+  	if(consumer.isDebugging()) {
+  		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+  		int i = 0;
+  		while(!stackTrace[i].getClassName().equals(this.getClass().getName())) i++;
+  		
+  		briefStackTrace = stackTrace[i+1].toString() + '\n' + stackTrace[i+2].toString();
+  	}
+	}
 	
   public void queue() {
   	consumer.queueRow(this);
@@ -16,6 +25,10 @@ public abstract class ConsumerRow implements ArcheRow {
   public void queueAndFlush() {
   	queue();
   	consumer.getExecutor().execute(()->consumer.runForced());
+  }
+  
+  public String getOriginStackTrace() {
+  	return briefStackTrace;
   }
   
   @Override
