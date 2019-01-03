@@ -10,6 +10,6 @@ public interface ArcheRow extends Runnable, Consumer<MongoConnection> {
 	default void run() { }
 	
 	@Override
-	default void accept(MongoConnection session) { }
+	default void accept(MongoConnection connection) { }
 	
 }
