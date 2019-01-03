@@ -75,7 +75,7 @@ public abstract class AbstractChatBuilder<E> {
 		return getThis();
 	}
 	
-	public E appendButton(String text, String cmd) {
+/*	public E appendButton(String text, String cmd) {
 		return append(MessageUtil.CommandButton(text, cmd));
 	}
 	
@@ -89,7 +89,7 @@ public abstract class AbstractChatBuilder<E> {
 	
 	public E appendButton(String text, String cmd, String hover, ChatColor textcolor, ChatColor rimcolor) {
 		return append(MessageUtil.CommandButton(text, cmd, hover, textcolor, rimcolor));
-	}
+	}*/
 	
 	public E reset() {
 		handle.reset();
