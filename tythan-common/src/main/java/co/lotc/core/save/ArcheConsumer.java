@@ -14,6 +14,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import co.lotc.core.CoreLog;
+import co.lotc.core.save.MongoConnection.MongoSessionHolder;
 import co.lotc.core.save.rows.ArcheRow;
 import co.lotc.core.save.rows.ConsumerRow;
 import co.lotc.core.save.rows.FlexibleDeleteRow;
@@ -24,7 +25,6 @@ import co.lotc.core.save.rows.RunnerRow;
 import co.lotc.core.save.rows.StatementRow;
 import co.lotc.core.util.SQLUtilBase;
 import lombok.Getter;
-import lombok.var;
 
 public final class ArcheConsumer extends TimerTask implements Consumer {
 	private final Queue<ArcheRow> queue = new LinkedBlockingQueue<>();
@@ -114,8 +114,8 @@ public final class ArcheConsumer extends TimerTask implements Consumer {
 		}
 		int count = 0;
 		
-		try(var session = mongo.open()) {
-			
+		try(MongoSessionHolder session = mongo.open()) {
+			MongoConnection connection = session.getConnection();
 			while (bypassForce || System.currentTimeMillis() - starttime < timePerRun|| count < forceToProcess) {
 				Runnable row = queue.poll();
 				if (row == null) break;

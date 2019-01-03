@@ -6,6 +6,7 @@ import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 
+import co.lotc.core.save.MongoConnection.MongoSessionHolder;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -36,7 +37,7 @@ public class MongoHandler {
 		return new MongoHandler(databaseName,client);
 	}
 	
-	public MongoConnection open() {
-		return new MongoConnection(client, dbName);
+	public MongoSessionHolder open() {
+		return new MongoConnection(client, dbName).getSession();
 	}
 }
