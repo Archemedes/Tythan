@@ -18,7 +18,6 @@ public interface Consumer {
     int getQueueSize();
     
     FlexibleRow insert(String table);
-    FlexibleRow insertIgnore(String table);
     FlexibleRow replace(String table);
     FlexibleRow delete(String table);
     FlexibleRow update(String table);

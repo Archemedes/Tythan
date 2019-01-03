@@ -26,7 +26,7 @@ public class FlexibleUpdateRow extends FlexibleRow {
 	
 	@Override
 	public void accept(MongoConnection con) {
-		
+		con.update(this.collecton, vars, sets);
 	}
 	
 }

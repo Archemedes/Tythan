@@ -37,6 +37,16 @@ public class MongoConnection{
 		db.getCollection(collectionName, o).insertOne(session.get(), any);
 	}
 	
+	public void delete(String collectionName, Map<String, Object> map) {
+		checkOpen();
+		db.getCollection(collectionName).deleteMany(session.get(), new Document(map));
+	}
+	
+	public void update(String collectionName, Map<String, Object> criteria, Map<String, Object> map) {
+		checkOpen();
+		db.getCollection(collectionName).updateMany(session.get(), new Document(criteria), new Document(map));
+	}
+	
 	private void checkOpen() {
 		if(session.closed) throw new IllegalStateException("This connection has already been closed!");
 	}

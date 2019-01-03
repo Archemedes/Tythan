@@ -1,8 +1,5 @@
 package co.lotc.core.save;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.util.Queue;
 import java.util.TimerTask;
 import java.util.concurrent.Executor;
@@ -16,7 +13,6 @@ import co.lotc.core.save.rows.FlexibleInsertRow;
 import co.lotc.core.save.rows.FlexibleUpdateRow;
 import co.lotc.core.save.rows.LambdaRow;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.var;
 
 public final class ArcheConsumer extends TimerTask implements Consumer {
@@ -39,30 +35,25 @@ public final class ArcheConsumer extends TimerTask implements Consumer {
 
 	@Override
 	public FlexibleInsertRow insert(String table) {
-		return new FlexibleInsertRow(table, FlexibleInsertRow.Mode.INSERT);
+		return new FlexibleInsertRow(this, table, FlexibleInsertRow.Mode.IGNORE);
 	}
-
-	@Override
-	public FlexibleInsertRow insertIgnore(String table) {
-		return new FlexibleInsertRow(table, FlexibleInsertRow.Mode.IGNORE);
-	}
-
+	
 	@Override
 	public FlexibleInsertRow replace(String table) {
-		return new FlexibleInsertRow(table, FlexibleInsertRow.Mode.REPLACE);
+		return new FlexibleInsertRow(this, table, FlexibleInsertRow.Mode.REPLACE);
 	}
 
 	@Override
 	public FlexibleDeleteRow delete(String table) {
-		return new FlexibleDeleteRow(table);
+		return new FlexibleDeleteRow(this, table);
 	}
 
 	@Override
 	public FlexibleUpdateRow update(String table) {
-		return new FlexibleUpdateRow(table);
+		return new FlexibleUpdateRow(this, table);
 	}
 
-	public synchronized 	void bypassForce() {
+	public synchronized void bypassForce() {
 		bypassForce = true;
 	}
 
@@ -130,6 +121,7 @@ public final class ArcheConsumer extends TimerTask implements Consumer {
 					row.run();
 					row.accept(connection);
 				} catch(Exception e) {
+					e.printStackTrace();
 					CoreLog.severe("[Consumer] Exception on " + row.getClass().getSimpleName() + ": ", e);
 					CoreLog.severe("[Consumer] Statement body: " + row.toString());
 				}

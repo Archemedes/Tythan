@@ -11,7 +11,7 @@ public class FlexibleDeleteRow extends FlexibleRow {
 	
 	@Override
 	public void accept(MongoConnection con) {
-		
+		con.delete(this.collecton, vars);
 	}
 
 }
