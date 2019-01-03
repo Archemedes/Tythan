@@ -13,7 +13,6 @@ import co.lotc.core.save.rows.FlexibleInsertRow;
 import co.lotc.core.save.rows.FlexibleUpdateRow;
 import co.lotc.core.save.rows.LambdaRow;
 import lombok.Getter;
-import lombok.var;
 
 public final class ArcheConsumer extends TimerTask implements Consumer {
 	private final Queue<Row> queue = new LinkedBlockingQueue<>();
@@ -99,42 +98,40 @@ public final class ArcheConsumer extends TimerTask implements Consumer {
 		
 		int count = 0;
 		
-		try(var session = mongo.open()) {
-			MongoConnection connection = session.getConnection();
-			while (bypassForce || System.currentTimeMillis() - starttime < timePerRun|| count < forceToProcess) {
-				Row row = queue.poll();
-				if (row == null) break;
-				
-				if(row instanceof ConsumerRow) {
-					String trace = ((ConsumerRow) row).getOriginStackTrace();
-					if(trace != null) {
-						CoreLog.debug("ConsumerRow origin stack trace:");
-						CoreLog.debug(trace);
-					}
-				}
-				try { CoreLog.debug("[Consumer] Beginning process for " + row.toString());}
-				catch(RuntimeException e) { CoreLog.debug("[Consumer] Beginning process for FAULTY " + row.getClass().getSimpleName());}
+		MongoConnection connection = mongo.connect();
+		while (bypassForce || System.currentTimeMillis() - starttime < timePerRun|| count < forceToProcess) {
+			Row row = queue.poll();
+			if (row == null) break;
 
-				long taskstart = System.currentTimeMillis();
-				
-				try { //2 calls but only 1 of them should be non-empty in normal operation
-					row.run();
-					row.accept(connection);
-				} catch(Exception e) {
-					e.printStackTrace();
-					CoreLog.severe("[Consumer] Exception on " + row.getClass().getSimpleName() + ": ", e);
-					CoreLog.severe("[Consumer] Statement body: " + row.toString());
+			if(row instanceof ConsumerRow) {
+				String trace = ((ConsumerRow) row).getOriginStackTrace();
+				if(trace != null) {
+					CoreLog.debug("ConsumerRow origin stack trace:");
+					CoreLog.debug(trace);
 				}
-				
-				count++;
-				CoreLog.debug("[Consumer] took " + (System.currentTimeMillis() - taskstart) + "ms for " + row.getClass().getSimpleName());
 			}
-		} finally {
+			try { CoreLog.debug("[Consumer] Beginning process for " + row.toString());}
+			catch(RuntimeException e) { CoreLog.debug("[Consumer] Beginning process for FAULTY " + row.getClass().getSimpleName());}
+
+			long taskstart = System.currentTimeMillis();
+
+			try { //2 calls but only 1 of them should be non-empty in normal operation
+				row.run();
+				row.accept(connection);
+			} catch(Exception e) {
+				e.printStackTrace();
+				CoreLog.severe("[Consumer] Exception on " + row.getClass().getSimpleName() + ": ", e);
+				CoreLog.severe("[Consumer] Statement body: " + row.toString());
+			}
+
+			count++;
+			CoreLog.debug("[Consumer] took " + (System.currentTimeMillis() - taskstart) + "ms for " + row.getClass().getSimpleName());
+		}
+
 			long time = System.currentTimeMillis() - starttime;
 			CoreLog.info("[Consumer] Finished handling " + count + " rows in " + time + "ms.");
 			if(count == 0) CoreLog.warning("[Consumer] Ran with 0 tasks, this shouldn't happen?");
 			else CoreLog.debug("[Consumer] Total rows processed: " + count + ". " + queue.size() + " rows left in queue");
-		}
 	}
 	
 	@Override
