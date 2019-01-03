@@ -2,17 +2,17 @@ package co.lotc.core.bukkit;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import co.lotc.core.DependencyLoader;
 import co.lotc.core.Tythan;
-import co.lotc.core.TythanProvider;
+import co.lotc.core.TythanCommon;
+import lombok.Getter;
 
 public class TythanBukkit extends JavaPlugin implements Tythan {
-	private boolean debugMode;
+	private final TythanCommon common = new TythanCommon(this);
+	@Getter private boolean debugging;
 	
 	@Override
 	public void onLoad() {
-		TythanProvider.init(this);
-		DependencyLoader.loadJars(getDataFolder());
+		common.onLoad();
 	}
 	
 	@Override
@@ -23,10 +23,5 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 	@Override
 	public void onDisable(){
 
-	}
-	
-	@Override
-	public boolean isDebugging() {
-		return debugMode;
 	}
 }

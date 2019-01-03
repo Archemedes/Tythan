@@ -8,7 +8,6 @@ public class TythanProvider {
 		INSTANCE = theOneTrueTythus;
 	}
 	
-	
 	private TythanProvider() {throw new UnsupportedOperationException();}
 
 }
