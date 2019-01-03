@@ -1,4 +1,4 @@
-name: ${project.name}
+name: Tythan
 main: co.lotc.core.bukkit.TythanBukkit
 version: ${project.version}
 depend: [ProtocolLib]
