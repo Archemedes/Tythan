@@ -14,7 +14,4 @@ public class TythanCommon {
 		DependencyLoader.loadJars(tythan.getDataFolder());
 	}
 	
-	public void isDebugging() {
-		
-	}
 }

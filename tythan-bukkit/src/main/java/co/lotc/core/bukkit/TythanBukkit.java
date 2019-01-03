@@ -1,5 +1,6 @@
 package co.lotc.core.bukkit;
 
+import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import co.lotc.core.Tythan;
@@ -17,7 +18,9 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 	
 	@Override
 	public void onEnable(){
-		
+		saveDefaultConfig();
+		Configuration config = getConfig();
+		config.getValues(true);
 	}
 
 	@Override
