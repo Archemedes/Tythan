@@ -144,29 +144,6 @@ public final class ArcheConsumer extends TimerTask implements Consumer {
 			else CoreLog.debug("[Consumer] Total rows processed: " + count + ". " + queue.size() + " rows left in queue");
 		}
 	}
-
-	public void writeToFile() throws FileNotFoundException {
-		final long time = System.currentTimeMillis();
-
-		int counter = 0;
-		new File(String.format("plugins%cArcheCore%<cimport%<c", File.separatorChar)).mkdirs();
-		PrintWriter writer = new PrintWriter(new File(String.format("plugins%cArcheCore%<cimport%<cqueue-%d-0.sql", File.separatorChar, time)));
-		while (!queue.isEmpty()) {
-			final ConsumerRow r = queue.poll();
-			if (r == null) {
-				continue;
-			}
-			for (final String insert : r.getInserts()) {
-				writer.println(insert);
-			}
-			counter++;
-			if (counter % 1000 == 0) {
-				writer.close();
-				writer = new PrintWriter(new File(String.format("plugins%cArcheCore%<cimport%<cqueue-%d-%d.sql", File.separatorChar, time, counter / 1000)));
-			}
-		}
-		writer.close();
-	}
 	
 	@Override
 	public boolean isDebugging() {
