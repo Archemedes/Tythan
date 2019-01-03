@@ -49,6 +49,15 @@
     <defaultGoal>clean package install</defaultGoal>
     <sourceDirectory>src/main/java</sourceDirectory>
     <finalName>${project.name}</finalName>
+	<resources>
+		<resource>
+			<directory>src/main/resources</directory>
+			<filtering>true</filtering>
+			<includes>
+				<include>**/*.yml</include>
+			</includes>
+		</resource>
+	</resources>
     <plugins>
         <plugin>
             <artifactId>maven-compiler-plugin</artifactId>
