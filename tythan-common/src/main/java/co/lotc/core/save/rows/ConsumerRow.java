@@ -1,6 +1,7 @@
 package co.lotc.core.save.rows;
 
 import co.lotc.core.save.Consumer;
+import co.lotc.core.save.MongoConnection;
 import lombok.Getter;
 
 public abstract class ConsumerRow implements Row {
@@ -35,5 +36,8 @@ public abstract class ConsumerRow implements Row {
 	public final void run() {
   	//Class must be a consumer, prohibit runnable
   }
+  
+  @Override //Force rows to implement again
+  public abstract void accept(MongoConnection connection);
 	
 }
