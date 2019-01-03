@@ -24,8 +24,6 @@ public final class ArcheConsumer extends TimerTask implements Consumer {
 	@Getter private final MongoHandler mongo;
 	@Getter private final Executor executor;
 	
-	@Getter @Setter private boolean debugging;
-	
 	private final int timePerRun;
 	private final int forceToProcess;
 	private final int warningSize;
@@ -116,6 +114,13 @@ public final class ArcheConsumer extends TimerTask implements Consumer {
 				Row row = queue.poll();
 				if (row == null) break;
 				
+				if(row instanceof ConsumerRow) {
+					String trace = ((ConsumerRow) row).getOriginStackTrace();
+					if(trace != null) {
+						CoreLog.debug("ConsumerRow origin stack trace:");
+						CoreLog.debug(trace);
+					}
+				}
 				try { CoreLog.debug("[Consumer] Beginning process for " + row.toString());}
 				catch(RuntimeException e) { CoreLog.debug("[Consumer] Beginning process for FAULTY " + row.getClass().getSimpleName());}
 
@@ -161,5 +166,10 @@ public final class ArcheConsumer extends TimerTask implements Consumer {
 			}
 		}
 		writer.close();
+	}
+	
+	@Override
+	public boolean isDebugging() {
+		return CoreLog.isDebugging();
 	}
 }

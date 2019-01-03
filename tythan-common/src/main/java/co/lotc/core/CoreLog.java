@@ -38,6 +38,10 @@ public class CoreLog {
 			get().info("[DEBUG] " + msg);
 	}
 	
+	public static boolean isDebugging() {
+		return core.isDebugging();
+	}
+	
 	static void set(Tythan newCore) {
 		core = newCore;
 	}
