@@ -6,6 +6,7 @@ public class TythanProvider {
 	public static void init(Tythan theOneTrueTythus) {
 		if(INSTANCE != null) throw new IllegalStateException("Tythan was already initialized!");
 		INSTANCE = theOneTrueTythus;
+		CoreLog.set(INSTANCE);
 	}
 	
 	private TythanProvider() {throw new UnsupportedOperationException();}

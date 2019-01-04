@@ -1,5 +1,7 @@
 package co.lotc.core;
 
+import java.io.File;
+
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -11,7 +13,7 @@ public class TythanCommon {
 	
 	public void onLoad() {
 		TythanProvider.init(tythan);
-		DependencyLoader.loadJars(tythan.getDataFolder());
+		DependencyLoader.loadJars(new File(tythan.getDataFolder(), "jars"));
 	}
 	
 }
