@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.tags.ItemTagType;
 
 import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.WrappedGameProfile;
@@ -22,11 +23,47 @@ import com.comphenix.protocol.wrappers.nbt.NbtCompound;
 import com.comphenix.protocol.wrappers.nbt.NbtFactory;
 import com.comphenix.protocol.wrappers.nbt.NbtList;
 
+import lombok.var;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TranslatableComponent;
 
 public class ItemUtil {
 	private ItemUtil() {}
+	
+	public static void setCustomTag(ItemStack item, String key, String value) {
+		var meta = item.getItemMeta();
+		var container = meta.getCustomTagContainer();
+		container.setCustomTag(fuckYouBukkitJustGiveMeAKey(key), ItemTagType.STRING, value);
+		item.setItemMeta(meta);
+	}
+	
+	public static String getCustomTag(ItemStack item, String key) {
+		var meta = item.getItemMeta();
+		var container = meta.getCustomTagContainer();
+		return container.getCustomTag(fuckYouBukkitJustGiveMeAKey(key), ItemTagType.STRING);
+	}
+	
+	public static boolean hasCustomTag(ItemStack item, String key) {
+		var meta = item.getItemMeta();
+		var container = meta.getCustomTagContainer();
+		return container.hasCustomTag(fuckYouBukkitJustGiveMeAKey(key), ItemTagType.STRING);
+	}
+	
+	public static void removeCustomTag(ItemStack item, String key) {
+		var meta = item.getItemMeta();
+		var container = meta.getCustomTagContainer();
+		container.removeCustomTag(fuckYouBukkitJustGiveMeAKey(key));
+		item.setItemMeta(meta);
+	}
+	
+	@SuppressWarnings("deprecation")
+	private static NamespacedKey fuckYouBukkitJustGiveMeAKey(String rawKey) {
+		//The data is stored as NBT tags
+		//Structure is inside a compound called PublicBukkitValues
+		//Key-value is keys as NamespacedKey (pluginName:key) and value as provided
+		//Can be any of the NBT primitive types but storing as string is fine
+		return new NamespacedKey("lotc", rawKey);
+	}
 	
 	/**
 	 * Method to easily make Minecraft skulls from arbitrary skin files
