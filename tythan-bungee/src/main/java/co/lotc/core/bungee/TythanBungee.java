@@ -25,7 +25,6 @@ public class TythanBungee extends Plugin implements Tythan {
 	@Override
 	public void onEnable(){
 		saveDefaultConfig();
-		getConfig().get
 	}
 
 	@Override

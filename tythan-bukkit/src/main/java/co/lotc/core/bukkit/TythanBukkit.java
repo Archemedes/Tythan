@@ -20,7 +20,6 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 	public void onEnable(){
 		saveDefaultConfig();
 		Configuration config = getConfig();
-		config.get
 	}
 	
 	
