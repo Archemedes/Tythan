@@ -23,6 +23,8 @@ import com.comphenix.protocol.wrappers.nbt.NbtCompound;
 import com.comphenix.protocol.wrappers.nbt.NbtFactory;
 import com.comphenix.protocol.wrappers.nbt.NbtList;
 
+import co.lotc.core.Tythan;
+import co.lotc.core.bukkit.TythanBukkit;
 import lombok.var;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TranslatableComponent;
@@ -56,13 +58,12 @@ public class ItemUtil {
 		item.setItemMeta(meta);
 	}
 	
-	@SuppressWarnings("deprecation")
 	private static NamespacedKey fuckYouBukkitJustGiveMeAKey(String rawKey) {
 		//The data is stored as NBT tags
 		//Structure is inside a compound called PublicBukkitValues
 		//Key-value is keys as NamespacedKey (pluginName:key) and value as provided
 		//Can be any of the NBT primitive types but storing as string is fine
-		return new NamespacedKey("lotc", rawKey);
+		return new NamespacedKey((TythanBukkit) Tythan.get(), rawKey);
 	}
 	
 	/**
