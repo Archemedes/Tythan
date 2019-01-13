@@ -1,5 +1,6 @@
 package co.lotc.core;
 
+import co.lotc.core.util.MessageUtil;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -75,7 +76,7 @@ public abstract class AbstractChatBuilder<E extends AbstractChatBuilder<E>> {
 		return getThis();
 	}
 	
-/*	public E appendButton(String text, String cmd) {
+	public E appendButton(String text, String cmd) {
 		return append(MessageUtil.CommandButton(text, cmd));
 	}
 	
@@ -89,7 +90,7 @@ public abstract class AbstractChatBuilder<E extends AbstractChatBuilder<E>> {
 	
 	public E appendButton(String text, String cmd, String hover, ChatColor textcolor, ChatColor rimcolor) {
 		return append(MessageUtil.CommandButton(text, cmd, hover, textcolor, rimcolor));
-	}*/
+	}
 	
 	public E reset() {
 		handle.reset();
