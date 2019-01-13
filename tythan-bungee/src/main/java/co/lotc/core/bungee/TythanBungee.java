@@ -7,6 +7,7 @@ import java.nio.file.Files;
 
 import co.lotc.core.Tythan;
 import co.lotc.core.TythanCommon;
+import co.lotc.core.bungee.util.ChatBuilder;
 import lombok.Getter;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
@@ -52,6 +53,11 @@ public class TythanBungee extends Plugin implements Tythan {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public ChatBuilder chatBuilder() {
+		return new ChatBuilder();
 	}
 	
 	

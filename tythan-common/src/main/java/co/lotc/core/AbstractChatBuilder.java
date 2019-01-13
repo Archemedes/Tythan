@@ -13,7 +13,7 @@ import net.md_5.bungee.api.chat.TextComponent;
  * Doesn't extend {@link net.md_5.bungee.api.chat.ComponentBuilder} because it is final.
  * Unfortunately this means we lose their javadoc on these methods
  */
-public abstract class AbstractChatBuilder<E> {
+public abstract class AbstractChatBuilder<E extends AbstractChatBuilder<E>> {
 	protected final ComponentBuilder handle;
 	
 	protected AbstractChatBuilder(String initial) {

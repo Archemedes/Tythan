@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import co.lotc.core.Tythan;
 import co.lotc.core.TythanCommon;
+import co.lotc.core.bukkit.util.ChatBuilder;
 import lombok.Getter;
 
 public class TythanBukkit extends JavaPlugin implements Tythan {
@@ -26,5 +27,10 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 	@Override
 	public void onDisable(){
 
+	}
+
+	@Override
+	public ChatBuilder chatBuilder() {
+		return new ChatBuilder();
 	}
 }
