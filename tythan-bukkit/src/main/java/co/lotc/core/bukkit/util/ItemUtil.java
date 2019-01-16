@@ -36,6 +36,12 @@ import net.md_5.bungee.api.chat.TranslatableComponent;
 public class ItemUtil {
 	private ItemUtil() {}
 	
+	/**
+	 * Set CustomTag compliant with STRING type using a lotc namespace
+	 * @param item Item to modify
+	 * @param key Key, will be lowercased and must match [a-z0-9/._-]
+	 * @param value Value to be stored as an NBTString
+	 */
 	public static void setCustomTag(ItemStack item, String key, String value) {
 		var meta = item.getItemMeta();
 		var container = meta.getCustomTagContainer();
