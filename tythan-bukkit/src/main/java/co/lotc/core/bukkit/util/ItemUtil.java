@@ -69,7 +69,7 @@ public class ItemUtil {
 	}
 	
 	@SuppressWarnings("deprecation")
-	private static NamespacedKey fuckYouBukkitJustGiveMeAKey(String rawKey) {
+	static NamespacedKey fuckYouBukkitJustGiveMeAKey(String rawKey) {
 		//The data is stored as NBT tags
 		//Structure is inside a compound called PublicBukkitValues
 		//Key-value is keys as NamespacedKey (pluginName:key) and value as provided
