@@ -13,6 +13,10 @@ public class ChatBuilder extends AbstractChatBuilder<ChatBuilder> {
 		super("");
 	}
 	
+	public ChatBuilder(String initial) {
+		super(initial);
+	}
+	
 	public ChatBuilder color(ChatColor color) {
 		handle.color(color.asBungee());
 		return getThis();

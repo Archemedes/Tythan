@@ -10,6 +10,10 @@ public class ChatBuilder extends AbstractChatBuilder<ChatBuilder> {
 		super("");
 	}
 	
+	public ChatBuilder(String initial) {
+		super(initial);
+	}
+	
 	public ChatBuilder send(CommandSender s) {
 		//ProxiedPlayer extends this. Should work for all
 		s.sendMessage(this.build());
