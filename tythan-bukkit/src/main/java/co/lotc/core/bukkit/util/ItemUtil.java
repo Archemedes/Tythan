@@ -2,8 +2,13 @@ package co.lotc.core.bukkit.util;
 
 import static co.lotc.core.bukkit.util.ReflectionUtil.*;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -23,8 +28,7 @@ import com.comphenix.protocol.wrappers.nbt.NbtCompound;
 import com.comphenix.protocol.wrappers.nbt.NbtFactory;
 import com.comphenix.protocol.wrappers.nbt.NbtList;
 
-import co.lotc.core.Tythan;
-import co.lotc.core.bukkit.TythanBukkit;
+import co.lotc.core.CoreLog;
 import lombok.var;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TranslatableComponent;
@@ -58,12 +62,39 @@ public class ItemUtil {
 		item.setItemMeta(meta);
 	}
 	
+	@SuppressWarnings("deprecation")
 	private static NamespacedKey fuckYouBukkitJustGiveMeAKey(String rawKey) {
 		//The data is stored as NBT tags
 		//Structure is inside a compound called PublicBukkitValues
 		//Key-value is keys as NamespacedKey (pluginName:key) and value as provided
 		//Can be any of the NBT primitive types but storing as string is fine
-		return new NamespacedKey((TythanBukkit) Tythan.get(), rawKey);
+		return new NamespacedKey("lotc", rawKey);
+	}
+	
+	private static Method getRaw = null;
+	public static Set<String> getCustomKeys(ItemStack item){
+		var meta = item.getItemMeta();
+		var container = meta.getCustomTagContainer();
+		
+		try {
+			if(getRaw == null) getRaw = container.getClass().getMethod("getRaw");
+			@SuppressWarnings("unchecked")
+			var map = (Map<String, Object>) getRaw.invoke(container);
+
+			return map.keySet().stream()
+					.map(String::valueOf)//Return self
+					.filter(s->s.startsWith("lotc:"))
+					.map(s->s.substring(5))
+					.collect(Collectors.toSet());
+		}catch(ClassCastException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			CoreLog.severe("CraftCustomTagContainer changed internal structure: Failure on getRaw()!");
+			e.printStackTrace();
+			return Collections.emptySet();
+		}
+	}
+	
+	public static Map<String, String> getCustomTags(ItemStack item){
+		return getCustomKeys(item).stream().collect(Collectors.toMap(x->x, x->getCustomTag(item, x)));
 	}
 	
 	/**
