@@ -216,5 +216,6 @@ $RECYCLE.BIN/
 .idea
 target
 /ArcheCore.iml
+*.flattened-pom.xml
 
 src/api/

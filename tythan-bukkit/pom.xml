@@ -10,7 +10,7 @@
   <parent>
     <groupId>co.lotc</groupId>
     <artifactId>tythan</artifactId>
-    <version>${globalversion}</version>
+    <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
