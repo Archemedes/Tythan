@@ -1,7 +1,7 @@
 package co.lotc.core.bungee.util;
 
 
-import co.lotc.core.AbstractChatBuilder;
+import co.lotc.core.agnostic.AbstractChatBuilder;
 import net.md_5.bungee.api.CommandSender;
 
 public class ChatBuilder extends AbstractChatBuilder<ChatBuilder> {

@@ -3,8 +3,8 @@ package co.lotc.core.bukkit.util;
 import static java.util.concurrent.TimeUnit.*;
 import static net.md_5.bungee.api.ChatColor.*;
 
-import co.lotc.core.AbstractChatBuilder;
 import co.lotc.core.Tythan;
+import co.lotc.core.agnostic.AbstractChatBuilder;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 

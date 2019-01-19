@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import co.lotc.core.AbstractChatBuilder;
+import co.lotc.core.agnostic.AbstractChatBuilder;
 
 public class ChatBuilder extends AbstractChatBuilder<ChatBuilder> {
 

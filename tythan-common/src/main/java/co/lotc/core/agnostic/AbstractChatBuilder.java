@@ -1,4 +1,4 @@
-package co.lotc.core;
+package co.lotc.core.agnostic;
 
 import co.lotc.core.util.MessageUtil;
 import net.md_5.bungee.api.ChatColor;
