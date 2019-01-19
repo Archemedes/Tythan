@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import co.lotc.core.Tythan;
 import co.lotc.core.TythanCommon;
 import co.lotc.core.bungee.util.ChatBuilder;
+import co.lotc.core.bungee.wrapper.BungeeConfig;
 import lombok.Getter;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
@@ -31,6 +32,11 @@ public class TythanBungee extends Plugin implements Tythan {
 	@Override
 	public void onDisable(){
 
+	}
+	
+	@Override
+	public BungeeConfig config() {
+		return new BungeeConfig(getConfig());
 	}
 	
 	Configuration getConfig() {

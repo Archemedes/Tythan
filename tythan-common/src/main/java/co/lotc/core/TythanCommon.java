@@ -1,7 +1,5 @@
 package co.lotc.core;
 
-import java.io.File;
-
 import lombok.RequiredArgsConstructor;
 
 /**
