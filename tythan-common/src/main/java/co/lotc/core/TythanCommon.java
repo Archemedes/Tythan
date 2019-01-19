@@ -13,7 +13,6 @@ public class TythanCommon {
 	
 	public void onLoad() {
 		TythanProvider.init(tythan);
-		DependencyLoader.loadJars(new File(tythan.getDataFolder(), "jars"));
 	}
 	
 }
