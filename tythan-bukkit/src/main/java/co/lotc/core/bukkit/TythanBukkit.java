@@ -39,4 +39,8 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 	public ChatBuilder chatBuilder() {
 		return new ChatBuilder();
 	}
+	
+	public static TythanBukkit get(){
+		return (TythanBukkit) Tythan.get();
+	}
 }
