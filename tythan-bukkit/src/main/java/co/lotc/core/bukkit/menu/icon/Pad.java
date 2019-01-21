@@ -6,7 +6,7 @@ import co.lotc.core.bukkit.menu.MenuAction;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public final class Pad implements Icon {
+public final class Pad extends Icon {
 	private final ItemStack itemStack;
 
 	@Override
