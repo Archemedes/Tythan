@@ -1,19 +1,24 @@
 package co.lotc.core.bukkit.menu;
 
+import static org.bukkit.Material.AIR;
+
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
 
 import co.lotc.core.bukkit.menu.icon.Icon;
+import co.lotc.core.bukkit.menu.icon.Pad;
 
 public class MenuBuilder {
-	private final String title;
-	private final InventoryType type;
-	private final int size;
+	final String title;
+	final InventoryType type;
+	final int size;
 	
-	private final List<Icon> icons;
+	final List<Icon> icons;
 	
 	public MenuBuilder(String title, int rows) {
 		this.title = title;
@@ -37,14 +42,41 @@ public class MenuBuilder {
 	}
 	
 	public MenuBuilder icon(int i, Icon icon) {
+		checkDuplicates(icon);
 		icons.set(i, icon);
 		return this;
 	}
 	
+	public MenuBuilder pad(Material m) {
+		return icon(new Pad(m));
+	}
 	
+	public MenuBuilder pad(int index, Material m) {
+		return icon(index, new Pad(m));
+	}
 	
+	public MenuBuilder pad(ItemStack is) {
+		return pad(firstEmpty(), is);
+	}
+	
+	public MenuBuilder pad(int i, ItemStack is) {
+		icons.set(i, new Pad(is));
+		return this;
+	}
+	
+	public Menu build() {
+		icons.replaceAll(i->i==null? new Pad(AIR) : i);
+		Menu menu = new Menu(this);
+		
+		return menu;
+	}
 	
 	private int firstEmpty() {
 		return icons.indexOf(null);
+	}
+	
+	private void checkDuplicates(Icon x) {
+		if(x instanceof Pad) return;
+		if(icons.contains(x)) throw new IllegalArgumentException("");
 	}
 }

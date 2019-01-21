@@ -1,17 +1,19 @@
 package co.lotc.core.bukkit.menu.icon;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import co.lotc.core.bukkit.menu.MenuAction;
+import co.lotc.core.bukkit.util.ItemBuilder;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public final class Pad extends Icon {
-	private final ItemStack itemStack;
+	@Getter private final ItemStack itemStack;
 
-	@Override
-	public ItemStack getItemStack(MenuAction action) {
-		return itemStack;
+	public Pad(Material m) {
+		itemStack = new ItemBuilder(m).name("").build();
 	}
 	
 	@Override

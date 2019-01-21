@@ -7,7 +7,9 @@ import java.util.UUID;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -17,12 +19,21 @@ import co.lotc.core.bukkit.menu.icon.Icon;
 public class Menu implements InventoryHolder{
 	private final Map<UUID, MenuAgent> viewers = new HashMap<>();
 
-	private final List<Icon> icons;
+	private final Icon[] icons;
 	private final Inventory inventory;
 	
 	
-	public Menu(MenuBuilder builder) {
-		//TODO
+	Menu(MenuBuilder builder) {
+		icons = builder.icons.toArray(new Icon[builder.size]);
+		
+		if(builder.type == InventoryType.CHEST)
+			inventory = Bukkit.createInventory(this, builder.size, builder.title);
+		else
+			inventory = Bukkit.createInventory(this, builder.type, builder.title);
+		
+		for(int i = 0; i < builder.size; i++) {
+			inventory.setItem(i, icons[i].getItemStack());
+		}
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -31,7 +42,7 @@ public class Menu implements InventoryHolder{
 	}
 	
 	public int getSize() {
-		return icons.size();
+		return icons.length;
 	}
 	
 	public void updateIconItem(Icon icon) {
