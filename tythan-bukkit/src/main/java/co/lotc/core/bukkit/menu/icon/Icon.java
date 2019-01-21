@@ -11,7 +11,7 @@ public abstract class Icon {
 	/**
 	 * This gives the itemstack the Icon should be displaying
 	 */
-	public abstract ItemStack getItemStack(MenuAction action);
+	public abstract ItemStack getItemStack();
 	
 	/**
 	 * Called when icon is interacted with by the player

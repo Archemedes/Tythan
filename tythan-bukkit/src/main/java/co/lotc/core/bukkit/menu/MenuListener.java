@@ -23,8 +23,6 @@ public class MenuListener implements Listener {
 	//a) SINGLE icon/slot affected, propagate a click
 	//b) MULTIPLE slots affected; they all allowed a move
 	
-	//TODO: empty slots in the top inventory can be manipulated
-	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void inv(InventoryClickEvent e) {
 		MenuAgent agent = getAgent(e);
