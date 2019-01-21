@@ -6,14 +6,13 @@ import java.util.Map;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 
 import co.lotc.core.Tythan;
 import co.lotc.core.bukkit.TythanBukkit;
 import co.lotc.core.bukkit.util.Run;
 import lombok.Getter;
 
-public class MenuAgent implements InventoryHolder {
+public class MenuAgent {
 	@Getter private final Player player;
 	@Getter private	Menu menu = null; //Current menu focused on, may change
 	
@@ -29,7 +28,6 @@ public class MenuAgent implements InventoryHolder {
 		this.menu = menu;
 	}
 	
-	@Override
 	public Inventory getInventory() {
 		return menu.getInventory();
 	}

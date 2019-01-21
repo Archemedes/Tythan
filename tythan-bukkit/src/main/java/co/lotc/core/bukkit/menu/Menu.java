@@ -1,36 +1,37 @@
 package co.lotc.core.bukkit.menu;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import co.lotc.core.bukkit.menu.icon.Icon;
 
-public class Menu {
-	private final MenuAgent agent;
-	private String title;
+public class Menu implements InventoryHolder{
+	private final Map<UUID, MenuAgent> viewers = new HashMap<>();
+
+	private final List<Icon> icons;
+	private final Inventory inventory;
 	
-	Icon[] icons;
-	private Inventory inventory;
 	
-	
-	public Menu(MenuAgent agent, String title, int rows) {
-		this.agent = agent;
-		this.title = title;
-		int size = rows * 9;
-		
-		icons = new Icon[size];
-		inventory = Bukkit.createInventory(agent, size);
+	public Menu(MenuBuilder builder) {
+		//TODO
 	}
 	
+	@SuppressWarnings("deprecation")
 	public String getTitle() {
-		return title;
+		return inventory.getTitle();
 	}
 	
 	public int getSize() {
-		return icons.length;
+		return icons.size();
 	}
 	
 	public void updateIconItem(Icon icon) {
@@ -95,11 +96,14 @@ public class Menu {
 		return -1;
 	}
 	
-	public MenuAgent getHolder() {
-		return agent;
-	}
-	
+	@Override
 	public Inventory getInventory() {
 		return inventory;
+	}
+	
+	public MenuAgent getAgent(HumanEntity p) {
+		MenuAgent aa = viewers.get(p.getUniqueId());
+		Validate.isTrue(aa == null || aa.getMenu() == this);
+		return aa;
 	}
 }

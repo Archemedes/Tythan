@@ -3,6 +3,7 @@ package co.lotc.core.bukkit.menu;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -10,7 +11,6 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.inventory.InventoryHolder;
 
 import co.lotc.core.bukkit.menu.icon.Icon;
 import co.lotc.core.bukkit.util.InventoryUtil;
@@ -27,9 +27,8 @@ public class MenuListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void inv(InventoryClickEvent e) {
-		InventoryHolder holder = e.getInventory().getHolder();
-		if(holder instanceof MenuAgent) {
-			var agent = (MenuAgent) holder;
+		MenuAgent agent = getAgent(e);
+		if(agent != null) {
 			var action = new MenuAction(agent, InventoryUtil.getResultOfEvent(e), e.getClick());
 			
 			boolean cancel = setCancel(e, action);
@@ -49,9 +48,8 @@ public class MenuListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void inv(InventoryDragEvent e) {
-		InventoryHolder holder = e.getInventory().getHolder();
-		if(holder instanceof MenuAgent) {
-			var agent = (MenuAgent) holder;
+		MenuAgent agent = getAgent(e);
+		if(agent != null) {
 			var action = new MenuAction(agent, InventoryUtil.getResultOfEvent(e), ClickType.LEFT);
 			
 			boolean cancel = setCancel(e, action);
@@ -90,5 +88,16 @@ public class MenuListener implements Listener {
 		return false;
 	}
 	
+	private MenuAgent getAgent(InventoryInteractEvent e) {
+		var holder = e.getInventory().getHolder();
+		if(holder instanceof Menu) {
+			Menu menu = (Menu) holder;
+			MenuAgent agent = menu.getAgent(e.getWhoClicked());
+			Validate.notNull(agent);
+			return agent;
+		} else {
+			return null;
+		}
+	}
 	
 }
