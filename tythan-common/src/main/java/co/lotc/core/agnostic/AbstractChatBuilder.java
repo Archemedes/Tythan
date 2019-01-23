@@ -211,6 +211,10 @@ public abstract class AbstractChatBuilder<E extends AbstractChatBuilder<E>> {
 		return BaseComponent.toPlainText(handle.create());
 	}
 	
+	public E send(Sender sender) {
+		sender.sendMessage(handle.create());
+		return getThis();
+	}
 	
 	protected abstract E getThis();
 }

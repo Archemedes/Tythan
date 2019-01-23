@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import co.lotc.core.agnostic.AbstractChatBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 
 public class ChatBuilder extends AbstractChatBuilder<ChatBuilder> {
 
@@ -23,8 +24,7 @@ public class ChatBuilder extends AbstractChatBuilder<ChatBuilder> {
 	}
 	
 	public ChatBuilder hoverItem(ItemStack is) {
-		return getThis(); //TODO
-		//return event(HoverEvent.Action.SHOW_ITEM, ItemUtil.getItemJson(is));
+		return event(HoverEvent.Action.SHOW_ITEM, ItemUtil.getItemJson(is));
 	}
 	
 	@Override
