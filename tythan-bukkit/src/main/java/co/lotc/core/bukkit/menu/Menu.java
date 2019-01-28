@@ -8,6 +8,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -21,7 +22,6 @@ public class Menu implements InventoryHolder{
 	private final Icon[] icons;
 	private final Inventory inventory;
 	
-	
 	Menu(MenuBuilder builder) {
 		icons = builder.icons.toArray(new Icon[builder.size]);
 		
@@ -33,6 +33,12 @@ public class Menu implements InventoryHolder{
 		for(int i = 0; i < builder.size; i++) {
 			inventory.setItem(i, icons[i].getItemStack(eldest()));
 		}
+	}
+	
+	public void openSession(Player p) {
+		MenuAgent a = new MenuAgent(p);
+		viewers.put(p.getUniqueId(), a);
+		p.openInventory(inventory);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -117,7 +123,15 @@ public class Menu implements InventoryHolder{
 		return aa;
 	}
 	
-	public MenuAgent eldest() {
+	void clearViewer(MenuAgent agent) {
+		viewers.remove(agent.getPlayer().getUniqueId());
+	}
+	
+	void addViewer(MenuAgent agent) {
+		viewers.put(agent.getPlayer().getUniqueId(), agent);
+	}
+	
+	private MenuAgent eldest() {
 		return viewers.values().stream().findFirst().get();
 	}
 	

@@ -4,14 +4,18 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
+import org.bukkit.inventory.Inventory;
 
+import co.lotc.core.CoreLog;
 import co.lotc.core.bukkit.menu.icon.Icon;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.InventoryUtil.MovedItem;
@@ -23,9 +27,19 @@ public class MenuListener implements Listener {
 	//a) SINGLE icon/slot affected, propagate a click
 	//b) MULTIPLE slots affected; they all allowed a move
 	
-	@EventHandler(priority = EventPriority.LOWEST)
+	@SuppressWarnings("deprecation")
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void handle(InventoryCloseEvent e) {
+		MenuAgent agent = getAgent(e.getInventory(), e.getPlayer());
+		if(agent != null) {
+			CoreLog.debug("Closing Menu with title " + e.getInventory().getTitle() + " for player: " + e.getPlayer().getName());
+			agent.getMenu().clearViewer(agent);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void inv(InventoryClickEvent e) {
-		MenuAgent agent = getAgent(e);
+		MenuAgent agent = getAgent(e.getInventory(), e.getWhoClicked());
 		if(agent != null) {
 			var action = new MenuAction(agent, InventoryUtil.getResultOfEvent(e), e.getClick());
 			
@@ -44,9 +58,9 @@ public class MenuListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void inv(InventoryDragEvent e) {
-		MenuAgent agent = getAgent(e);
+		MenuAgent agent = getAgent(e.getInventory(), e.getWhoClicked());
 		if(agent != null) {
 			var action = new MenuAction(agent, InventoryUtil.getResultOfEvent(e), ClickType.LEFT);
 			
@@ -86,11 +100,11 @@ public class MenuListener implements Listener {
 		return false;
 	}
 	
-	private MenuAgent getAgent(InventoryInteractEvent e) {
-		var holder = e.getInventory().getHolder();
+	private MenuAgent getAgent(Inventory inv, HumanEntity he) {
+		var holder = inv;
 		if(holder instanceof Menu) {
 			Menu menu = (Menu) holder;
-			MenuAgent agent = menu.getAgent(e.getWhoClicked());
+			MenuAgent agent = menu.getAgent(he);
 			Validate.notNull(agent);
 			return agent;
 		} else {

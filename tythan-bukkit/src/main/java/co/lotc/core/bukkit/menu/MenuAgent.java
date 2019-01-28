@@ -25,6 +25,7 @@ public class MenuAgent {
 	public void open(Menu newMenu) {
 		Run.as(TythanBukkit.get()).sync(()->{
 			menu = newMenu;
+			player.getOpenInventory().close(); //Will remove the viewer too
 			player.getPlayer().openInventory(menu.getInventory());
 		});
 	}

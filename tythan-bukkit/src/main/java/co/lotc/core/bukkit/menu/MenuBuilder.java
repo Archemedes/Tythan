@@ -4,6 +4,7 @@ import static org.bukkit.Material.AIR;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
@@ -12,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 
 import co.lotc.core.bukkit.menu.icon.Icon;
 import co.lotc.core.bukkit.menu.icon.Pad;
+import co.lotc.core.bukkit.menu.icon.SimpleIcon;
 
 public class MenuBuilder {
 	final String title;
@@ -47,6 +49,15 @@ public class MenuBuilder {
 		return this;
 	}
 	
+	public MenuBuilder icon(ItemStack picture, Consumer<MenuAction> whatItDoes) {
+		return icon(firstEmpty(), picture, whatItDoes);
+	}
+	
+	public MenuBuilder icon(int i, ItemStack picture, Consumer<MenuAction> whatItDoes) {
+		icons.set(i, new SimpleIcon(picture, whatItDoes));
+		return this;
+	}
+	
 	public MenuBuilder pad(Material m) {
 		return icon(new Pad(m));
 	}
@@ -61,6 +72,17 @@ public class MenuBuilder {
 	
 	public MenuBuilder pad(int i, ItemStack is) {
 		icons.set(i, new Pad(is));
+		return this;
+	}
+	
+	public MenuBuilder fill(Material m) {
+		return fill(new Pad(m));
+	}
+	
+	public MenuBuilder fill(Icon icon) {
+		for(int i = 0; i < icons.size(); i++) {
+			if(icons.get(i) == null) icons.set(i, icon);
+		}
 		return this;
 	}
 	
