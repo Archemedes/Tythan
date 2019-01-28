@@ -1,7 +1,6 @@
 package co.lotc.core.bukkit.menu;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -17,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import co.lotc.core.bukkit.menu.icon.Icon;
 
 public class Menu implements InventoryHolder{
-	private final Map<UUID, MenuAgent> viewers = new HashMap<>();
+	private final Map<UUID, MenuAgent> viewers = new LinkedHashMap<>();
 
 	private final Icon[] icons;
 	private final Inventory inventory;
@@ -32,7 +31,7 @@ public class Menu implements InventoryHolder{
 			inventory = Bukkit.createInventory(this, builder.type, builder.title);
 		
 		for(int i = 0; i < builder.size; i++) {
-			inventory.setItem(i, icons[i].getItemStack());
+			inventory.setItem(i, icons[i].getItemStack(eldest()));
 		}
 	}
 	
@@ -51,7 +50,7 @@ public class Menu implements InventoryHolder{
 	
 	public void updateIconItem(int index) {
 		if(icons[index] != null) {
-			inventory.setItem(index, icons[index].getItemStack(agent));
+			inventory.setItem(index, icons[index].getItemStack(eldest()));
 		}
 	}
 	
@@ -59,7 +58,7 @@ public class Menu implements InventoryHolder{
 		Validate.notNull(icon);
 		for(int i = 0; i < icons.length; i++){
 			if(icons[i] == icon) {
-				inventory.setItem(i, icon.getItemStack(agent));
+				inventory.setItem(i, icon.getItemStack(eldest()));
 				if(!multiple) break;
 			}
 		}
@@ -68,7 +67,7 @@ public class Menu implements InventoryHolder{
 	public void updateIconItems() {
 		for(int i = 0; i < icons.length; i++) {
 			if(icons[i] != null) {
-				ItemStack is1 = icons[i].getItemStack(agent), is2 = inventory.getItem(i);
+				ItemStack is1 = icons[i].getItemStack(eldest()), is2 = inventory.getItem(i);
 				if(!ObjectUtils.equals(is1, is2)) inventory.setItem(i, is1);
 			}
 		}
@@ -76,16 +75,16 @@ public class Menu implements InventoryHolder{
 	
 	public void addIcon(Icon icon) {
 		int where = firstEmpty();
-		if(where == -1) throw new IllegalStateException("CraftMenu is full!");
+		if(where == -1) throw new IllegalStateException("Menu is full!");
 		
 		icons[where] = icon;
-		inventory.setItem(where, icon.getItemStack(agent));
+		inventory.setItem(where, icon.getItemStack(eldest()));
 	}
 
 	public void setIcon(int i, Icon icon) {
 		Validate.isTrue(i >= 0 && i < icons.length);
 		icons[i] = icon;
-		inventory.setItem(i, icon.getItemStack(agent));
+		inventory.setItem(i, icon.getItemStack(eldest()));
 	}
 	
 	public Icon getIcon(int i) {
@@ -117,4 +116,10 @@ public class Menu implements InventoryHolder{
 		Validate.isTrue(aa == null || aa.getMenu() == this);
 		return aa;
 	}
+	
+	public MenuAgent eldest() {
+		return viewers.values().stream().findFirst().get();
+	}
+	
+	
 }

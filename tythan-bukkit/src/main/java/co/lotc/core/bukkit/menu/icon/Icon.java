@@ -3,6 +3,7 @@ package co.lotc.core.bukkit.menu.icon;
 import org.bukkit.inventory.ItemStack;
 
 import co.lotc.core.bukkit.menu.MenuAction;
+import co.lotc.core.bukkit.menu.MenuAgent;
 
 public abstract class Icon {
 	
@@ -11,7 +12,7 @@ public abstract class Icon {
 	/**
 	 * This gives the itemstack the Icon should be displaying
 	 */
-	public abstract ItemStack getItemStack();
+	public abstract ItemStack getItemStack(MenuAgent agent);
 	
 	/**
 	 * Called when icon is interacted with by the player

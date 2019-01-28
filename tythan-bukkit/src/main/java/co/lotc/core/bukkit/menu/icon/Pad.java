@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import co.lotc.core.bukkit.menu.MenuAction;
+import co.lotc.core.bukkit.menu.MenuAgent;
 import co.lotc.core.bukkit.util.ItemBuilder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,5 +19,10 @@ public final class Pad extends Icon {
 	
 	@Override
 	public void click(MenuAction action) {}
+
+	@Override
+	public ItemStack getItemStack(MenuAgent agent) {
+		return getItemStack();
+	}
 
 }
