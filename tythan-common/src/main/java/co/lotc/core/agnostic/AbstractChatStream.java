@@ -16,17 +16,27 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 
 @RequiredArgsConstructor
-public abstract class AbstractChatStream {
+public abstract class AbstractChatStream<T extends AbstractChatStream<T>> {
 	protected final Sender converser;
 	protected final Context context = new Context();
 	protected final List<Prompt> prompts = new ArrayList<>();
 	
 	protected Consumer<Context> onAbandon, onActivate;
 	
-	public AbstractChatStream prompt(String contextTag, BaseComponent promptText, Consumer<Prompt> fulfillment) {
+	public T prompt(String contextTag, BaseComponent promptText, Consumer<Prompt> fulfillment) {
 		Prompt p = new Prompt(this, contextTag, promptText, fulfillment);
 		prompts.add(p);
-		return this;
+		return getThis();
+	}
+	
+	public T withContext(String key, Object value) {
+		context.set(key, value);
+		return getThis();
+	}
+	
+	public T withContext(Context context) {
+		context.getMap().forEach( (k,v) -> this.context.set(k, v));
+		return getThis();
 	}
 	
 	public void activate(Consumer<Context> go) {
@@ -35,12 +45,13 @@ public abstract class AbstractChatStream {
 		prompts.get(0).open();
 	}
 	
+	protected abstract T getThis();
 	
 	@RequiredArgsConstructor
 	@FieldDefaults(level=AccessLevel.PRIVATE, makeFinal=true)
 	@Getter
 	public static final class Prompt{
-		AbstractChatStream stream;
+		AbstractChatStream<?> stream;
 		String contextTag;
 		BaseComponent text;
 		

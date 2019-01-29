@@ -28,7 +28,7 @@ import lombok.var;
 import lombok.experimental.FieldDefaults;
 import net.md_5.bungee.api.chat.BaseComponent;
 
-public class ChatStream extends AbstractChatStream{
+public class ChatStream extends AbstractChatStream<ChatStream>{
 	private final UUID uuid;
 	
 	public ChatStream(Player p) {
@@ -55,6 +55,11 @@ public class ChatStream extends AbstractChatStream{
 		});
 	}
 	
+	
+	@Override
+	protected ChatStream getThis() {
+		return this;
+	}
 	
 	//Don't know if this will work
 	@FieldDefaults(level=AccessLevel.PRIVATE)
