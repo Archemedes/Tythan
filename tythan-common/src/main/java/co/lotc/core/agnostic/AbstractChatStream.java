@@ -57,6 +57,10 @@ public abstract class AbstractChatStream<T extends AbstractChatStream<T>> {
 		
 		Consumer<Prompt> fulfillment;
 		
+		public Sender getConverser() {
+			return stream.converser;
+		}
+		
 		void open() {
 			sendPrompt();
 			fulfillment.accept(this);

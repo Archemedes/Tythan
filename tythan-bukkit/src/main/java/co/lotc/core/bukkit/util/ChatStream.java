@@ -108,6 +108,8 @@ public class ChatStream extends AbstractChatStream<ChatStream>{
 					abandon();
 					prompt.fulfil(result);
 					CoreLog.debug("Prompt was fulfilled: " + this);
+				} else {
+					prompt.getConverser().sendMessage(prompt.getText());
 				}
 			}
 		}
