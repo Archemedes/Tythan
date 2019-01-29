@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,6 +15,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import co.lotc.core.CoreLog;
 import co.lotc.core.bukkit.menu.icon.Icon;
@@ -42,7 +44,6 @@ public class MenuListener implements Listener {
 		MenuAgent agent = getAgent(e.getInventory(), e.getWhoClicked());
 		if(agent != null) {
 			var action = new MenuAction(agent, InventoryUtil.getResultOfEvent(e), e.getClick());
-			
 			boolean cancel = setCancel(e, action);
 			if(cancel) { //button-like action
 				if(action.getMovedItems().size() == 1) {
@@ -87,7 +88,7 @@ public class MenuListener implements Listener {
 		//if so cancel the event
 		for(MovedItem mi : moved) {
 			var item = mi.getItem();
-			if(asIcon(e, mi.getInitialSlot(), a).filter(i->!i.mayInteract(item)).isPresent()) {
+			if(asIcon(e, mi.getInitialSlot(), a).filter(i->!i.mayInteract(new ItemStack(Material.AIR))).isPresent()) {
 				e.setCancelled(true);
 				return true;
 			}
@@ -101,7 +102,7 @@ public class MenuListener implements Listener {
 	}
 	
 	private MenuAgent getAgent(Inventory inv, HumanEntity he) {
-		var holder = inv;
+		var holder = inv.getHolder();
 		if(holder instanceof Menu) {
 			Menu menu = (Menu) holder;
 			MenuAgent agent = menu.getAgent(he);

@@ -14,7 +14,8 @@ public class MenuAgent {
 	
 	private final Context context = new Context();
 	
-	MenuAgent(Player player) {
+	MenuAgent(Menu menu, Player player) {
+		this.menu = menu;
 		this.player = player;
 	}
 	

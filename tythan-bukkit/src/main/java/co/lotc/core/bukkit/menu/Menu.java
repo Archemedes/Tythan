@@ -21,6 +21,8 @@ public class Menu implements InventoryHolder{
 
 	private final Icon[] icons;
 	private final Inventory inventory;
+
+	private boolean initialized = false;
 	
 	Menu(MenuBuilder builder) {
 		icons = builder.icons.toArray(new Icon[builder.size]);
@@ -29,16 +31,16 @@ public class Menu implements InventoryHolder{
 			inventory = Bukkit.createInventory(this, builder.size, builder.title);
 		else
 			inventory = Bukkit.createInventory(this, builder.type, builder.title);
-		
-		for(int i = 0; i < builder.size; i++) {
-			inventory.setItem(i, icons[i].getItemStack(eldest()));
-		}
 	}
 	
 	public void openSession(Player p) {
-		MenuAgent a = new MenuAgent(p);
+		MenuAgent a = new MenuAgent(this, p);
 		viewers.put(p.getUniqueId(), a);
 		p.openInventory(inventory);
+		if(!initialized) {
+			updateIconItems();
+			initialized = true;
+		}
 	}
 	
 	@SuppressWarnings("deprecation")

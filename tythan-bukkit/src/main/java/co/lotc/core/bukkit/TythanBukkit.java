@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import co.lotc.core.Tythan;
 import co.lotc.core.TythanCommon;
 import co.lotc.core.bukkit.listener.ChatStreamListener;
+import co.lotc.core.bukkit.menu.MenuListener;
 import co.lotc.core.bukkit.util.ChatBuilder;
 import co.lotc.core.bukkit.util.WeakBlock;
 import co.lotc.core.bukkit.wrapper.BukkitConfig;
@@ -28,6 +29,7 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 		saveDefaultConfig();
 		
 		listen(new ChatStreamListener(this));
+		listen(new MenuListener());
 	}
 	
 	@Override
