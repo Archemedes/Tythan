@@ -107,6 +107,7 @@ public class ChatStream extends AbstractChatStream<ChatStream>{
 				if(result != null) {
 					abandon();
 					prompt.fulfil(result);
+					CoreLog.debug("Prompt was fulfilled: " + this);
 				}
 			}
 		}
