@@ -69,6 +69,7 @@ public abstract class AbstractChatStream<T extends AbstractChatStream<T>> {
 		public void sendPrompt() {
 			Tythan.get().chatBuilder()
 			.appendButton("x", "stop", "click to exit prompt", ChatColor.RED, ChatColor.RED)
+			.append(" ").reset()
 			.append(text)
 			.send(stream.converser);
 		}
