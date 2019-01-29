@@ -15,6 +15,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.scheduler.BukkitTask;
 
+import com.google.common.base.Functions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
@@ -46,15 +47,18 @@ public class ChatStream extends AbstractChatStream<ChatStream>{
 	}
 	
 	public ChatStream validatePrompt(String contextTag, BaseComponent message, Predicate<String> filter) {
+		return prompt(contextTag, message, filter, Functions.identity());
+	}
+	
+	public ChatStream prompt(String contextTag, BaseComponent message, Predicate<String> filter, Function<String, ?> mapper) {
 		return listen(contextTag, message, AsyncPlayerChatEvent.class, x->{
 			if(x.getPlayer().getUniqueId().equals(uuid)) {
-				if(filter.apply(x.getMessage())) return x.getMessage();
+				if(filter.apply(x.getMessage())) return mapper.apply(x.getMessage());
 			}
 			
 			return null;
 		});
 	}
-	
 	
 	@Override
 	protected ChatStream getThis() {
