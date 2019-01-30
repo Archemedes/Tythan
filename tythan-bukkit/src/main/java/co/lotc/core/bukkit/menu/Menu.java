@@ -1,6 +1,7 @@
 package co.lotc.core.bukkit.menu;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -23,6 +24,14 @@ public class Menu implements InventoryHolder{
 	private final Inventory inventory;
 
 	private boolean initialized = false;
+	
+	public static Menu fromIcons(String title, List<Icon> icons) {
+		return MenuUtil.createMultiPageMenu(null, title, icons).get(0);
+	}
+	
+	public static Menu fromIcons(Menu origin, String title, List<Icon> icons) {
+		return MenuUtil.createMultiPageMenu(origin, title, icons).get(0);
+	}
 	
 	Menu(MenuBuilder builder) {
 		icons = builder.icons.toArray(new Icon[builder.size]);
