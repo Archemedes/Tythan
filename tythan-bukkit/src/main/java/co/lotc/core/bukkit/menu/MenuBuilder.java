@@ -19,7 +19,7 @@ import com.google.common.base.Suppliers;
 import co.lotc.core.bukkit.menu.icon.Icon;
 import co.lotc.core.bukkit.menu.icon.Link;
 import co.lotc.core.bukkit.menu.icon.Pad;
-import co.lotc.core.bukkit.menu.icon.SimpleIcon;
+import co.lotc.core.bukkit.menu.icon.SimpleButton;
 import co.lotc.core.bukkit.util.ItemUtil;
 
 public class MenuBuilder {
@@ -61,7 +61,7 @@ public class MenuBuilder {
 	}
 	
 	public MenuBuilder icon(int i, ItemStack picture, Consumer<MenuAction> whatItDoes) {
-		icons.set(i, new SimpleIcon(picture, whatItDoes));
+		icons.set(i, new SimpleButton(picture, whatItDoes));
 		return this;
 	}
 	

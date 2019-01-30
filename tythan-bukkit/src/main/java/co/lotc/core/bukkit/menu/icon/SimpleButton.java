@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(makeFinal=true, level=AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-public class SimpleIcon extends Icon {
+public class SimpleButton extends Button {
 	ItemStack itemStack;
 	Consumer<MenuAction> doThis;
 
