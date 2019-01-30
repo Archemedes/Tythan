@@ -122,7 +122,7 @@ public class MenuBuilder {
 	}
 	
 	public Menu build() {
-		icons.replaceAll(i->i==null? new Pad(AIR) : i);
+		icons.replaceAll(i->i==null? new Pad(new ItemStack(AIR)) : i);
 		Menu menu = new Menu(this);
 		
 		return menu;

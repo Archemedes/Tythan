@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
@@ -15,7 +14,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
+import co.lotc.core.CoreLog;
 import co.lotc.core.bukkit.menu.icon.Icon;
+import lombok.var;
 
 public class Menu implements InventoryHolder{
 	private final Map<UUID, MenuAgent> viewers = new LinkedHashMap<>();
@@ -46,7 +47,11 @@ public class Menu implements InventoryHolder{
 		MenuAgent a = new MenuAgent(this, p);
 		viewers.put(p.getUniqueId(), a);
 		p.openInventory(inventory);
+	}
+	
+	void init() {
 		if(!initialized) {
+			CoreLog.debug("Initializing menu with title: " + inventory.getTitle());
 			updateIconItems();
 			initialized = true;
 		}
@@ -67,7 +72,7 @@ public class Menu implements InventoryHolder{
 	
 	public void updateIconItem(int index) {
 		if(icons[index] != null) {
-			inventory.setItem(index, icons[index].getItemStack(eldest()));
+			inventory.setItem(index, itemOrBust(icons[index]));
 		}
 	}
 	
@@ -75,7 +80,7 @@ public class Menu implements InventoryHolder{
 		Validate.notNull(icon);
 		for(int i = 0; i < icons.length; i++){
 			if(icons[i] == icon) {
-				inventory.setItem(i, icon.getItemStack(eldest()));
+				inventory.setItem(i, itemOrBust(icon));
 				if(!multiple) break;
 			}
 		}
@@ -83,10 +88,7 @@ public class Menu implements InventoryHolder{
 	
 	public void updateIconItems() {
 		for(int i = 0; i < icons.length; i++) {
-			if(icons[i] != null) {
-				ItemStack is1 = icons[i].getItemStack(eldest()), is2 = inventory.getItem(i);
-				if(!ObjectUtils.equals(is1, is2)) inventory.setItem(i, is1);
-			}
+			inventory.setItem(i, itemOrBust(icons[i]));
 		}
 	}
 	
@@ -95,13 +97,13 @@ public class Menu implements InventoryHolder{
 		if(where == -1) throw new IllegalStateException("Menu is full!");
 		
 		icons[where] = icon;
-		inventory.setItem(where, icon.getItemStack(eldest()));
+		inventory.setItem(where, itemOrBust(icon));
 	}
 
 	public void setIcon(int i, Icon icon) {
 		Validate.isTrue(i >= 0 && i < icons.length);
 		icons[i] = icon;
-		inventory.setItem(i, icon.getItemStack(eldest()));
+		inventory.setItem(i, itemOrBust(icon));
 	}
 	
 	public Icon getIcon(int i) {
@@ -142,9 +144,11 @@ public class Menu implements InventoryHolder{
 		viewers.put(agent.getPlayer().getUniqueId(), agent);
 	}
 	
-	private MenuAgent eldest() {
-		return viewers.values().stream().findFirst().get();
+	private ItemStack itemOrBust(Icon i) {
+		var opt = viewers.values().stream().findFirst().map(i::getItemStack);
+		if(opt.isPresent()) return opt.get();
+		
+		initialized = false;
+		return null;
 	}
-	
-	
 }

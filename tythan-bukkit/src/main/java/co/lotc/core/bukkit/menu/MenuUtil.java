@@ -56,8 +56,10 @@ public final class MenuUtil {
 			
 			MenuBuilder b = new MenuBuilder(title, rows);
 			IntStream.range(0, size).forEach(i->b.icon(i, icons.get(i)));
-			int backButtonLocation =  rows * 9 - 5;
-			b.icon(backButtonLocation, new Link(back(), origin));
+			if(backButton) {
+				int backButtonLocation =  rows * 9 - 5;
+				b.icon(backButtonLocation, new Link(back(), origin));
+			}
 			result.add(b.build());
 		} else {
 			int menus = 1 + ((size-1)/45);
@@ -67,13 +69,14 @@ public final class MenuUtil {
 				MenuBuilder b = new MenuBuilder(title, 6);
 				for(int j = 0; j < 45; j++) {
 					int index = i*45+j;
+					if(index >= size) break;
 					b.icon(j, icons.get(index));
 				}
-				b.icon(49, new Link(back(), origin));
-				b.icon(45, new Link(left(), prev));
+				if(backButton) b.icon(49, new Link(back(), origin));
+				if(prev != null) b.icon(45, new Link(left(), prev));
 				Menu x = b.build();
 				result.add(x);
-				prev.setIcon(53, new Link(right(), x));
+				if(prev != null) prev.setIcon(53, new Link(right(), x));
 				prev = x;
 			}
 		}

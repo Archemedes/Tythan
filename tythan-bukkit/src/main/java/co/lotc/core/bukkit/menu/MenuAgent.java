@@ -25,8 +25,12 @@ public class MenuAgent {
 	
 	public void open(Menu newMenu) {
 		Run.as(TythanBukkit.get()).sync(()->{
-			menu = newMenu;
+			//The ordering here is very important. Any change to it will break stuff
+			//This is due to interleaving of the Open and Close events...
+			//which interact and read state from this object
 			player.getOpenInventory().close(); //Will remove the viewer too
+			menu = newMenu;
+			menu.addViewer(this);
 			player.getPlayer().openInventory(menu.getInventory());
 		});
 	}

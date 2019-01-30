@@ -14,6 +14,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -36,6 +37,15 @@ public class MenuListener implements Listener {
 		if(agent != null) {
 			CoreLog.debug("Closing Menu with title " + e.getInventory().getTitle() + " for player: " + e.getPlayer().getName());
 			agent.getMenu().clearViewer(agent);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void handle(InventoryOpenEvent e) {
+		var inv = e.getInventory();
+		if(inv.getHolder() instanceof Menu) {
+			Menu menu = (Menu) inv.getHolder();
+			menu.init();
 		}
 	}
 	
