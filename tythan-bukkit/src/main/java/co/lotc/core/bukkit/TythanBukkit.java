@@ -16,7 +16,7 @@ import lombok.Getter;
 
 public class TythanBukkit extends JavaPlugin implements Tythan {
 	private final TythanCommon common = new TythanCommon(this);
-	@Getter private boolean debugging;
+	@Getter private boolean debugging = true;
 	
 	@Override
 	public void onLoad() {
