@@ -5,6 +5,7 @@ import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -16,6 +17,14 @@ import lombok.RequiredArgsConstructor;
 public class Run {
 	private final Plugin plugin;
 
+	public static void ensureSync() {
+		Validate.isTrue(Bukkit.isPrimaryThread());
+	}
+	
+	public static void ensureAsync() {
+		Validate.isTrue(!Bukkit.isPrimaryThread());
+	}
+	
 	public static Run as(Plugin plugin) {
 		return new Run(plugin);
 	}
