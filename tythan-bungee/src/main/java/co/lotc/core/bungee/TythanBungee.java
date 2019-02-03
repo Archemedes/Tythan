@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
+import co.lotc.core.DependencyLoader;
 import co.lotc.core.Tythan;
 import co.lotc.core.TythanCommon;
 import co.lotc.core.bungee.util.ChatBuilder;
@@ -66,6 +67,8 @@ public class TythanBungee extends Plugin implements Tythan {
 		return new ChatBuilder();
 	}
 	
-	
+	static { //Thanks Tofuus for the gross hacks <3
+		DependencyLoader.loadJars(new File("plugins/Tythan/jars"));
+	}
 }
 
