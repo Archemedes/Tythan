@@ -35,6 +35,10 @@ public class MenuAgent {
 		});
 	}
 	
+	public void close() {
+		Run.as(TythanBukkit.get()).sync(()->player.closeInventory());
+	}
+	
 	public boolean hasContext(String tag) {
 		return context.has(tag);
 	}
