@@ -18,7 +18,7 @@ public class DependencyLoader {
                 method.setAccessible(true);
                 method.invoke(classLoader, url);
 
-                CoreLog.info("[DependencyLoader] Loaded " + jar.getName());
+                System.out.println("[Tythan-DependencyLoader] Loaded " + jar.getName());
             } catch (Exception e) {
                 e.printStackTrace();
             }
