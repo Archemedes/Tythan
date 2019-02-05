@@ -79,6 +79,9 @@ public class ItemUtil {
 	
 	private static Method getRaw = null;
 	public static Set<String> getCustomKeys(ItemStack item){
+		CoreLog.debug("Getting the custom tag keys for an item: " + item);
+		if(!exists(item)) return Collections.emptySet();
+		
 		var meta = item.getItemMeta();
 		var container = meta.getCustomTagContainer();
 		
@@ -197,8 +200,13 @@ public class ItemUtil {
 	 * @param is ItemStack to check
 	 * @return is != null && is.getType() != Material.AIR;
 	 */
+	@SuppressWarnings("deprecation")
 	public static boolean exists(ItemStack is) {
-		return is != null && is.getType() != Material.AIR;
+		return is != null
+				&& is.getType() != Material.AIR
+				&& is.getType() != Material.CAVE_AIR
+				&& is.getType() != Material.VOID_AIR
+				&& is.getType() != Material.LEGACY_AIR;
 	}
 
 	public static ItemStack make(Material mat, short durability, String displayName, String... lore) {
