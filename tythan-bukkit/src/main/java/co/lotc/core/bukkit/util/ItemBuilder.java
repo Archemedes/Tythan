@@ -54,6 +54,10 @@ public class ItemBuilder {
 		return unbreakable(true);
 	}
 	
+	public ItemBuilder nameColor(org.bukkit.ChatColor color) {
+		return nameColor(color.asBungee());
+	}
+	
 	public ItemBuilder nameColor(ChatColor color) {
 		name = color.name();
 		return this;
@@ -62,6 +66,10 @@ public class ItemBuilder {
 	public ItemBuilder lore(String... lore) {
 		for(var l : lore) this.lore.add(l);
 		return this;
+	}
+	
+	public ItemBuilder loreColor(org.bukkit.ChatColor color) {
+		return loreColor(color.asBungee());
 	}
 	
 	public ItemBuilder loreColor(ChatColor color) {
