@@ -13,7 +13,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor(access=AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access=AccessLevel.PUBLIC)
 public class Run {
 	private final Plugin plugin;
 
