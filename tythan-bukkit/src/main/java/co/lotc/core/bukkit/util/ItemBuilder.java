@@ -26,6 +26,7 @@ import lombok.Value;
 import lombok.var;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
+import net.md_5.bungee.api.ChatColor;
 
 @Accessors(fluent=true)
 @FieldDefaults(level=AccessLevel.PRIVATE)
@@ -53,8 +54,18 @@ public class ItemBuilder {
 		return unbreakable(true);
 	}
 	
+	public ItemBuilder nameColor(ChatColor color) {
+		name = color.name();
+		return this;
+	}
+	
 	public ItemBuilder lore(String... lore) {
 		for(var l : lore) this.lore.add(l);
+		return this;
+	}
+	
+	public ItemBuilder loreColor(ChatColor color) {
+		lore.replaceAll(s->color.toString() + s);
 		return this;
 	}
 	
