@@ -19,7 +19,7 @@ import lombok.Getter;
 
 public class TythanBukkit extends JavaPlugin implements Tythan {
 	private final TythanCommon common = new TythanCommon(this);
-	@Getter private boolean debugging = true;
+	@Getter private boolean debugging;
 	
 	@Override
 	public void onLoad() {
@@ -30,7 +30,8 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 	@Override
 	public void onEnable(){
 		saveDefaultConfig();
-		
+
+		debugging = getConfig().getBoolean("debug");
 		listen(new ChatStreamListener(this));
 		listen(new MenuListener());
 	}
