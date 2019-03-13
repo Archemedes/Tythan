@@ -14,28 +14,32 @@ import lombok.experimental.Accessors;
 @Accessors(fluent=true)
 @Setter
 public abstract class TypeTemplate<T> {
-	@Getter protected final Class<T> targetType;
+	protected final Class<T> forClass;
 	private final TypeRegistry registry;
 	
 	@Getter private Function<String, T> mapper;
 	@Getter private Predicate<T> filter;
 	
 	public final void register() {
-		Validate.notNull(targetType, "There is no class specified for this argument type");
+		Validate.notNull(forClass, "There is no class specified for this argument type");
 		Validate.isTrue(isClassValid(), "The class to specify as an argument type was already handled");
 		registry.registerCustomType(this);
 	}
 	
 	private boolean isClassValid() {
-		if(targetType.isPrimitive()) return false;
-		if(targetType == Integer.class) return false;
-		if(targetType == Long.class) return false;
-		if(targetType == Float.class) return false;
-		if(targetType == Double.class) return false;
-		if(targetType == String.class) return false;
-		if(targetType == Boolean.class) return false;
-		if(registry.customTypeExists(targetType)) return false;
+		if(forClass.isPrimitive()) return false;
+		if(forClass == Integer.class) return false;
+		if(forClass == Long.class) return false;
+		if(forClass == Float.class) return false;
+		if(forClass == Double.class) return false;
+		if(forClass == String.class) return false;
+		if(forClass == Boolean.class) return false;
+		if(registry.customTypeExists(forClass)) return false;
 		
 		return true;
+	}
+	
+	public Class<?> getTargetType(){
+		return forClass;
 	}
 }

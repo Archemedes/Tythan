@@ -1,8 +1,6 @@
 package co.lotc.core.command;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
 import java.util.stream.Collectors;
@@ -236,7 +234,7 @@ public class ArgBuilder {
 			asDouble();
 		} else if(c==Boolean.class || c==boolean.class) {
 			asBoolean();
-		} else if(c.isEnum() && !customTypes.containsKey(c)) {
+		} else if(c.isEnum() && !TypeRegistry.forArguments().customTypeExists(c)) {
 			asEnum((Class<Enum>) c);
 		} else {
 			asCustomType(c);
@@ -251,8 +249,8 @@ public class ArgBuilder {
 		if(!registry.customTypeExists(clazz)) throw new IllegalArgumentException("This class was not registered as a CUSTOM argument type: " + clazz.getSimpleName());
 		@SuppressWarnings("unchecked")
 		ArgTypeTemplate<X> result = (ArgTypeTemplate<X>) registry.getCustomType(clazz);
-		String defaultName = result.defaultName == null? clazz.getSimpleName() : result.defaultName;
-		String defaultError = result.defaultError == null? "Please provide a valid " + clazz.getSimpleName() : result.defaultError;
+		String defaultName = result.getDefaultName() == null? clazz.getSimpleName() : result.getDefaultName();
+		String defaultError = result.getDefaultError() == null? "Please provide a valid " + clazz.getSimpleName() : result.getDefaultError();
 		defaults(defaultName, defaultError);
 		
 		CmdArg<X> arg = build(clazz);

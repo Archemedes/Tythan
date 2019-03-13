@@ -21,12 +21,16 @@ public class ArgTypeTemplate<T> extends TypeTemplate<T> {
 	private Function<String, T> mapper;
 	private Predicate<T> filter;
 	private Supplier<Collection<String>> completer;
-	String defaultName;
-	String defaultError;
+	private String defaultName;
+	private String defaultError;
 	
-	void settle(CmdArg<T> arg) {
+	public void settle(CmdArg<T> arg) {
 		if(completer != null) arg.setCompleter(completer);
 		if(filter != null) arg.setFilter(filter);
 		if(mapper != null) arg.setMapper(mapper);
-	}	
+	}
+	
+	public String getDefaultName() { return defaultName; }
+	
+	public String getDefaultError() { return defaultError; }
 }
