@@ -9,7 +9,9 @@ import org.apache.commons.lang.StringUtils;
 
 import com.google.common.collect.Lists;
 
+import co.lotc.core.CoreLog;
 import lombok.RequiredArgsConstructor;
+import net.md_5.bungee.api.ChatColor;
 
 @RequiredArgsConstructor
 public class ArcheCommandExecutor implements TabExecutor {
@@ -75,10 +77,6 @@ public class ArcheCommandExecutor implements TabExecutor {
 			HelpCommand help = command.getHelp();
 			if(help != null && c.hasFlag("h")) {
 				help.runHelp(c, c.getFlag("h"));
-			} else if(command.requiresPersona() && c.getPersona() == null){
-				//The case where a persona flag was offered, meaning the command is not YET in error.
-				OfflinePersona pers = c.getFlag("p");
-				getPersonaAndExecute(sender, command, c, args, pers);
 			} else {
 				executeCommand(command, c);
 			}
@@ -93,14 +91,6 @@ public class ArcheCommandExecutor implements TabExecutor {
 	
 	private void executeCommand(ArcheCommand command, RanCommand c) {
 		command.execute(c);
-	}
-	
-	private void getPersonaAndExecute( CommandSender sender, ArcheCommand ac, RanCommand c, List<String> args, OfflinePersona o) {
-		sender.sendMessage(ChatColor.LIGHT_PURPLE + "Persona not loaded. Will try to load it now. Please wait...");
-		o.load().then(persona->{
-      c.rectifySenders(persona);
-      executeCommand(ac, c);
-		});
 	}
 	
 	private List<String> subCompletions(CommandSender sender, ArcheCommand cmd, String argZero){
