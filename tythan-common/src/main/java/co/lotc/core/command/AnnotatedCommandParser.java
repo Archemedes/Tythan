@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 
 import co.lotc.core.CoreLog;
+import co.lotc.core.agnostic.Command;
 import co.lotc.core.command.RanCommand.CmdParserException;
 import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
@@ -21,14 +22,11 @@ import co.lotc.core.command.annotate.Range;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.var;
-import net.lordofthecraft.arche.command.ArcheCommandBuilder;
-import net.lordofthecraft.arche.command.ArgBuilder;
-import net.lordofthecraft.arche.command.CommandTemplate;
 
 @RequiredArgsConstructor
 public class AnnotatedCommandParser {
 	private final Supplier<CommandTemplate> template;
-	private final PluginCommand bukkitCommand;
+	private final Command bukkitCommand;
 	
 	public ArcheCommandBuilder invokeParse() {
 		ArcheCommandBuilder acb = CommandHandle.builder(bukkitCommand);

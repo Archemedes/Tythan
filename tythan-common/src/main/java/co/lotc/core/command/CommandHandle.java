@@ -2,11 +2,8 @@ package co.lotc.core.command;
 
 import java.util.function.Supplier;
 
+import co.lotc.core.agnostic.Command;
 import co.lotc.core.agnostic.Sender;
-import co.lotc.core.command.AnnotatedCommandParser;
-import co.lotc.core.command.ArcheCommandBuilder;
-import co.lotc.core.command.ArgTypeTemplate;
-import co.lotc.core.command.CommandTemplate;
 import net.md_5.bungee.api.chat.BaseComponent;
 
 public interface CommandHandle {
@@ -16,7 +13,7 @@ public interface CommandHandle {
 	 * @param command The PluginCommand to wrap, defined by your plugin through YML or annotation
 	 * @return a chainable builder that will construct a CommandExecutor
 	 */
-	static ArcheCommandBuilder builder(PluginCommand command) {
+	static ArcheCommandBuilder builder(Command command) {
 		return new ArcheCommandBuilder(command);
 	}
 
@@ -26,14 +23,14 @@ public interface CommandHandle {
 	 * @param template A supplier for the CommandTemplate subclass you wish to use. Should Supply unique instances if intending to use Runnables
 	 * @return
 	 */
-	static ArcheCommandBuilder builder(PluginCommand command, Supplier<CommandTemplate> template) {
+	static ArcheCommandBuilder builder(Command command, Supplier<CommandTemplate> template) {
 		return new AnnotatedCommandParser(template, command).invokeParse();
 	}
 	
 	/**
-	 * Calls {{@link #build(PluginCommand, Supplier)} .build(), finalizing the command build process
+	 * Calls {{@link #build(Command, Supplier)} .build(), finalizing the command build process
 	 */
-	static void build(PluginCommand command, Supplier<CommandTemplate> template) {
+	static void build(Command command, Supplier<CommandTemplate> template) {
 		builder(command, template).build();
 	}
 

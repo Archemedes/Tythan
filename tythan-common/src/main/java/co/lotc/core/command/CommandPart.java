@@ -7,25 +7,18 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
-import net.lordofthecraft.arche.command.ArcheCommandBuilder;
-import net.lordofthecraft.arche.command.CommandPart;
-import net.lordofthecraft.arche.command.RanCommand;
-import net.lordofthecraft.arche.save.rows.RunnerRow;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal=true)
 @RequiredArgsConstructor
 final class CommandPart {
 	public static final CommandPart NULL_COMMAND = run($->{}, Execution.SYNC);
-	static enum Execution{ SYNC, ASYNC, CONSUMER, ANY}
+	static enum Execution{ SYNC, ASYNC, ANY}
 	
 	BiConsumer<RanCommand, Connection> runner;
 	Execution strategy;
@@ -53,14 +46,9 @@ final class CommandPart {
 		else switch(next.strategy) {
 		case SYNC:
 		case ASYNC:
-			BukkitRunnable r = new BukkitRunnable() { @Override public void run() { next.execute(rc); }};
+			Runnable r = new Runnable() { @Override public void run() { next.execute(rc); }};
 			if(next.strategy == Execution.SYNC) r.runTask(plugin);
 			else r.runTaskAsynchronously(plugin);
-			break;
-		case CONSUMER:
-		//Note that 'conn' is not the method param, which would be null at this point in the code
-			RunnerRow wrapped = conn->next.execute(rc, conn);
-			wrapped.queueAndFlush();
 			break;
 		case ANY: throw new IllegalStateException();
 		}
@@ -85,10 +73,6 @@ final class CommandPart {
 			}
 		};
 		return run(c, Execution.SYNC);
-	}
-	
-	public static CommandPart consume(BiConsumer<RanCommand, Connection> bic) {
-		return new CommandPart(bic, Execution.CONSUMER);
 	}
 	
 	public static CommandPart run(Consumer<RanCommand> c, Execution strat) {
@@ -120,7 +104,7 @@ final class CommandPart {
 				consumer.accept(rc, result);
 			};
 			
-			builder.sequence(new CommandPart(wrappedFunction, forTheConsumer? Execution.CONSUMER : Execution.ASYNC));
+			builder.sequence(new CommandPart(wrappedFunction, Execution.ASYNC));
 			builder.sequence(new CommandPart(wrappedConsumer, Execution.SYNC));
 			
 			return builder;

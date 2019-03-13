@@ -1,9 +1,9 @@
 package co.lotc.core.command;
 
 
+import co.lotc.core.agnostic.Sender;
 import lombok.AccessLevel;
 import lombok.Setter;
-import net.lordofthecraft.arche.command.RanCommand;
 import net.md_5.bungee.api.chat.BaseComponent;
 
 //Decorator class around RanCommand for the purposes of annotated command handling
@@ -16,7 +16,7 @@ public abstract class CommandTemplate implements CommandHandle {
 	}
 	
 	@Override
-	public CommandSender getSender() {
+	public Sender getSender() {
 		return ranCommand.getSender();
 	}
 

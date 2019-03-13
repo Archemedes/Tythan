@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 
-import net.lordofthecraft.arche.command.CmdArg;
-
 public class JoinedArg extends CmdArg<String> {
 
 	public JoinedArg(String name, String errorMessage, String defaultInput, String description) {

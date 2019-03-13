@@ -14,10 +14,6 @@ import co.lotc.core.agnostic.AbstractChatBuilder;
 import co.lotc.core.agnostic.Sender;
 import lombok.val;
 import lombok.var;
-import net.lordofthecraft.arche.command.ArcheCommand;
-import net.lordofthecraft.arche.command.CmdArg;
-import net.lordofthecraft.arche.command.CmdFlag;
-import net.lordofthecraft.arche.command.RanCommand;
 import net.md_5.bungee.api.ChatColor;
 
 public class HelpCommand extends ArcheCommand {

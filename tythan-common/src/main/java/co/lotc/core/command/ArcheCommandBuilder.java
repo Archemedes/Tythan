@@ -12,30 +12,19 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.bukkit.command.PluginCommand;
-
+import co.lotc.core.CoreLog;
+import co.lotc.core.agnostic.Command;
 import co.lotc.core.command.CommandPart.Execution;
-import co.lotc.core.command.brigadier.Kommandant;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.lordofthecraft.arche.CoreLog;
-import net.lordofthecraft.arche.command.ArcheCommand;
-import net.lordofthecraft.arche.command.ArcheCommandBuilder;
-import net.lordofthecraft.arche.command.ArcheCommandExecutor;
-import net.lordofthecraft.arche.command.ArgBuilder;
-import net.lordofthecraft.arche.command.CmdArg;
-import net.lordofthecraft.arche.command.CmdFlag;
-import net.lordofthecraft.arche.command.CommandPart;
-import net.lordofthecraft.arche.command.HelpCommand;
-import net.lordofthecraft.arche.command.RanCommand;
 
 //We're reaching levels of Telanir that shouldn't be even possible
 @Accessors(fluent=true)
 public class ArcheCommandBuilder {
 	private final ArcheCommandBuilder parentBuilder;
-	private final PluginCommand command;
+	private final Command command;
 	
 	@Getter private final String mainCommand;
 	@Setter private String description;
@@ -59,7 +48,7 @@ public class ArcheCommandBuilder {
 	boolean buildHelpFile = true;
 	
 	
-	public ArcheCommandBuilder(PluginCommand command) {
+	public ArcheCommandBuilder(Command command) {
 		parentBuilder = null;
 		this.command = command;
 		
@@ -178,11 +167,6 @@ public class ArcheCommandBuilder {
 	
 	public ArcheCommandBuilder runAsync(Consumer<RanCommand> c) {
 		sequence(CommandPart.run(c, Execution.ASYNC));
-		return this;
-	}
-	
-	public ArcheCommandBuilder runConsumer(BiConsumer<RanCommand, Connection> bic) {
-		sequence(CommandPart.consume(bic));
 		return this;
 	}
 	

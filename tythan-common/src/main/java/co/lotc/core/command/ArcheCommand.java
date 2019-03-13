@@ -11,13 +11,6 @@ import lombok.Getter;
 import lombok.Value;
 import lombok.val;
 import lombok.experimental.NonFinal;
-import net.lordofthecraft.arche.command.ArcheCommand;
-import net.lordofthecraft.arche.command.CmdArg;
-import net.lordofthecraft.arche.command.CmdFlag;
-import net.lordofthecraft.arche.command.CommandPart;
-import net.lordofthecraft.arche.command.HelpCommand;
-import net.lordofthecraft.arche.command.JoinedArg;
-import net.lordofthecraft.arche.command.RanCommand;
 
 @Value
 @NonFinal
