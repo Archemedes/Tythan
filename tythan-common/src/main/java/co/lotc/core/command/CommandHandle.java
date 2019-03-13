@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import co.lotc.core.agnostic.Command;
 import co.lotc.core.agnostic.Sender;
+import co.lotc.core.command.types.ArgTypeTemplate;
 import net.md_5.bungee.api.chat.BaseComponent;
 
 public interface CommandHandle {

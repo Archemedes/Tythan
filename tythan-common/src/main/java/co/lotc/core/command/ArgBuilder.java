@@ -19,19 +19,18 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 
 import co.lotc.core.CoreLog;
+import co.lotc.core.command.types.ArgTypeTemplate;
+import co.lotc.core.command.types.TypeRegistry;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import lombok.var;
 import lombok.experimental.Accessors;
 import net.md_5.bungee.api.ChatColor;
 
 @Accessors(fluent= true)
 public class ArgBuilder {
-	private final static Map<Class<?>, ArgTypeTemplate<?>> customTypes = new HashMap<>();
-	static void registerCustomType(ArgTypeTemplate<?> template) { customTypes.put(template.getTargetType(), template);}
-	static boolean customTypeExists(Class<?> clazz) { return customTypes.containsKey(clazz);}
-	
 	//Either one of these is set, depending on what kind of arg
 	private final ArcheCommandBuilder command;
 	@Getter(AccessLevel.PACKAGE) private final CmdFlag flag;
@@ -247,9 +246,11 @@ public class ArgBuilder {
 	}
 	
 	private <X> ArcheCommandBuilder asCustomType(Class<X> clazz) {
-		if(!customTypes.containsKey(clazz)) throw new IllegalArgumentException("This class was not registered as a CUSTOM argument type: " + clazz.getSimpleName());
+		var registry = TypeRegistry.forArguments();
+		
+		if(!registry.customTypeExists(clazz)) throw new IllegalArgumentException("This class was not registered as a CUSTOM argument type: " + clazz.getSimpleName());
 		@SuppressWarnings("unchecked")
-		ArgTypeTemplate<X> result = (ArgTypeTemplate<X>) customTypes.get(clazz);
+		ArgTypeTemplate<X> result = (ArgTypeTemplate<X>) registry.getCustomType(clazz);
 		String defaultName = result.defaultName == null? clazz.getSimpleName() : result.defaultName;
 		String defaultError = result.defaultError == null? "Please provide a valid " + clazz.getSimpleName() : result.defaultError;
 		defaults(defaultName, defaultError);
