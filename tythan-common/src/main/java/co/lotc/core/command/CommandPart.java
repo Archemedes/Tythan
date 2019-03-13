@@ -23,7 +23,6 @@ final class CommandPart {
 	BiConsumer<RanCommand, Connection> runner;
 	Execution strategy;
 
-	@NonFinal @Setter Plugin plugin;
 	@NonFinal @Setter CommandPart next;
 	
 	void execute(RanCommand rc) {
@@ -47,8 +46,8 @@ final class CommandPart {
 		case SYNC:
 		case ASYNC:
 			Runnable r = new Runnable() { @Override public void run() { next.execute(rc); }};
-			if(next.strategy == Execution.SYNC) r.runTask(plugin);
-			else r.runTaskAsynchronously(plugin);
+			if(next.strategy == Execution.SYNC) r.run();
+			else r.run(); //TODO this needs to be async
 			break;
 		case ANY: throw new IllegalStateException();
 		}
@@ -85,11 +84,9 @@ final class CommandPart {
 		private static final String TEMP_HOLDER = "tmp_result_holder";
 		private final ArcheCommandBuilder builder;
 		private final BiFunction<RanCommand, Connection, T> function;
-		private boolean forTheConsumer = true;
 		static <T> JoinedPart<T> forAsync(ArcheCommandBuilder b, Function<RanCommand, T> function){
 			BiFunction<RanCommand, Connection, T> wrapped = (rc,$)->function.apply(rc);
 			val result = new JoinedPart<>(b, wrapped);
-			result.forTheConsumer = false;
 			return result;
 		}
 		

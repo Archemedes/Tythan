@@ -183,7 +183,7 @@ public class ArcheCommandBuilder {
 		else tailPart.setNext(newPart);
 		
 		tailPart = newPart;
-		tailPart.setPlugin(command.getPlugin());
+		//tailPart.setPlugin(command.getPlugin());
 	}
 	
 	public ArcheCommandBuilder build() {
