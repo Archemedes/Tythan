@@ -40,6 +40,12 @@
 			<version>3.9.1</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.mojang</groupId>
+			<artifactId>brigadier</artifactId>
+			<version>1.0.17</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
   <build>

@@ -30,6 +30,11 @@
   </distributionManagement>
 
   <repositories>
+	<repository>
+		<id>minecraft-libraries</id>
+		<name>Minecraft Libraries</name>
+		<url>https://libraries.minecraft.net</url>
+	</repository>
     <repository>
 	    <id>bungeecord-repo</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
