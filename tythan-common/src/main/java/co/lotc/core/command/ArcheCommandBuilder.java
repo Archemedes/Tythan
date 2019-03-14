@@ -230,10 +230,6 @@ public class ArcheCommandBuilder {
 			//TODO let tythan derivatis bukkit and bungee handle this part, give them the executor as a start
 			AgnosticExecutor executor = new AgnosticExecutor(built);
 			command.setExecutor(executor);
-		}
-		
-		//TODO same here
-		if(parentBuilder == null) {
 			new Kommandant(built).addBrigadier();
 		}
 		
