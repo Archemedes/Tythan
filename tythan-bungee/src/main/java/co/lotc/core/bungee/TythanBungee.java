@@ -10,7 +10,10 @@ import co.lotc.core.Tythan;
 import co.lotc.core.TythanCommon;
 import co.lotc.core.bungee.util.ChatBuilder;
 import co.lotc.core.bungee.wrapper.BungeeConfig;
+import co.lotc.core.bungee.wrapper.BungeeSender;
+import co.lotc.core.command.types.ArgTypeTemplate;
 import lombok.Getter;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -28,11 +31,16 @@ public class TythanBungee extends Plugin implements Tythan {
 	@Override
 	public void onEnable(){
 		saveDefaultConfig();
+		registerCommandParameterTypes();
 	}
 
 	@Override
 	public void onDisable(){
 
+	}
+	
+	private void registerCommandParameterTypes() {
+		new ArgTypeTemplate<>(CommandSender.class).senderMapper(s->((BungeeSender) s).getHandle()).register();
 	}
 	
 	@Override
