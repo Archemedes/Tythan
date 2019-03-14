@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 import co.lotc.core.CoreLog;
 import co.lotc.core.agnostic.Command;
 import co.lotc.core.command.CommandPart.Execution;
-import co.lotc.core.command.types.TypeRegistry;
+import co.lotc.core.command.types.ArgTypeTemplate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -115,7 +115,7 @@ public class ArcheCommandBuilder {
 	}
 	
 	public ArcheCommandBuilder requiresSender(Class<?> senderClass) {
-		var reg = TypeRegistry.forSenders().getCustomType(senderClass);
+		var reg = ArgTypeTemplate.getCustomType(senderClass);
 		if(reg != null) {
 			if(reg.mapper() != null) {
 				CoreLog.debug("cmd " + mainCommand() + " requires as its sender: " + senderClass.getSimpleName());

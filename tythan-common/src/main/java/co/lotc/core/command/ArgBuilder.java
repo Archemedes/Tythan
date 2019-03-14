@@ -18,12 +18,10 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 
 import co.lotc.core.CoreLog;
 import co.lotc.core.command.types.ArgTypeTemplate;
-import co.lotc.core.command.types.TypeRegistry;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import lombok.var;
 import lombok.experimental.Accessors;
 import net.md_5.bungee.api.ChatColor;
 
@@ -234,7 +232,7 @@ public class ArgBuilder {
 			asDouble();
 		} else if(c==Boolean.class || c==boolean.class) {
 			asBoolean();
-		} else if(c.isEnum() && !TypeRegistry.forArguments().customTypeExists(c)) {
+		} else if(c.isEnum() && !ArgTypeTemplate.customTypeExists(c)) {
 			asEnum((Class<Enum>) c);
 		} else {
 			asCustomType(c);
@@ -244,11 +242,12 @@ public class ArgBuilder {
 	}
 	
 	private <X> ArcheCommandBuilder asCustomType(Class<X> clazz) {
-		var registry = TypeRegistry.forArguments();
 		
-		if(!registry.customTypeExists(clazz)) throw new IllegalArgumentException("This class was not registered as a CUSTOM argument type: " + clazz.getSimpleName());
+		if(!ArgTypeTemplate.customTypeExists(clazz))
+			throw new IllegalArgumentException("This class was not registered as a CUSTOM argument type: " + clazz.getSimpleName());
+		
 		@SuppressWarnings("unchecked")
-		ArgTypeTemplate<X> result = (ArgTypeTemplate<X>) registry.getCustomType(clazz);
+		ArgTypeTemplate<X> result = (ArgTypeTemplate<X>) ArgTypeTemplate.getCustomType(clazz);
 		String defaultName = result.getDefaultName() == null? clazz.getSimpleName() : result.getDefaultName();
 		String defaultError = result.getDefaultError() == null? "Please provide a valid " + clazz.getSimpleName() : result.getDefaultError();
 		defaults(defaultName, defaultError);

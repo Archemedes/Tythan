@@ -20,7 +20,6 @@ import co.lotc.core.command.annotate.Default;
 import co.lotc.core.command.annotate.Flag;
 import co.lotc.core.command.annotate.Joined;
 import co.lotc.core.command.annotate.Range;
-import co.lotc.core.command.types.TypeRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.var;
