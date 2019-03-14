@@ -10,24 +10,21 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.collect.Lists;
 
 import co.lotc.core.CoreLog;
+import co.lotc.core.agnostic.Sender;
 import lombok.RequiredArgsConstructor;
-import net.md_5.bungee.api.ChatColor;
 
 @RequiredArgsConstructor
-public class ArcheCommandExecutor implements TabExecutor {
+public class AgnosticExecutor{
 	private final ArcheCommand rootCommand;
 	
-	
-	@Override
-	public boolean onCommand(CommandSender sender, Command $, String label, String[] args) {
+	public boolean onCommand(Sender sender, String label, String[] args) {
 		List<String> listArgs = new ArrayList<>();
 		for (String arg : args) listArgs.add(arg);
 		runCommand(sender, rootCommand, label, listArgs);
 		return true;
 	}
 	
-	@Override
-	public List<String> onTabComplete(CommandSender sender, Command $, String alias, String[] args) {
+	public List<String> onTabComplete(Sender sender, String alias, String[] args) {
 		try{List<String> listArgs = new ArrayList<>();
 			for (String arg : args) listArgs.add(arg);
 			return getCompletions(sender, rootCommand, listArgs);
@@ -37,7 +34,7 @@ public class ArcheCommandExecutor implements TabExecutor {
 		}
 	}
 	
-	private List<String> getCompletions(CommandSender sender, ArcheCommand command, List<String> args) {
+	private List<String> getCompletions(Sender sender, ArcheCommand command, List<String> args) {
 		ArcheCommand subCommand = wantsSubCommand(command, args);
 		if(subCommand != null && subCommand.hasPermission(sender)) {
 			args.remove(0);
@@ -56,7 +53,7 @@ public class ArcheCommandExecutor implements TabExecutor {
 		}
 	}
 
-	private void runCommand(CommandSender sender, ArcheCommand command, String usedAlias, List<String> args) {
+	private void runCommand(Sender sender, ArcheCommand command, String usedAlias, List<String> args) {
 		ArcheCommand subCommand = wantsSubCommand(command, args);
 		CoreLog.debug("catching alias " + usedAlias + ". SubCommand found: " + subCommand);
 		if(!args.isEmpty()) CoreLog.debug("These are its arguments: " + StringUtils.join(args, ", "));
@@ -83,17 +80,17 @@ public class ArcheCommandExecutor implements TabExecutor {
 		}
 	}
 	
-	private void runSubCommand(CommandSender sender, ArcheCommand subCommand, String usedAlias, List<String> args) {
+	private void runSubCommand(Sender sender, ArcheCommand subCommand, String usedAlias, List<String> args) {
 		String usedSubcommandAlias = args.remove(0).toLowerCase();
 		String newAlias = usedAlias + ' ' + usedSubcommandAlias;
 		runCommand(sender, subCommand, newAlias, args);
 	}
 	
 	private void executeCommand(ArcheCommand command, RanCommand c) {
-		command.execute(c);
+		command.execute(c); //TODO will this respect permissions even with invoke()??
 	}
 	
-	private List<String> subCompletions(CommandSender sender, ArcheCommand cmd, String argZero){
+	private List<String> subCompletions(Sender sender, ArcheCommand cmd, String argZero){
 		List<String> result = new ArrayList<>();
 		String lower = argZero.toLowerCase();
 		cmd.getSubCommands().stream()

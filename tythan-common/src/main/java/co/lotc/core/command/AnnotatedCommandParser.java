@@ -12,6 +12,7 @@ import org.apache.commons.lang.Validate;
 
 import co.lotc.core.CoreLog;
 import co.lotc.core.agnostic.Command;
+import co.lotc.core.agnostic.Sender;
 import co.lotc.core.command.RanCommand.CmdParserException;
 import co.lotc.core.command.annotate.Arg;
 import co.lotc.core.command.annotate.Cmd;
@@ -19,6 +20,7 @@ import co.lotc.core.command.annotate.Default;
 import co.lotc.core.command.annotate.Flag;
 import co.lotc.core.command.annotate.Joined;
 import co.lotc.core.command.annotate.Range;
+import co.lotc.core.command.types.TypeRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.var;
@@ -115,25 +117,23 @@ public class AnnotatedCommandParser {
 		else if(method.isAnnotationPresent(Flag.class)) addFlag(acb, method.getAnnotation(Flag.class));
 		
 		var params = method.getParameters();
-		boolean wantsCommandSenderAsFirstArg = false;
+		boolean wantsSenderAsFirstArg = false;
 		for (int i = 0; i < params.length; i++) {
 			var param = params[i];
 			var c = param.getType();
 			CoreLog.debug("Param " + i + " in method " + method.getName() + " has type " + c);
 			
 			if(i == 0) {
-				//If first param is player/persona, it is taken as
-				//the sender (or flagged player) rather than argument
-				//The continue statements prevent the parameter to being resolved as an argument
-				if(Persona.class.isAssignableFrom(c)){
-					acb.requiresPersona().requiresPlayer();
+				//The first argument MIGHT be a sender argument, and often is
+				//but it does not necessarily NEED to be... thus we check
+				//If a SenderTemplate is registered, we go forward
+				
+				if(TypeRegistry.forSenders().customTypeExists(c)) {
+					//TODO: Cast Sender as this?
 					continue;
-				} else if(Player.class.isAssignableFrom(c)) {
-					acb.requiresPlayer();
-					continue;
-				} else if(CommandSender.class.isAssignableFrom(c)) {
+				} else if( Sender.class.isAssignableFrom(c)) {
 					CoreLog.debug("Method " + method.getName() + " for cmd " + acb.mainCommand() + " has explicit sender arg");
-					wantsCommandSenderAsFirstArg = true;
+					wantsSenderAsFirstArg = true;
 					continue;
 				}
 			}
@@ -177,7 +177,7 @@ public class AnnotatedCommandParser {
 			}
 		}
 		
-		makeCommandDoStuff(template, acb, method, wantsCommandSenderAsFirstArg);
+		makeCommandDoStuff(template, acb, method, wantsSenderAsFirstArg);
 	}
 
 	private void makeCommandDoStuff(Supplier<CommandTemplate> template, ArcheCommandBuilder acb, Method method, boolean wantsCommandSenderAsFirstArg) {
@@ -188,7 +188,7 @@ public class AnnotatedCommandParser {
 				t.setRanCommand(rc);
 				Object[] args = rc.getArgResults().toArray();
 				
-				if(rc.getCommand().requiresPersona() || rc.getCommand().requiresPlayer()) {
+				if(false /* TODO check if custom sender is required*/) {
 					Object[] newArgs = insertFirst(args, rc.getCommand().requiresPersona()? rc.getPersona() : rc.getPlayer());
 					method.invoke(t, newArgs);
 				} else if (wantsCommandSenderAsFirstArg) {

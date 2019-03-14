@@ -19,10 +19,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import net.lordofthecraft.arche.command.ArcheCommand;
-import net.lordofthecraft.arche.command.CmdArg;
-import net.lordofthecraft.arche.command.CmdFlag;
-import net.lordofthecraft.arche.command.HelpCommand;
 import net.md_5.bungee.api.chat.BaseComponent;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -39,9 +35,8 @@ public class RanCommand implements CommandHandle {
 	final ArcheCommand command;
 	final String usedAlias;
 	final Sender sender;
-	Player player;
-	Persona persona;
 	
+	//TODO: put a SenderTemplate here?
 	
 	List<Object> argResults = Lists.newArrayList();
 	Map<String, Object> context = Maps.newHashMap();

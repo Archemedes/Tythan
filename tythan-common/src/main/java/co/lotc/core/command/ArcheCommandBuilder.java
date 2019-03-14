@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -15,9 +14,11 @@ import java.util.function.Predicate;
 import co.lotc.core.CoreLog;
 import co.lotc.core.agnostic.Command;
 import co.lotc.core.command.CommandPart.Execution;
+import co.lotc.core.command.types.TypeRegistry;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.var;
 import lombok.experimental.Accessors;
 
 //We're reaching levels of Telanir that shouldn't be even possible
@@ -113,8 +114,25 @@ public class ArcheCommandBuilder {
 		return this;
 	}
 	
+	public ArcheCommandBuilder requiresSender(Class<?> senderClass) {
+		var reg = TypeRegistry.forSenders().getCustomType(senderClass);
+		if(reg != null) {
+			if(reg.mapper() != null) {
+				CoreLog.debug("cmd " + mainCommand() + " requires as its sender: " + senderClass.getSimpleName());
+				ArgBuilder b = CmdFlag.make(this, "p", "archecore.mod", new String[0]);
+				b.asType(reg.getTargetType()); //TODO: means it also has to be in the other registry
+			}
+			//TODO commit the TypeArgument to state so the ArcheCommand can get it and use it
+		} else {
+			throw new IllegalStateException("This class cannot be used as a command sender: " + senderClass.getSimpleName());
+		}
+		
+		
+		return this;
+	}
+	
 	public ArcheCommandBuilder requiresPlayer() {
-		CoreLog.debug("cmd " + mainCommand() + " requires Player");
+		
 		if(senderParam == null) {
 			ArgBuilder b = CmdFlag.make(this, "p", "archecore.mod", new String[0]);
 			senderParam = b.flag();
@@ -226,10 +244,12 @@ public class ArcheCommandBuilder {
 		
 		//If there's no more builders up the chain we've reached the top. Means we're done and we can make an executor
 		if(parentBuilder == null) {
-			ArcheCommandExecutor executor = new ArcheCommandExecutor(built);
+			//TODO let tythan derivatis bukkit and bungee handle this part, give them the executor as a start
+			AgnosticExecutor executor = new AgnosticExecutor(built);
 			command.setExecutor(executor);
 		}
 		
+		//TODO same here
 		if(parentBuilder == null) {
 			new Kommandant(built).addBrigadier();
 		}

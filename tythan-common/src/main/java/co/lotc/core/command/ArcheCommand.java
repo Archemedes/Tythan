@@ -20,9 +20,10 @@ public class ArcheCommand {
 	String description;
 	String permission;
 
+	//TODO needs to be replaced by an OPTIONAL custom sender type class
 	@Getter(AccessLevel.NONE) boolean requirePlayer;
 	@Getter(AccessLevel.NONE) boolean requirePersona;
-
+	
 	List<CmdArg<?>> args;
 	List<CmdFlag> flags;
 	List<ArcheCommand> subCommands;

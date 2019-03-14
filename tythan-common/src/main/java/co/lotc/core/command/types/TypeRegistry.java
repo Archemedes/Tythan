@@ -2,7 +2,7 @@ package co.lotc.core.command.types;
 
 import java.util.HashMap;
 import java.util.Map;
-
+//TODO rewrite entire package
 public class TypeRegistry {
 	private static final TypeRegistry arguments = new TypeRegistry();
 	private static final TypeRegistry senders = new TypeRegistry();
