@@ -12,6 +12,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.apache.commons.lang.Validate;
+
 import co.lotc.core.CoreLog;
 import co.lotc.core.agnostic.Command;
 import co.lotc.core.command.CommandPart.Execution;
@@ -95,10 +97,12 @@ public class ArcheCommandBuilder {
 	}
 	
 	public ArgBuilder flag(String name, String... aliases) {
+		Validate.isTrue(!"p".equals(name), "The flag name 'p' is reserved for custom sender args");
 		return CmdFlag.make(this, name, aliases);
 	}
 	
 	public ArgBuilder restrictedFlag(String name, String pex, String... aliases) {
+		Validate.isTrue(!"p".equals(name), "The flag name 'p' is reserved for custom sender args");
 		return CmdFlag.make(this, name, pex, aliases);
 	}
 	
