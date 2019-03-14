@@ -20,6 +20,7 @@ import co.lotc.core.command.annotate.Default;
 import co.lotc.core.command.annotate.Flag;
 import co.lotc.core.command.annotate.Joined;
 import co.lotc.core.command.annotate.Range;
+import co.lotc.core.command.types.ArgTypeTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.var;
@@ -116,6 +117,7 @@ public class AnnotatedCommandParser {
 		else if(method.isAnnotationPresent(Flag.class)) addFlag(acb, method.getAnnotation(Flag.class));
 		
 		var params = method.getParameters();
+		
 		boolean wantsSenderAsFirstArg = false;
 		for (int i = 0; i < params.length; i++) {
 			var param = params[i];
@@ -126,12 +128,12 @@ public class AnnotatedCommandParser {
 				//The first argument MIGHT be a sender argument, and often is
 				//but it does not necessarily NEED to be... thus we check
 				//If a SenderTemplate is registered, we go forward
-				
-				if(TypeRegistry.forSenders().customTypeExists(c)) {
-					//TODO: Cast Sender as this?
+				if(ArgTypeTemplate.senderTypeExists(c)) {
+					CoreLog.debug("Method " + method.getName() + " for cmd " + acb.mainCommand() +
+							" wants sender type: " + ArgTypeTemplate.getCustomType(c).getTargetType());
+					acb.requiresSender(c);
 					continue;
 				} else if( Sender.class.isAssignableFrom(c)) {
-					CoreLog.debug("Method " + method.getName() + " for cmd " + acb.mainCommand() + " has explicit sender arg");
 					wantsSenderAsFirstArg = true;
 					continue;
 				}
@@ -187,8 +189,8 @@ public class AnnotatedCommandParser {
 				t.setRanCommand(rc);
 				Object[] args = rc.getArgResults().toArray();
 				
-				if(false /* TODO check if custom sender is required*/) {
-					Object[] newArgs = insertFirst(args, rc.getCommand().requiresPersona()? rc.getPersona() : rc.getPlayer());
+				if(acb.requiresSender()) {
+					Object[] newArgs = insertFirst(args, /*TODO*/null);
 					method.invoke(t, newArgs);
 				} else if (wantsCommandSenderAsFirstArg) {
 					Object[] newArgs = insertFirst(args, rc.getSender());

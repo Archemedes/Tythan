@@ -6,6 +6,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 
 import co.lotc.core.agnostic.Sender;
+import co.lotc.core.command.types.ArgTypeTemplate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Value;
@@ -21,8 +22,7 @@ public class ArcheCommand {
 	String permission;
 
 	//TODO needs to be replaced by an OPTIONAL custom sender type class
-	@Getter(AccessLevel.NONE) boolean requirePlayer;
-	@Getter(AccessLevel.NONE) boolean requirePersona;
+	ArgTypeTemplate<?> senderType;
 	
 	List<CmdArg<?>> args;
 	List<CmdFlag> flags;
@@ -40,14 +40,6 @@ public class ArcheCommand {
 	
 	public boolean hasArgs() {
 		return !args.isEmpty();
-	}
-
-	public boolean requiresPlayer() {
-		return requirePlayer;
-	}
-	
-	public boolean requiresPersona() {
-		return requirePersona;
 	}
 	
 	public boolean hasPermission(Sender s) {

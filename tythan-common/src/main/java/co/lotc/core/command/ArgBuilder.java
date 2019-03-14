@@ -232,7 +232,7 @@ public class ArgBuilder {
 			asDouble();
 		} else if(c==Boolean.class || c==boolean.class) {
 			asBoolean();
-		} else if(c.isEnum() && !ArgTypeTemplate.customTypeExists(c)) {
+		} else if(c.isEnum() && !ArgTypeTemplate.argumentTypeExists(c)) {
 			asEnum((Class<Enum>) c);
 		} else {
 			asCustomType(c);
@@ -243,7 +243,7 @@ public class ArgBuilder {
 	
 	private <X> ArcheCommandBuilder asCustomType(Class<X> clazz) {
 		
-		if(!ArgTypeTemplate.customTypeExists(clazz))
+		if(!ArgTypeTemplate.argumentTypeExists(clazz))
 			throw new IllegalArgumentException("This class was not registered as a CUSTOM argument type: " + clazz.getSimpleName());
 		
 		@SuppressWarnings("unchecked")

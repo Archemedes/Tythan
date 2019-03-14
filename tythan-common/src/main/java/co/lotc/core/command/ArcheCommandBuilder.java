@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -30,10 +31,8 @@ public class ArcheCommandBuilder {
 	@Getter private final String mainCommand;
 	@Setter private String description;
 	@Setter private String permission;
-	
-	private boolean requirePlayer = false;
-	private boolean requirePersona = false;
-	private CmdFlag senderParam = null;
+
+	@Getter private ArgTypeTemplate<?> senderType = null;
 	
 	@Getter(AccessLevel.PACKAGE) private final Set<String> aliases = new HashSet<>();
 	@Getter(AccessLevel.PACKAGE) private final List<CmdArg<?>> args = new ArrayList<>();
@@ -69,8 +68,6 @@ public class ArcheCommandBuilder {
 		aliases.add(name.toLowerCase());
 		if(inheritOptions) {
 			this.buildHelpFile = dad.buildHelpFile;
-			if(dad.requirePersona) requiresPersona();
-			if(dad.requirePlayer) requiresPlayer();
 		}
 	}
 	
@@ -114,42 +111,25 @@ public class ArcheCommandBuilder {
 		return this;
 	}
 	
+	public boolean requiresSender() {
+		return senderType != null;
+	}
+	
 	public ArcheCommandBuilder requiresSender(Class<?> senderClass) {
-		var reg = ArgTypeTemplate.getCustomType(senderClass);
-		if(reg != null) {
-			if(reg.mapper() != null) {
-				CoreLog.debug("cmd " + mainCommand() + " requires as its sender: " + senderClass.getSimpleName());
+		if(requiresSender()) throw new IllegalStateException("Specified sender argument twice for command " + this.mainCommand());
+		
+		if(ArgTypeTemplate.senderTypeExists(senderClass)) {
+			senderType = ArgTypeTemplate.getCustomType(senderClass);
+			
+			CoreLog.debug("cmd " + mainCommand() + " requires as its sender: " + senderClass.getSimpleName());
+			if(senderType.mapper() != null) { //Can also replace the sender as Console with -p flag
 				ArgBuilder b = CmdFlag.make(this, "p", "archecore.mod", new String[0]);
-				b.asType(reg.getTargetType()); //TODO: means it also has to be in the other registry
+				b.asType(senderType.getTargetType());
 			}
-			//TODO commit the TypeArgument to state so the ArcheCommand can get it and use it
 		} else {
 			throw new IllegalStateException("This class cannot be used as a command sender: " + senderClass.getSimpleName());
 		}
 		
-		
-		return this;
-	}
-	
-	public ArcheCommandBuilder requiresPlayer() {
-		
-		if(senderParam == null) {
-			ArgBuilder b = CmdFlag.make(this, "p", "archecore.mod", new String[0]);
-			senderParam = b.flag();
-			b.asPlayer();
-		}
-		requirePlayer = true;
-		return this;
-	}
-	
-	public ArcheCommandBuilder requiresPersona() {
-		CoreLog.debug("cmd " + mainCommand() + " requires Persona");
-		if(senderParam == null || (requirePlayer && !requirePersona)) {
-			ArgBuilder b = CmdFlag.make(this, "p", "archecore.mod.persona", new String[0]);
-			senderParam = b.flag();
-			b.asOfflinePersona();
-		}
-		requirePersona = true;
 		return this;
 	}
 	
@@ -221,8 +201,7 @@ public class ArcheCommandBuilder {
 				Collections.unmodifiableSet(aliases),
 				description,
 				permission,
-				requirePlayer,
-				requirePersona,
+				senderType,
 				Collections.unmodifiableList(args),
 				Collections.unmodifiableList(flags),
 				Collections.unmodifiableList(subCommands),

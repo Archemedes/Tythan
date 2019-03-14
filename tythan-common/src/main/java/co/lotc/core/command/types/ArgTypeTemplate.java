@@ -10,6 +10,7 @@ import org.apache.commons.lang.Validate;
 
 import com.google.common.base.Supplier;
 
+import co.lotc.core.CoreLog;
 import co.lotc.core.agnostic.Sender;
 import co.lotc.core.command.CmdArg;
 import lombok.Getter;
@@ -59,7 +60,8 @@ public class ArgTypeTemplate<T> {
 		if(forClass == Double.class) return false;
 		if(forClass == String.class) return false;
 		if(forClass == Boolean.class) return false;
-		
+		if(forClass == String.class) return false;
+		if(forClass == Sender.class) return false;
 		return true;
 	}
 	
@@ -70,8 +72,18 @@ public class ArgTypeTemplate<T> {
 	public final void register() {
 		Validate.notNull(forClass, "There is no class specified for this argument type");
 		Validate.isTrue(isClassValid(), "The class to specify as an argument type was already handled");
-		//TODO check if have to merge with pre-existing type
-		customTypes.put(forClass, this);
+
+		@SuppressWarnings("unchecked") //This is safe because only type T can be linked to Class<T> which is what the key was
+		var existing = (ArgTypeTemplate<T>) customTypes.get(forClass);
+		if(existing != null) {
+			CoreLog.warning("Attempted a merge on a custom command argument type for the class: " + forClass.getSimpleName());
+			CoreLog.warning("This might be fine but more likely this was unintended and might lead to unexpected behavior");
+			if(existing.mapper == null) existing.mapper = this.mapper;
+			if(existing.senderMapper == null) existing.senderMapper = this.senderMapper;
+			if(existing.filter == null) existing.filter = this.filter;
+		} else {
+			customTypes.put(forClass, this);
+		}
 	}
 	
 	public void settle(CmdArg<T> arg) {
