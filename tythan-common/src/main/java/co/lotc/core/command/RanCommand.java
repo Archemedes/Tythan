@@ -9,12 +9,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import co.lotc.core.CoreLog;
 import co.lotc.core.agnostic.Sender;
+import co.lotc.core.command.types.ArgTypeTemplate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +31,13 @@ public class RanCommand implements CommandHandle {
 	public  static final String ERROR_UNSPECIFIED = " An unhandled error occurred when processing the command.";
 	private static final String ERROR_FLAG_ARG = "Not a valid flag argument provided for: " + WHITE;
 	private static final String DUPLICATE_FLAG = "You've provided a duplicate flag: " + WHITE;
-	private static final String ERROR_NEEDS_PLAYER = "This command can only be run by players.";
-	private static final String ERROR_NEEDS_PERSONA = "You need a valid Persona to run this command";
+	private static final String ERROR_SENDER_UNRESOLVED = "This command can only be ran for: " + WHITE;
 	
 	final ArcheCommand command;
 	final String usedAlias;
-	final Sender sender;
 	
-	//TODO: put a SenderTemplate here?
+	final Sender sender;
+	Object resolvedSender;
 	
 	List<Object> argResults = Lists.newArrayList();
 	Map<String, Object> context = Maps.newHashMap();
@@ -100,40 +101,31 @@ public class RanCommand implements CommandHandle {
 				CoreLog.debug("Found a help flag! No further parsing needed!");
 				return;
 			}
-			getSenders();
+			parseCommandSender();
 			parseArgs(args);
 			
 			CoreLog.debug("Parsed " + argResults.size() + " args and " + flags.size() + " flags.");
 	}
 	
-	private void getSenders() throws CmdParserException {
-		if(command.requiresPersona()) {
-			OfflinePersona potentialPersona = getFlag("p");
-			if(potentialPersona != null && potentialPersona.isLoaded()) {
-				persona = potentialPersona.getPersona();
-			} else if(potentialPersona == null) {
-				if(sender instanceof Player) persona = ArcheCore.getPersona((Player) sender);
-				
-				if(persona == null) error(ERROR_NEEDS_PERSONA);
-				else player = persona.getPlayer();
-				
-				if(player == null && command.requiresPlayer()) error(ERROR_NEEDS_PLAYER);
+	private <S> void parseCommandSender() throws CmdParserException {
+		@SuppressWarnings("unchecked") //Always allowed, doesnt confine anything yet
+		ArgTypeTemplate<S> senderType = (ArgTypeTemplate<S>) command.getSenderType();
+		if(senderType != null) {
+			if(hasFlag("p")) {
+				resolvedSender = getFlag("p");
+			} else {
+				S resolved = senderType.senderMapper().apply(sender);
+				if(resolved != null && senderType.filter().test(resolved)) {
+					resolvedSender = resolved;
+					flags.put("p", resolved);
+				} else {
+					error(ERROR_SENDER_UNRESOLVED + senderType.getDefaultName());
+				}
 			}
-			
-			//The third case is when a potentialPersona exists but is unloaded.
-			//the ArcheCommandExecutor will pick up on this lacking persona and try to load
-			//So we do nothing additionally here.
-			
-		} else if (command.requiresPlayer()) {
-			player = (Player) flags.get("p");
-			if(player == null && sender instanceof Player) player = (Player) sender;
-			if(player == null) error(ERROR_NEEDS_PLAYER);
+		} else { //No custom sender type required
+			resolvedSender = sender;
 		}
-	}
-	
-	void rectifySenders(Persona persona) {
-		this.persona = persona;
-		this.flags.put("p", persona);
+		Validate.notNull(resolvedSender);
 	}
 	
 	void handleException(Exception e) {
