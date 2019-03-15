@@ -9,12 +9,15 @@ import co.lotc.core.DependencyLoader;
 import co.lotc.core.Tythan;
 import co.lotc.core.TythanCommon;
 import co.lotc.core.agnostic.Command;
+import co.lotc.core.bungee.command.BungeeCommandExecutor;
+import co.lotc.core.bungee.command.SimpleCommand;
 import co.lotc.core.bungee.util.ChatBuilder;
 import co.lotc.core.bungee.wrapper.BungeeConfig;
 import co.lotc.core.bungee.wrapper.BungeeSender;
 import co.lotc.core.command.ArcheCommand;
 import co.lotc.core.command.types.ArgTypeTemplate;
 import lombok.Getter;
+import lombok.var;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
@@ -79,7 +82,9 @@ public class TythanBungee extends Plugin implements Tythan {
 	
 	@Override
 	public void registerRootCommand(Command wrapper, ArcheCommand command) {
-		//TODO
+		var exec = new BungeeCommandExecutor(command, new SimpleCommand(wrapper.getName(), wrapper.getPermission(), wrapper.getDescription(), wrapper.getAliases()));
+		//TODO: command should be from owning plugin
+		getProxy().getPluginManager().registerCommand(this, exec);
 	}
 	
 	static { //Thanks Tofuus for the gross hacks <3

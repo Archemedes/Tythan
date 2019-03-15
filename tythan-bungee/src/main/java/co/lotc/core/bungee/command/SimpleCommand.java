@@ -1,4 +1,4 @@
-package co.lotc.core;
+package co.lotc.core.bungee.command;
 
 import java.util.List;
 

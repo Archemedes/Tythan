@@ -10,7 +10,7 @@ import co.lotc.core.bukkit.wrapper.BukkitSender;
 import co.lotc.core.command.AgnosticExecutor;
 import co.lotc.core.command.ArcheCommand;
 
-public class ArcheCommandExecutor extends AgnosticExecutor implements TabExecutor {
+public final class ArcheCommandExecutor extends AgnosticExecutor implements TabExecutor {
 
 	public ArcheCommandExecutor(ArcheCommand rootCommand) {
 		super(rootCommand);
