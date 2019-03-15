@@ -10,12 +10,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import co.lotc.core.agnostic.PluginOwned;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor(access=AccessLevel.PUBLIC)
-public class Run {
-	private final Plugin plugin;
+public class Run implements PluginOwned<Plugin> {
+	@Getter private final Plugin plugin;
 
 	public static void ensureSync() {
 		Validate.isTrue(Bukkit.isPrimaryThread());
