@@ -224,9 +224,7 @@ public class ArcheCommandBuilder {
 		}
 		
 		//If there's no more builders up the chain we've reached the top. Means we're done and we can make an executor
-		if(parentBuilder == null) {
-			Tythan.get().registerRootCommand(this.command, built);
-		}
+		if(parentBuilder == null) Tythan.get().registerRootCommand(this.command, built);
 		
 		return parentBuilder;
 	}
