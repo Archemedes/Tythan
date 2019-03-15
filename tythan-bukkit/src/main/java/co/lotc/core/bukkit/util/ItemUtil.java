@@ -192,7 +192,8 @@ public class ItemUtil {
 	 */
 	public static String getItemLocaleName(ItemStack is){
 		NamespacedKey k = is.getType().getKey();
-		return "item." + k.getNamespace() + '.' + k.getKey();
+		String prefix = is.getType().isBlock()? "block." : "item.";
+		return prefix + k.getNamespace() + '.' + k.getKey();
 	}
 
 	/**
