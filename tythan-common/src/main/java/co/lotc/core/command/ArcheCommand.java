@@ -21,7 +21,6 @@ public class ArcheCommand {
 	String description;
 	String permission;
 
-	//TODO needs to be replaced by an OPTIONAL custom sender type class
 	ArgTypeTemplate<?> senderType;
 	
 	List<CmdArg<?>> args;

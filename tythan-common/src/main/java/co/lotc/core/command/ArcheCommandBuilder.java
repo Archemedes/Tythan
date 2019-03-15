@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -22,7 +21,6 @@ import co.lotc.core.command.types.ArgTypeTemplate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.var;
 import lombok.experimental.Accessors;
 
 //We're reaching levels of Telanir that shouldn't be even possible
@@ -228,7 +226,7 @@ public class ArcheCommandBuilder {
 		
 		//If there's no more builders up the chain we've reached the top. Means we're done and we can make an executor
 		if(parentBuilder == null) {
-			Tythan.get().registerRootCommand(built);
+			Tythan.get().registerRootCommand(this.command, built);
 		}
 		
 		return parentBuilder;

@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import co.lotc.core.DependencyLoader;
 import co.lotc.core.Tythan;
 import co.lotc.core.TythanCommon;
+import co.lotc.core.agnostic.Command;
 import co.lotc.core.bungee.util.ChatBuilder;
 import co.lotc.core.bungee.wrapper.BungeeConfig;
 import co.lotc.core.bungee.wrapper.BungeeSender;
@@ -77,8 +78,8 @@ public class TythanBungee extends Plugin implements Tythan {
 	}
 	
 	@Override
-	public void registerRootCommand(ArcheCommand builder) {
-		
+	public void registerRootCommand(Command wrapper, ArcheCommand command) {
+		//TODO
 	}
 	
 	static { //Thanks Tofuus for the gross hacks <3

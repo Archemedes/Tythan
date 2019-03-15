@@ -14,16 +14,20 @@ import com.google.common.base.Function;
 import co.lotc.core.DependencyLoader;
 import co.lotc.core.Tythan;
 import co.lotc.core.TythanCommon;
+import co.lotc.core.agnostic.Command;
 import co.lotc.core.agnostic.Sender;
+import co.lotc.core.bukkit.command.ArcheCommandExecutor;
 import co.lotc.core.bukkit.listener.ChatStreamListener;
 import co.lotc.core.bukkit.menu.MenuListener;
 import co.lotc.core.bukkit.util.ChatBuilder;
 import co.lotc.core.bukkit.util.WeakBlock;
+import co.lotc.core.bukkit.wrapper.BukkitCommand;
 import co.lotc.core.bukkit.wrapper.BukkitConfig;
 import co.lotc.core.bukkit.wrapper.BukkitSender;
 import co.lotc.core.command.ArcheCommand;
 import co.lotc.core.command.types.ArgTypeTemplate;
 import lombok.Getter;
+import lombok.var;
 
 public class TythanBukkit extends JavaPlugin implements Tythan {
 	public static TythanBukkit get(){
@@ -74,8 +78,11 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 	}
 	
 	@Override
-	public void registerRootCommand(ArcheCommand builder) {
-		
+	public void registerRootCommand(Command wrapper, ArcheCommand handler) {
+		var pluginCommand = ((BukkitCommand) wrapper).getHandle();
+		ArcheCommandExecutor executor = new ArcheCommandExecutor(handler);
+		pluginCommand.setExecutor(executor);
+		//TODO kommandant
 	}
 	
 	private void listen(Listener l) {
