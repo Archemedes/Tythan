@@ -16,9 +16,6 @@ import co.lotc.core.command.HelpCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.var;
 
-/**
- * Gonna need some German engineering to get this fucker to fall in line
- */
 @RequiredArgsConstructor
 public class Kommandant {
 	private final ArcheCommand head;

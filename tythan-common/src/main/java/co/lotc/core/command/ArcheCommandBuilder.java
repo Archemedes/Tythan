@@ -17,6 +17,7 @@ import co.lotc.core.CoreLog;
 import co.lotc.core.Tythan;
 import co.lotc.core.agnostic.Command;
 import co.lotc.core.command.CommandPart.Execution;
+import co.lotc.core.command.brigadier.Kommandant;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -224,7 +225,12 @@ public class ArcheCommandBuilder {
 		}
 		
 		//If there's no more builders up the chain we've reached the top. Means we're done and we can make an executor
-		if(parentBuilder == null) Tythan.get().registerRootCommand(this.command, built);
+		if(parentBuilder == null) {
+			Kommandant kommandant = new Kommandant(built);
+			kommandant.addBrigadier();
+			built.setBrigadierNodes(kommandant);
+			Tythan.get().registerRootCommand(this.command, built);
+		}
 		
 		return parentBuilder;
 	}

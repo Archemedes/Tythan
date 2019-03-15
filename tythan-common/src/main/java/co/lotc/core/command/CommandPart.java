@@ -14,6 +14,7 @@ import lombok.val;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 
+//TODO cleanup the parts that dont work
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal=true)
 @RequiredArgsConstructor
 final class CommandPart {
