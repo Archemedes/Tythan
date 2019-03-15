@@ -17,7 +17,6 @@ import co.lotc.core.CoreLog;
 import co.lotc.core.Tythan;
 import co.lotc.core.agnostic.Command;
 import co.lotc.core.command.CommandPart.Execution;
-import co.lotc.core.command.types.ArgTypeTemplate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,7 +32,7 @@ public class ArcheCommandBuilder {
 	@Setter private String description;
 	@Setter private String permission;
 
-	@Getter private ArgTypeTemplate<?> senderType = null;
+	@Getter private ParameterType<?> senderType = null;
 	
 	@Getter(AccessLevel.PACKAGE) private final Set<String> aliases = new HashSet<>();
 	@Getter(AccessLevel.PACKAGE) private final List<CmdArg<?>> args = new ArrayList<>();
@@ -121,8 +120,8 @@ public class ArcheCommandBuilder {
 	public ArcheCommandBuilder requiresSender(Class<?> senderClass) {
 		if(requiresSender()) throw new IllegalStateException("Specified sender argument twice for command " + this.mainCommand());
 		
-		if(ArgTypeTemplate.senderTypeExists(senderClass)) {
-			senderType = ArgTypeTemplate.getCustomType(senderClass);
+		if(ParameterType.senderTypeExists(senderClass)) {
+			senderType = ParameterType.getCustomType(senderClass);
 			
 			CoreLog.debug("cmd " + mainCommand() + " requires as its sender: " + senderClass.getSimpleName());
 			if(senderType.mapper() != null) { //Can also replace the sender as Console with -p flag

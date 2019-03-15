@@ -1,4 +1,4 @@
-package co.lotc.core.command.types;
+package co.lotc.core.command;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,7 +12,6 @@ import com.google.common.base.Supplier;
 
 import co.lotc.core.CoreLog;
 import co.lotc.core.agnostic.Sender;
-import co.lotc.core.command.CmdArg;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -22,10 +21,10 @@ import lombok.experimental.Accessors;
 @RequiredArgsConstructor
 @Accessors(fluent=true)
 @Setter
-public class ArgTypeTemplate<T> {
-	private static final Map<Class<?>, ArgTypeTemplate<?>> customTypes = new HashMap<>();
+public class ParameterType<T> {
+	private static final Map<Class<?>, ParameterType<?>> customTypes = new HashMap<>();
 	
-	public static ArgTypeTemplate<?> getCustomType(Class<?> clazz) {
+	public static ParameterType<?> getCustomType(Class<?> clazz) {
 		return customTypes.get(clazz);
 	}
 	
@@ -74,7 +73,7 @@ public class ArgTypeTemplate<T> {
 		Validate.isTrue(isClassValid(), "The class to specify as an argument type was already handled");
 
 		@SuppressWarnings("unchecked") //This is safe because only type T can be linked to Class<T> which is what the key was
-		var existing = (ArgTypeTemplate<T>) customTypes.get(forClass);
+		var existing = (ParameterType<T>) customTypes.get(forClass);
 		if(existing != null) {
 			CoreLog.warning("Attempted a merge on a custom command argument type for the class: " + forClass.getSimpleName());
 			CoreLog.warning("This might be fine but more likely this was unintended and might lead to unexpected behavior");

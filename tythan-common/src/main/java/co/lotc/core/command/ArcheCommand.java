@@ -6,7 +6,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 
 import co.lotc.core.agnostic.Sender;
-import co.lotc.core.command.types.ArgTypeTemplate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Value;
@@ -21,7 +20,7 @@ public class ArcheCommand {
 	String description;
 	String permission;
 
-	ArgTypeTemplate<?> senderType;
+	ParameterType<?> senderType;
 	
 	List<CmdArg<?>> args;
 	List<CmdFlag> flags;

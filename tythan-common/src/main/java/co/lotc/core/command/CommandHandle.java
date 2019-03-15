@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 
 import co.lotc.core.agnostic.Command;
 import co.lotc.core.agnostic.Sender;
-import co.lotc.core.command.types.ArgTypeTemplate;
 import net.md_5.bungee.api.chat.BaseComponent;
 
 public interface CommandHandle {
@@ -35,8 +34,8 @@ public interface CommandHandle {
 		builder(command, template).build();
 	}
 
-	static <T> ArgTypeTemplate<T> defineArgumentType(Class<T> forClass){
-		return new ArgTypeTemplate<>(forClass);
+	static <T> ParameterType<T> defineArgumentType(Class<T> forClass){
+		return new ParameterType<>(forClass);
 	}
 	
 	//// END OF STATICS ////

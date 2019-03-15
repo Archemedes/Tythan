@@ -17,7 +17,6 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 
 import co.lotc.core.CoreLog;
-import co.lotc.core.command.types.ArgTypeTemplate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -232,7 +231,7 @@ public class ArgBuilder {
 			asDouble();
 		} else if(c==Boolean.class || c==boolean.class) {
 			asBoolean();
-		} else if(c.isEnum() && !ArgTypeTemplate.argumentTypeExists(c)) {
+		} else if(c.isEnum() && !ParameterType.argumentTypeExists(c)) {
 			asEnum((Class<Enum>) c);
 		} else {
 			asCustomType(c);
@@ -243,11 +242,11 @@ public class ArgBuilder {
 	
 	private <X> ArcheCommandBuilder asCustomType(Class<X> clazz) {
 		
-		if(!ArgTypeTemplate.argumentTypeExists(clazz))
+		if(!ParameterType.argumentTypeExists(clazz))
 			throw new IllegalArgumentException("This class was not registered as a CUSTOM argument type: " + clazz.getSimpleName());
 		
 		@SuppressWarnings("unchecked")
-		ArgTypeTemplate<X> result = (ArgTypeTemplate<X>) ArgTypeTemplate.getCustomType(clazz);
+		ParameterType<X> result = (ParameterType<X>) ParameterType.getCustomType(clazz);
 		String defaultName = result.getDefaultName() == null? clazz.getSimpleName() : result.getDefaultName();
 		String defaultError = result.getDefaultError() == null? "Please provide a valid " + clazz.getSimpleName() : result.getDefaultError();
 		defaults(defaultName, defaultError);

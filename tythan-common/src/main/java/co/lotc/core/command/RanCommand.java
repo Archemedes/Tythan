@@ -16,7 +16,6 @@ import com.google.common.collect.Maps;
 
 import co.lotc.core.CoreLog;
 import co.lotc.core.agnostic.Sender;
-import co.lotc.core.command.types.ArgTypeTemplate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -109,7 +108,7 @@ public class RanCommand implements CommandHandle {
 	
 	private <S> void parseCommandSender() throws CmdParserException {
 		@SuppressWarnings("unchecked") //Always allowed, doesnt confine anything yet
-		ArgTypeTemplate<S> senderType = (ArgTypeTemplate<S>) command.getSenderType();
+		ParameterType<S> senderType = (ParameterType<S>) command.getSenderType();
 		if(senderType != null) {
 			if(hasFlag("p")) {
 				resolvedSender = getFlag("p");

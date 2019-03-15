@@ -8,7 +8,7 @@ import lombok.Value;
 import net.md_5.bungee.api.plugin.Plugin;
 
 @Value
-public class SimpleCommand implements Command, PluginOwned<Plugin> {
+public class BungeeCommandData implements Command, PluginOwned<Plugin> {
 	Plugin plugin;
 	String name, permission, description;
 	List<String> aliases;

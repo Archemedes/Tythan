@@ -20,7 +20,6 @@ import co.lotc.core.command.annotate.Default;
 import co.lotc.core.command.annotate.Flag;
 import co.lotc.core.command.annotate.Joined;
 import co.lotc.core.command.annotate.Range;
-import co.lotc.core.command.types.ArgTypeTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.var;
@@ -128,9 +127,9 @@ public class AnnotatedCommandParser {
 				//The first argument MIGHT be a sender argument, and often is
 				//but it does not necessarily NEED to be... thus we check
 				//If a SenderTemplate is registered, we go forward
-				if(ArgTypeTemplate.senderTypeExists(c)) {
+				if(ParameterType.senderTypeExists(c)) {
 					CoreLog.debug("Method " + method.getName() + " for cmd " + acb.mainCommand() +
-							" wants sender type: " + ArgTypeTemplate.getCustomType(c).getTargetType());
+							" wants sender type: " + ParameterType.getCustomType(c).getTargetType());
 					acb.requiresSender(c);
 					continue;
 				} else if( Sender.class.isAssignableFrom(c)) {

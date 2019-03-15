@@ -11,7 +11,7 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 public final class BungeeCommandExecutor extends Command implements TabExecutor {
 	private final AgnosticExecutor delegate;
 	
-	public BungeeCommandExecutor(ArcheCommand command, SimpleCommand data) {
+	public BungeeCommandExecutor(ArcheCommand command, BungeeCommandData data) {
 		super(data.getName(), data.getPermission(), data.getAliases().toArray(new String[0]));
 		delegate = new AgnosticExecutor(command);
 	}

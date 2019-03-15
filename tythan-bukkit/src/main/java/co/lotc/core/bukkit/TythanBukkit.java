@@ -25,7 +25,7 @@ import co.lotc.core.bukkit.wrapper.BukkitCommand;
 import co.lotc.core.bukkit.wrapper.BukkitConfig;
 import co.lotc.core.bukkit.wrapper.BukkitSender;
 import co.lotc.core.command.ArcheCommand;
-import co.lotc.core.command.types.ArgTypeTemplate;
+import co.lotc.core.command.ParameterType;
 import lombok.Getter;
 import lombok.var;
 
@@ -58,8 +58,8 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 	private void registerCommandParameterTypes() {
 		Function<Sender, CommandSender> function = s->((BukkitSender) s).getHandle();
 		
-		new ArgTypeTemplate<>(CommandSender.class).senderMapper(function).register();
-		new ArgTypeTemplate<>(Player.class).senderMapper( function.andThen(cs->(cs instanceof Player)? ((Player) cs): null)).register();
+		new ParameterType<>(CommandSender.class).senderMapper(function).register();
+		new ParameterType<>(Player.class).senderMapper( function.andThen(cs->(cs instanceof Player)? ((Player) cs): null)).register();
 	}
 	
 	@Override
