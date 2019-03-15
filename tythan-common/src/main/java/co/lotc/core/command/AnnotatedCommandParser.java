@@ -27,10 +27,10 @@ import lombok.var;
 @RequiredArgsConstructor
 public class AnnotatedCommandParser {
 	private final Supplier<CommandTemplate> template;
-	private final Command bukkitCommand;
+	private final Command pluginCommand;
 	
 	public ArcheCommandBuilder invokeParse() {
-		ArcheCommandBuilder acb = CommandHandle.builder(bukkitCommand);
+		ArcheCommandBuilder acb = new ArcheCommandBuilder(pluginCommand);
 		return parse(template, acb);
 	}
 	

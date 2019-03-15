@@ -1,45 +1,9 @@
 package co.lotc.core.command;
 
-import java.util.function.Supplier;
-
-import co.lotc.core.agnostic.Command;
 import co.lotc.core.agnostic.Sender;
 import net.md_5.bungee.api.chat.BaseComponent;
 
 public interface CommandHandle {
-
-	/**
-	 * Makes an entirely new Command Builder for your given PluginCommand
-	 * @param command The PluginCommand to wrap, defined by your plugin through YML or annotation
-	 * @return a chainable builder that will construct a CommandExecutor
-	 */
-	static ArcheCommandBuilder builder(Command command) {
-		return new ArcheCommandBuilder(command);
-	}
-
-	/**
-	 * Creates an ArcheCommandBuilder for you that parses an annotated class into a CommandExecutor
-	 * @param command The PluginCommand you intend to wrap
-	 * @param template A supplier for the CommandTemplate subclass you wish to use. Should Supply unique instances if intending to use Runnables
-	 * @return
-	 */
-	static ArcheCommandBuilder builder(Command command, Supplier<CommandTemplate> template) {
-		return new AnnotatedCommandParser(template, command).invokeParse();
-	}
-	
-	/**
-	 * Calls {{@link #build(Command, Supplier)} .build(), finalizing the command build process
-	 */
-	static void build(Command command, Supplier<CommandTemplate> template) {
-		builder(command, template).build();
-	}
-
-	static <T> ParameterType<T> defineArgumentType(Class<T> forClass){
-		return new ParameterType<>(forClass);
-	}
-	
-	//// END OF STATICS ////
-	
 	
 	/**
 	 * @return whoever issued the command, which may not be the Player/Persona target
