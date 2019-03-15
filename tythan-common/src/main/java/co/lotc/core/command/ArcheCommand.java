@@ -2,6 +2,7 @@ package co.lotc.core.command;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -19,6 +20,8 @@ import lombok.experimental.NonFinal;
 @NonFinal
 @RequiredArgsConstructor
 public class ArcheCommand {
+	public static final Consumer<RanCommand> NULL_COMMAND = rc->{};
+	
 	String mainCommand;
 	Set<String> aliases;
 	String description;
@@ -30,7 +33,7 @@ public class ArcheCommand {
 	List<CmdFlag> flags;
 	List<ArcheCommand> subCommands;
 	
-	@Getter(AccessLevel.NONE) CommandPart sequenceStart;
+	@Getter(AccessLevel.NONE) Consumer<RanCommand> payload;
 	
 	//This will only exist for the top-level ArcheCommand, not any subcommands
 	//However its structure itself is a branching one, containing subcommands as state
@@ -39,11 +42,11 @@ public class ArcheCommand {
 	@NonFinal @Setter(AccessLevel.PACKAGE) Kommandant brigadierNodes = null;
 	
 	void execute(RanCommand rc) {
-		sequenceStart.execute(rc);
+		payload.accept(rc);
 	}
 	
 	public boolean isEmptyCommand() {
-		return sequenceStart == CommandPart.NULL_COMMAND;
+		return payload == NULL_COMMAND;
 	}
 	
 	public boolean hasArgs() {

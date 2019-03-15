@@ -1,22 +1,17 @@
 package co.lotc.core.command;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.apache.commons.lang.Validate;
 
 import co.lotc.core.CoreLog;
 import co.lotc.core.Tythan;
 import co.lotc.core.agnostic.Command;
-import co.lotc.core.command.CommandPart.Execution;
 import co.lotc.core.command.brigadier.Kommandant;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -40,8 +35,7 @@ public class ArcheCommandBuilder {
 	@Getter(AccessLevel.PACKAGE) private final List<CmdFlag> flags = new ArrayList<>();
 	@Getter(AccessLevel.PACKAGE) private final List<ArcheCommand> subCommands = new ArrayList<>();
 	
-	private CommandPart firstPart;
-	private CommandPart tailPart;
+	@Setter private Consumer<RanCommand> payload = null;
 	
 	//Builder state booleans
 	boolean argsHaveDefaults = false; //When arg is added that has default input
@@ -140,61 +134,15 @@ public class ArcheCommandBuilder {
 		buildHelpFile = false;
 		return this;
 	}
-	
-	public ArcheCommandBuilder message(String message, Object... format) {
-		sequence(CommandPart.messager(message, Execution.SYNC));
-		return this;
-	}
-	
-	public ArcheCommandBuilder messageAsync(String message, Object... format) {
-		sequence(CommandPart.messager(message, Execution.ANY));
-		return this;
-	}
-	
-	public ArcheCommandBuilder condition(Predicate<RanCommand> p, String orElseError) {
-		sequence(CommandPart.tester(p, orElseError));
-		return this;
-	}
-
-	public ArcheCommandBuilder condition(Predicate<RanCommand> p, Consumer<RanCommand> orElse) {
-		sequence(CommandPart.tester(p, orElse));
-		return this;
-	}
-	
-	public ArcheCommandBuilder run(Consumer<RanCommand> c) {
-		sequence(CommandPart.run(c, Execution.SYNC));
-		return this;
-	}
-	
-	public ArcheCommandBuilder runAsync(Consumer<RanCommand> c) {
-		sequence(CommandPart.run(c, Execution.ASYNC));
-		return this;
-	}
-	
-	public <T> CommandPart.JoinedPart<T> fetchConsumer(BiFunction<RanCommand, Connection, T> function){
-		return new CommandPart.JoinedPart<>(this, function);
-	}
-	
-	public <T> CommandPart.JoinedPart<T> fetchAsync(Function<RanCommand, T> function){
-		return CommandPart.JoinedPart.forAsync(this, function);
-	}
-	
-	void sequence(CommandPart newPart) {
-		if(tailPart == null) firstPart = newPart;
-		else tailPart.setNext(newPart);
 		
-		tailPart = newPart;
-		//tailPart.setPlugin(command.getPlugin());
-	}
-	
 	public ArcheCommandBuilder build() {
-		boolean noneSpecified = firstPart == null;
+		boolean noneSpecified = payload == null;
 		if(noneSpecified) {
 			if(!args.isEmpty() || subCommands.isEmpty())
 				throw new IllegalStateException("Found no execution sequence for command: " + this.mainCommand
 						+ ". This is only possible if the command has subcommands and no arguments specified."
 						+ " It is VERY likely the command was built incorrectly.");
-			firstPart = CommandPart.NULL_COMMAND;
+			payload = ArcheCommand.NULL_COMMAND;
 		}
 		
 		CoreLog.debug("Now Building ArcheCommand: " + mainCommand + " it has " + subCommands.size()
@@ -208,7 +156,7 @@ public class ArcheCommandBuilder {
 				Collections.unmodifiableList(args),
 				Collections.unmodifiableList(flags),
 				Collections.unmodifiableList(subCommands),
-				firstPart);
+				payload);
 		
 		if(parentBuilder != null) {
 			if(built.collides(parentBuilder.subCommands))
@@ -220,7 +168,7 @@ public class ArcheCommandBuilder {
 		if(buildHelpFile) {
 			HelpCommand help = new HelpCommand(built);
 			this.subCommands.add(help);
-			if(noneSpecified) firstPart.setNext(CommandPart.run(c->help.runHelp(c, 0), Execution.SYNC));
+			if(noneSpecified) payload = c->help.runHelp(c, 0);
 			flag("h").description("Get help and subcommands").defaultInput("0").asInt();
 		}
 		

@@ -59,7 +59,7 @@ public class AnnotatedCommandParser {
 		}
 		
 		//Fallback option, which does use polymorphism, specifically the CommandTemplate.invoke() method
-		acb.run(rc->{ //This is default behavior when no arguments are given, usually refers to help file
+		acb.payload(rc->{ //This is default behavior when no arguments are given, usually refers to help file
 			CommandTemplate t = template.get();
 			t.setRanCommand(rc);
 			t.invoke();
@@ -182,7 +182,7 @@ public class AnnotatedCommandParser {
 
 	private void makeCommandDoStuff(Supplier<CommandTemplate> template, ArcheCommandBuilder acb, Method method, boolean wantsCommandSenderAsFirstArg) {
 		//Make command actually do stuff
-		acb.run(rc->{
+		acb.payload(rc->{
 			try {
 				CommandTemplate t = template.get();
 				t.setRanCommand(rc);
