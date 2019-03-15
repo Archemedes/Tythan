@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.base.Function;
@@ -18,6 +19,7 @@ import co.lotc.core.agnostic.Command;
 import co.lotc.core.agnostic.Sender;
 import co.lotc.core.bukkit.command.ArcheCommandExecutor;
 import co.lotc.core.bukkit.command.CommandsPacketIntercept;
+import co.lotc.core.bukkit.command.ItemArg;
 import co.lotc.core.bukkit.listener.ChatStreamListener;
 import co.lotc.core.bukkit.menu.MenuListener;
 import co.lotc.core.bukkit.util.ChatBuilder;
@@ -64,6 +66,9 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 		
 		new ParameterType<>(CommandSender.class).senderMapper(function).register();
 		new ParameterType<>(Player.class).senderMapper( function.andThen(cs->(cs instanceof Player)? ((Player) cs): null)).register();
+
+		ItemArg.buildItemStackParameter();
+		ItemArg.buildMaterialParameter();
 	}
 	
 	@Override

@@ -19,7 +19,7 @@ public class Commands {
 	 * @param template A supplier for the CommandTemplate subclass you wish to use. Should Supply unique instances if intending to use Runnables
 	 * @return
 	 */
-	static ArcheCommandBuilder builder(PluginCommand command, Supplier<CommandTemplate> template) {
+	public static ArcheCommandBuilder builder(PluginCommand command, Supplier<CommandTemplate> template) {
 		var wrapper = new BukkitCommand(command);
 		return new AnnotatedCommandParser(template, wrapper).invokeParse();
 	}
@@ -27,11 +27,11 @@ public class Commands {
 	/**
 	 * Calls {{@link #build(PluginCommand, Supplier)} .build(), finalizing the command build process
 	 */
-	static void build(PluginCommand command, Supplier<CommandTemplate> template) {
+	public static void build(PluginCommand command, Supplier<CommandTemplate> template) {
 		builder(command, template).build();
 	}
 
-	static <T> ParameterType<T> defineArgumentType(Class<T> forClass){
+	public static <T> ParameterType<T> defineArgumentType(Class<T> forClass){
 		return new ParameterType<>(forClass);
 	}
 	

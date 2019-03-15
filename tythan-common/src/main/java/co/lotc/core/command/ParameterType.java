@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 import org.apache.commons.lang.Validate;
 
 import com.google.common.base.Supplier;
+import com.mojang.brigadier.arguments.ArgumentType;
 
 import co.lotc.core.CoreLog;
 import co.lotc.core.agnostic.Sender;
@@ -45,6 +46,7 @@ public class ParameterType<T> {
 	@Getter private Function<String, T> mapper;
 	@Getter private Function<Sender, T> senderMapper;
 	@Getter private Predicate<T> filter;
+	private ArgumentType<?> brigadierType;
 
 	private Supplier<Collection<String>> completer;
 	private String defaultName;
@@ -89,6 +91,7 @@ public class ParameterType<T> {
 		if(completer != null) arg.setCompleter(completer);
 		if(filter != null) arg.setFilter(filter);
 		if(mapper != null) arg.setMapper(mapper);
+		if(brigadierType!=null) arg.setBrigadierType(brigadierType);
 	}
 	
 	public String getDefaultName() { return defaultName; }

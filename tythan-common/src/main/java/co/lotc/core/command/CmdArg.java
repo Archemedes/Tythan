@@ -23,6 +23,7 @@ public class CmdArg<T> {
 	@Setter private Function<String, T> mapper;
 	@Setter private Predicate<T> filter = $->true;
 	@Setter private Supplier<Collection<String>> completer = NULL_COMPLETER;
+	
 	@SuppressWarnings("rawtypes")
 	@Setter private ArgumentType brigadierType = StringArgumentType.word();
 	
