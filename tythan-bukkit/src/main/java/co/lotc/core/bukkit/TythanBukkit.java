@@ -17,6 +17,7 @@ import co.lotc.core.TythanCommon;
 import co.lotc.core.agnostic.Command;
 import co.lotc.core.agnostic.Sender;
 import co.lotc.core.bukkit.command.ArcheCommandExecutor;
+import co.lotc.core.bukkit.command.CommandsPacketIntercept;
 import co.lotc.core.bukkit.listener.ChatStreamListener;
 import co.lotc.core.bukkit.menu.MenuListener;
 import co.lotc.core.bukkit.util.ChatBuilder;
@@ -35,6 +36,8 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 	}
 	
 	private final TythanCommon common = new TythanCommon(this);
+	private final CommandsPacketIntercept intercept = new CommandsPacketIntercept(this);
+	
 	@Getter private boolean debugging;
 	
 	@Override
@@ -50,6 +53,7 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 		debugging = getConfig().getBoolean("debug");
 		
 		registerCommandParameterTypes();
+		intercept.startListening();
 		
 		listen(new ChatStreamListener(this));
 		listen(new MenuListener());
@@ -82,7 +86,8 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 		var pluginCommand = ((BukkitCommand) wrapper).getHandle();
 		ArcheCommandExecutor executor = new ArcheCommandExecutor(handler);
 		pluginCommand.setExecutor(executor);
-		//TODO kommandant
+		var kommandant = handler.getBrigadierNodes();
+		kommandant.getNodes().forEach(intercept::injectNode);
 	}
 	
 	private void listen(Listener l) {

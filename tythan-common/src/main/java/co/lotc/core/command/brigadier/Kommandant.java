@@ -1,6 +1,7 @@
 package co.lotc.core.command.brigadier;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,10 @@ public class Kommandant {
 	
 	public void addBrigadier() {
 		rootNodes.add(buildNode(head, null));
+	}
+	
+	public List<CommandNode<Object>> getNodes(){
+		return Collections.unmodifiableList(rootNodes);
 	}
 	
 	private CommandNode<Object> buildNode(ArcheCommand cmd, CommandNode<Object> dad) {
