@@ -84,7 +84,6 @@ public class TythanBungee extends Plugin implements Tythan {
 	public void registerRootCommand(Command wrapper, ArcheCommand command) {
 		var sc = (BungeeCommandData) wrapper;
 		var exec = new BungeeCommandExecutor(command, sc);
-		//TODO: command should be from owning plugin
 		getProxy().getPluginManager().registerCommand(sc.getPlugin(), exec);
 	}
 	
