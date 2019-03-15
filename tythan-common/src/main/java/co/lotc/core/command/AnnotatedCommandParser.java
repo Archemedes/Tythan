@@ -189,7 +189,7 @@ public class AnnotatedCommandParser {
 				Object[] args = rc.getArgResults().toArray();
 				
 				if(acb.requiresSender()) {
-					Object[] newArgs = insertFirst(args, /*TODO*/null);
+					Object[] newArgs = insertFirst(args, rc.getResolvedSender());
 					method.invoke(t, newArgs);
 				} else if (wantsCommandSenderAsFirstArg) {
 					Object[] newArgs = insertFirst(args, rc.getSender());
