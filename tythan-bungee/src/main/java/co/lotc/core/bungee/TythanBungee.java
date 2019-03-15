@@ -11,6 +11,7 @@ import co.lotc.core.TythanCommon;
 import co.lotc.core.bungee.util.ChatBuilder;
 import co.lotc.core.bungee.wrapper.BungeeConfig;
 import co.lotc.core.bungee.wrapper.BungeeSender;
+import co.lotc.core.command.ArcheCommand;
 import co.lotc.core.command.types.ArgTypeTemplate;
 import lombok.Getter;
 import net.md_5.bungee.api.CommandSender;
@@ -73,6 +74,11 @@ public class TythanBungee extends Plugin implements Tythan {
 	@Override
 	public ChatBuilder chatBuilder() {
 		return new ChatBuilder();
+	}
+	
+	@Override
+	public void registerRootCommand(ArcheCommand builder) {
+		
 	}
 	
 	static { //Thanks Tofuus for the gross hacks <3

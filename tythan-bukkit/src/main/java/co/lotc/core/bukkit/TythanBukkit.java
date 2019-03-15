@@ -21,10 +21,15 @@ import co.lotc.core.bukkit.util.ChatBuilder;
 import co.lotc.core.bukkit.util.WeakBlock;
 import co.lotc.core.bukkit.wrapper.BukkitConfig;
 import co.lotc.core.bukkit.wrapper.BukkitSender;
+import co.lotc.core.command.ArcheCommand;
 import co.lotc.core.command.types.ArgTypeTemplate;
 import lombok.Getter;
 
 public class TythanBukkit extends JavaPlugin implements Tythan {
+	public static TythanBukkit get(){
+		return (TythanBukkit) Tythan.get();
+	}
+	
 	private final TythanCommon common = new TythanCommon(this);
 	@Getter private boolean debugging;
 	
@@ -68,8 +73,9 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 		return new ChatBuilder();
 	}
 	
-	public static TythanBukkit get(){
-		return (TythanBukkit) Tythan.get();
+	@Override
+	public void registerRootCommand(ArcheCommand builder) {
+		
 	}
 	
 	private void listen(Listener l) {

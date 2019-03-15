@@ -15,6 +15,7 @@ import java.util.function.Predicate;
 import org.apache.commons.lang.Validate;
 
 import co.lotc.core.CoreLog;
+import co.lotc.core.Tythan;
 import co.lotc.core.agnostic.Command;
 import co.lotc.core.command.CommandPart.Execution;
 import co.lotc.core.command.types.ArgTypeTemplate;
@@ -227,10 +228,7 @@ public class ArcheCommandBuilder {
 		
 		//If there's no more builders up the chain we've reached the top. Means we're done and we can make an executor
 		if(parentBuilder == null) {
-			//TODO let tythan derivatis bukkit and bungee handle this part, give them the executor as a start
-			AgnosticExecutor executor = new AgnosticExecutor(built);
-			command.setExecutor(executor);
-			new Kommandant(built).addBrigadier();
+			Tythan.get().registerRootCommand(built);
 		}
 		
 		return parentBuilder;

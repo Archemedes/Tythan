@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import co.lotc.core.agnostic.AbstractChatBuilder;
 import co.lotc.core.agnostic.Config;
+import co.lotc.core.command.ArcheCommand;
 
 public interface Tythan {
 	static Tythan get() { return TythanProvider.INSTANCE; }
@@ -18,4 +19,6 @@ public interface Tythan {
 	Config config();
 	
 	AbstractChatBuilder<?> chatBuilder();
+	
+	void registerRootCommand(ArcheCommand builder);
 }
