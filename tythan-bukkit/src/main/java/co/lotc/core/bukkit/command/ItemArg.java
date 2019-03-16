@@ -8,9 +8,11 @@ import com.google.common.base.Function;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-public class ItemArg {
+public final class ItemArg {
 	private static final BrigadierProvider provider = BrigadierProvider.get();
 
+	private ItemArg () {}
+	
 	public static void buildMaterialParameter(){
 		Commands.defineArgumentType(Material.class)
 		.brigadierType(provider.argumentItemStack())

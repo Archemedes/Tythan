@@ -48,7 +48,7 @@ public class ParameterType<T> {
 	@Getter private Predicate<T> filter;
 	private ArgumentType<?> brigadierType;
 
-	private Supplier<Collection<String>> completer;
+	private Supplier<? extends Collection<String>> completer;
 	private String defaultName;
 	private String defaultError;
 	
