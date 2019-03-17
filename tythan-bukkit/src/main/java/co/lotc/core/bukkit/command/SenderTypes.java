@@ -61,7 +61,7 @@ public final class SenderTypes {
 		.register();
 	}
 	
-	private static UUID uuidFromString(String s) {
+	public static UUID uuidFromString(String s) {
 		if(s.length() == 32)
 			s = s.replaceFirst("(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)", "$1-$2-$3-$4-$5");
 			
