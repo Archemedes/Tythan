@@ -20,7 +20,7 @@ public final class SenderTypes {
 
 	public static final Function<Sender, CommandSender> UNWRAP_SENDER = s->((BukkitSender) s).getHandle();
 	public static final Function<Sender, Player> UNWRAP_PLAYER = UNWRAP_SENDER.andThen(s->(s instanceof Player)? ((Player) s):null);
-	private static Supplier<List<String>> playerCompleter = ()->Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
+	public static final Supplier<List<String>> PLAYER_COMPLETER = ()->Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
 	
 	public static void registerCommandSenderType() {
 		Commands.defineArgumentType(CommandSender.class).senderMapper(UNWRAP_SENDER).register();
@@ -37,7 +37,7 @@ public final class SenderTypes {
 					return Bukkit.getPlayer(s);
 				}
 			})
-			.completer(playerCompleter)
+			.completer(PLAYER_COMPLETER)
 			.register();
 	}
 	
@@ -57,7 +57,7 @@ public final class SenderTypes {
 			if(op != null && op.hasPlayedBefore()) return op;
 			else return null;
 		})
-		.completer(playerCompleter)
+		.completer(PLAYER_COMPLETER)
 		.register();
 	}
 	
