@@ -2,15 +2,14 @@ package co.lotc.core.bukkit.command;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import com.google.common.base.Function;
-import com.google.common.base.Supplier;
 
 import co.lotc.core.agnostic.Sender;
 import co.lotc.core.bukkit.wrapper.BukkitSender;
@@ -19,16 +18,17 @@ public final class SenderTypes {
 
 	private SenderTypes() { }
 
-	private static Function<Sender, CommandSender> function = s->((BukkitSender) s).getHandle();
+	public static final Function<Sender, CommandSender> UNWRAP_SENDER = s->((BukkitSender) s).getHandle();
+	public static final Function<Sender, Player> UNWRAP_PLAYER = UNWRAP_SENDER.andThen(s->(s instanceof Player)? ((Player) s):null);
 	private static Supplier<List<String>> playerCompleter = ()->Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList());
 	
 	public static void registerCommandSenderType() {
-		Commands.defineArgumentType(CommandSender.class).senderMapper(function).register();
+		Commands.defineArgumentType(CommandSender.class).senderMapper(UNWRAP_SENDER).register();
 	}
 	
 	public static void registerPlayerType() {
 		Commands.defineArgumentType(Player.class)
-			.senderMapper(function.andThen(s-> (s instanceof Player)? ((Player)s):null))
+			.senderMapper(UNWRAP_PLAYER)
 			.mapper(s->{
 				if(s.length() == 36) {
 					try {return Bukkit.getPlayer(UUID.fromString(s));}

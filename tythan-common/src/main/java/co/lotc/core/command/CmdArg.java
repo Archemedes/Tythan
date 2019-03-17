@@ -6,9 +6,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+
 import com.mojang.brigadier.arguments.StringArgumentType;
 
-import com.google.common.base.Supplier;
 import com.mojang.brigadier.arguments.ArgumentType;
 
 import lombok.Getter;

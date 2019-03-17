@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import org.apache.commons.lang.Validate;
 
-import com.google.common.base.Supplier;
 import com.mojang.brigadier.arguments.ArgumentType;
 
 import co.lotc.core.CoreLog;
