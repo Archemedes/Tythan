@@ -114,7 +114,7 @@ public class RanCommand implements CommandHandle {
 				resolvedSender = getFlag("p");
 			} else {
 				S resolved = senderType.senderMapper().apply(sender);
-				if(resolved != null && senderType.filter().test(resolved)) {
+				if(resolved != null && (senderType.filter() == null || senderType.filter().test(resolved)) ) {
 					resolvedSender = resolved;
 					flags.put("p", resolved);
 				} else {

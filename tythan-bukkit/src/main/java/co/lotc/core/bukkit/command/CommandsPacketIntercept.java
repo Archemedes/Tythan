@@ -29,7 +29,8 @@ public class CommandsPacketIntercept {
 	}
 	
 	public void startListening() {
-		ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(
+		//ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(
+		ProtocolLibrary.getProtocolManager().addPacketListener(
 				new PacketAdapter(plugin, PacketType.Play.Server.COMMANDS) {
 					@Override
 					public void onPacketSending(final PacketEvent event) {
@@ -45,7 +46,7 @@ public class CommandsPacketIntercept {
 							root.addChild(node);
 						}
 					}
-				}).start();
+				});//.start();
 	}
 	
 	private void despigot(RootCommandNode<Object> root, String alias) {

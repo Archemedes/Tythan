@@ -31,12 +31,12 @@ public class ParameterType<T> {
 	
 	public static boolean senderTypeExists(Class<?> clazz) {
 		var x = customTypes.get(clazz);
-		return x != null && x.mapper() != null;
+		return x != null && x.senderMapper() != null;
 	}
 	
 	public static boolean argumentTypeExists(Class<?> clazz) {
 		var x = customTypes.get(clazz);
-		return x != null && x.senderMapper() != null;
+		return x != null && x.mapper() != null;
 	}
 	
 	/* END OF STATICS */
