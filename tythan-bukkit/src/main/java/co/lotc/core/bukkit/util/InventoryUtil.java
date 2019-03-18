@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Animals;
 import org.bukkit.event.inventory.ClickType;
@@ -27,6 +28,7 @@ import com.google.common.collect.Lists;
 import co.lotc.core.CoreLog;
 import co.lotc.core.CoreTimer;
 import co.lotc.core.Tythan;
+import lombok.var;
 
 public class InventoryUtil {
 	private InventoryUtil() {}
@@ -56,6 +58,11 @@ public class InventoryUtil {
 			if(is != null) return false;
 		}
 		return true;
+	}
+	
+	public static void addOrDropItem(Location location, Inventory inv, ItemStack... items) {
+		var left = addItem(inv, items);
+		left.forEach((k,is)->location.getWorld().dropItemNaturally(location, is));
 	}
 	
 	/**
