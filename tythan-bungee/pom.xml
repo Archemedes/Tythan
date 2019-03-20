@@ -18,6 +18,14 @@
     <project.build.sourceEncodeing>UTF-8</project.build.sourceEncodeing>
   </properties>
 
+
+	<repositories>
+		<repository>
+  		<id>exceptionflug</id>
+  		<url>http://mvn.exceptionflug.de/repository/exceptionflug-public/</url>
+		</repository>
+	</repositories>
+
    <dependencies>
 	<dependency>
 		<groupId>net.md-5</groupId>
@@ -30,7 +38,19 @@
 		<artifactId>tythan-common</artifactId>
 		<version>${project.version}</version>
 	</dependency>
-  </dependencies>
+	<dependency>
+		<groupId>de.exceptionflug</groupId>
+		<artifactId>protocolize-api</artifactId>
+		<version>1.2.1-SNAPSHOT</version>
+		<scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>net.md-5</groupId>
+		<artifactId>bungeecord-protocol</artifactId>
+		<version>1.13-SNAPSHOT</version>
+		<scope>provided</scope>
+	</dependency>
+   </dependencies>
 
   <build>
     <defaultGoal>clean package install</defaultGoal>
@@ -70,6 +90,7 @@
               <artifactSet>
                 <includes>
                   <include>co.lotc:tythan-common</include>
+                  <include>de.exceptionflug.protocolize:**</include>
                 </includes>
               </artifactSet>
             </configuration>
