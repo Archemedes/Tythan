@@ -7,7 +7,7 @@ import java.nio.file.Files;
 
 import co.lotc.core.DependencyLoader;
 import co.lotc.core.Tythan;
-import co.lotc.core.TythanCommon;
+import co.lotc.core.TythanProvider;
 import co.lotc.core.agnostic.Command;
 import co.lotc.core.bungee.command.BrigadierInjector;
 import co.lotc.core.bungee.command.BungeeCommandData;
@@ -27,12 +27,11 @@ import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 
 public class TythanBungee extends Plugin implements Tythan {
-	private final TythanCommon common = new TythanCommon(this);
 	@Getter private boolean debugging;
 	
 	@Override
 	public void onLoad() {
-		common.onLoad();
+		TythanProvider.init(this);
 	}
 	
 	@Override

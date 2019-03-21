@@ -9,11 +9,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import co.lotc.core.DependencyLoader;
 import co.lotc.core.Tythan;
-import co.lotc.core.TythanCommon;
+import co.lotc.core.TythanProvider;
 import co.lotc.core.agnostic.Command;
 import co.lotc.core.bukkit.command.ArcheCommandExecutor;
 import co.lotc.core.bukkit.command.BrigadierProvider;
-import co.lotc.core.bukkit.command.CommandsPacketIntercept;
 import co.lotc.core.bukkit.command.ItemArg;
 import co.lotc.core.bukkit.command.SenderTypes;
 import co.lotc.core.bukkit.listener.ChatStreamListener;
@@ -33,13 +32,11 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 		return (TythanBukkit) Tythan.get();
 	}
 	
-	private final TythanCommon common = new TythanCommon(this);
-	
 	@Getter private boolean debugging;
 	
 	@Override
 	public void onLoad() {
-		common.onLoad();
+		TythanProvider.init(this);
 		ConfigurationSerialization.registerClass(WeakBlock.class, "WeakBlock");
 	}
 	
