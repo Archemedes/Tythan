@@ -12,6 +12,7 @@ import org.apache.commons.lang.Validate;
 import co.lotc.core.CoreLog;
 import co.lotc.core.Tythan;
 import co.lotc.core.agnostic.Command;
+import co.lotc.core.command.brigadier.CommandNodeManager;
 import co.lotc.core.command.brigadier.Kommandant;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -176,7 +177,7 @@ public class ArcheCommandBuilder {
 		if(parentBuilder == null) {
 			Kommandant kommandant = new Kommandant(built);
 			kommandant.addBrigadier();
-			built.setBrigadierNodes(kommandant);
+			CommandNodeManager.getInstance().register(kommandant);
 			Tythan.get().registerRootCommand(this.command, built);
 		}
 		

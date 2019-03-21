@@ -7,11 +7,9 @@ import java.util.function.Consumer;
 import org.apache.commons.lang.StringUtils;
 
 import co.lotc.core.agnostic.Sender;
-import co.lotc.core.command.brigadier.Kommandant;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.Value;
 import lombok.val;
 import lombok.experimental.NonFinal;
@@ -34,12 +32,6 @@ public class ArcheCommand {
 	List<ArcheCommand> subCommands;
 	
 	@Getter(AccessLevel.NONE) Consumer<RanCommand> payload;
-	
-	//This will only exist for the top-level ArcheCommand, not any subcommands
-	//However its structure itself is a branching one, containing subcommands as state
-	//Its a correlated but seperated independent tree of subcommands
-	//Sorry about that, but this came out after this API did
-	@NonFinal @Setter(AccessLevel.PACKAGE) Kommandant brigadierNodes = null;
 	
 	void execute(RanCommand rc) {
 		payload.accept(rc);

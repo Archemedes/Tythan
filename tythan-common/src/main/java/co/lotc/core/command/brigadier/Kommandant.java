@@ -25,7 +25,7 @@ public class Kommandant {
 	public void addBrigadier() {
 		rootNodes.add(buildNode(head, null));
 	}
-	
+
 	public List<CommandNode<Object>> getNodes(){
 		return Collections.unmodifiableList(rootNodes);
 	}
