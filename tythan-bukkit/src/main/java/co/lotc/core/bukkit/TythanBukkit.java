@@ -3,32 +3,28 @@ package co.lotc.core.bukkit;
 import java.io.File;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.google.common.base.Function;
 
 import co.lotc.core.DependencyLoader;
 import co.lotc.core.Tythan;
 import co.lotc.core.TythanCommon;
 import co.lotc.core.agnostic.Command;
-import co.lotc.core.agnostic.Sender;
 import co.lotc.core.bukkit.command.ArcheCommandExecutor;
+import co.lotc.core.bukkit.command.BrigadierProvider;
 import co.lotc.core.bukkit.command.CommandsPacketIntercept;
 import co.lotc.core.bukkit.command.ItemArg;
 import co.lotc.core.bukkit.command.SenderTypes;
 import co.lotc.core.bukkit.listener.ChatStreamListener;
 import co.lotc.core.bukkit.menu.MenuListener;
 import co.lotc.core.bukkit.util.ChatBuilder;
+import co.lotc.core.bukkit.util.Run;
 import co.lotc.core.bukkit.util.WeakBlock;
 import co.lotc.core.bukkit.wrapper.BukkitCommand;
 import co.lotc.core.bukkit.wrapper.BukkitConfig;
-import co.lotc.core.bukkit.wrapper.BukkitSender;
 import co.lotc.core.command.ArcheCommand;
-import co.lotc.core.command.ParameterType;
+import co.lotc.core.command.brigadier.CommandNodeManager;
 import lombok.Getter;
 import lombok.var;
 
@@ -38,7 +34,6 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 	}
 	
 	private final TythanCommon common = new TythanCommon(this);
-	private final CommandsPacketIntercept intercept = new CommandsPacketIntercept(this);
 	
 	@Getter private boolean debugging;
 	
@@ -55,17 +50,19 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 		debugging = getConfig().getBoolean("debug");
 		
 		registerCommandParameterTypes();
-		intercept.startListening();
 		
 		listen(new ChatStreamListener(this));
 		listen(new MenuListener());
+		
+		Run.as(this).delayed(2, ()->{ //Brigadier singleton deep inside NMS: get and inject
+			CommandNodeManager.getInstance().inject(BrigadierProvider.get().getBrigadier().getRoot());
+		});
 	}
 	
 	private void registerCommandParameterTypes() {
 		SenderTypes.registerCommandSenderType();
 		SenderTypes.registerPlayerType();
 		SenderTypes.registerOfflinePlayerType();
-		//TODO: uuid type?
 
 		ItemArg.buildItemStackParameter();
 		ItemArg.buildMaterialParameter();
@@ -91,8 +88,6 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 		var pluginCommand = ((BukkitCommand) wrapper).getHandle();
 		ArcheCommandExecutor executor = new ArcheCommandExecutor(handler);
 		pluginCommand.setExecutor(executor);
-		var kommandant = handler.getBrigadierNodes();
-		kommandant.getNodes().forEach(intercept::injectNode);
 	}
 	
 	private void listen(Listener l) {
