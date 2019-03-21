@@ -42,7 +42,6 @@
 		<groupId>de.exceptionflug</groupId>
 		<artifactId>protocolize-api</artifactId>
 		<version>1.2.1-SNAPSHOT</version>
-		<scope>provided</scope>
 	</dependency>
 	<dependency>
 		<groupId>net.md-5</groupId>
@@ -90,7 +89,7 @@
               <artifactSet>
                 <includes>
                   <include>co.lotc:tythan-common</include>
-                  <include>de.exceptionflug.protocolize:**</include>
+                  <include>de.exceptionflug:protocolize-api</include>
                 </includes>
               </artifactSet>
             </configuration>
