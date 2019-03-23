@@ -138,7 +138,7 @@ public class HelpCommand extends ArcheCommand {
 					.append(trailing).color(GRAY).append(" ==-").color(DARK_AQUA);
 			
 			if(min > 0) b.append(" [").hover("Previous Page").color(RED).command(alias + " -h " + (min/7)).append('\u2190').append("]");
-			if(subs.size() >= max) b.append(" [").hover("Next Page").color(RED).command(alias + " -h " + (min/7+2)).append('\u2192').append("]");
+			if(subs.size() >= max) b.append(" [").hover("Next Page").color(RED).command(alias + " -h " + ((min+2)/7+1)).append('\u2192').append("]");
 			
 			c.msg(b.build());
 		}
