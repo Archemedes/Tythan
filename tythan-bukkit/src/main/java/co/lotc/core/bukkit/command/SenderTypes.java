@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 
 import co.lotc.core.agnostic.Sender;
 import co.lotc.core.bukkit.wrapper.BukkitSender;
+import co.lotc.core.command.ParameterType;
 
 public final class SenderTypes {
 
@@ -27,7 +28,7 @@ public final class SenderTypes {
 	}
 	
 	public static void registerPlayerType() {
-		Commands.defineArgumentType(Player.class)
+		new ParameterType<>(Player.class)
 			.senderMapper(UNWRAP_PLAYER)
 			.mapper(s->{
 				if(s.length() == 36) {
@@ -43,7 +44,7 @@ public final class SenderTypes {
 	
 	@SuppressWarnings("deprecation")
 	public static void registerOfflinePlayerType() {
-		Commands.defineArgumentType(OfflinePlayer.class)
+		new ParameterType<>(OfflinePlayer.class)
 		.mapper(s->{
 			UUID u = uuidFromString(s);
 			
