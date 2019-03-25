@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 
 import co.lotc.core.CoreLog;
 import co.lotc.core.agnostic.Sender;
+import co.lotc.core.command.RanCommand.CmdParserException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -87,7 +88,11 @@ public class AgnosticExecutor{
 	}
 	
 	private void executeCommand(ArcheCommand command, RanCommand c) {
-		command.execute(c); //TODO will this respect permissions even with invoke()??
+		try {
+			command.execute(c); //TODO will this respect permissions even with invoke()??
+		} catch(CmdParserException e) {
+			c.handleException(e);
+		}
 	}
 	
 	private List<String> subCompletions(Sender sender, ArcheCommand cmd, String argZero){

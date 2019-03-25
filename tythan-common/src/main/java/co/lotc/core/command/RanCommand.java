@@ -128,7 +128,7 @@ public class RanCommand implements CommandHandle {
 	}
 	
 	void handleException(Exception e) {
-		if(e instanceof CmdParserException) {
+		if(e instanceof CmdParserException || e.getCause() instanceof CmdParserException) {
 			String err = e.getMessage();
 			if(StringUtils.isEmpty(err)) CoreLog.info("An empty CmdParserException for command: " + usedAlias + " from " + sender + ". This might be intentional.");
 			else msgRaw(ERROR_PREFIX + e.getMessage());
