@@ -72,10 +72,6 @@ public class WeakBlock implements ConfigurationSerializable {
 		return new Location(w, x, y, z);
 	}
 
-	public boolean isValid() {
-		return Bukkit.getWorld(world) != null;
-	}
-
 	@Override
 	public boolean equals(Object o){
 		if(!(o instanceof WeakBlock)) return false;
