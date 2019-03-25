@@ -84,6 +84,10 @@ public class WeakBlock implements ConfigurationSerializable {
 		return this.x == other.x && this.y == other.y && this.z == other.z && ObjectUtils.equals(this.world, other.world);
 	}
 	
+	public World getBukkitWorld() {
+		return Bukkit.getWorld(this.world);
+	}
+	
 	@Override
 	public String toString() {
 		return world + ':' + x + ':' + y + ':' + z;
