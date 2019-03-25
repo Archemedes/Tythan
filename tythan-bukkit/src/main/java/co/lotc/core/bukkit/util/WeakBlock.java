@@ -88,6 +88,17 @@ public class WeakBlock implements ConfigurationSerializable {
 		return Bukkit.getWorld(this.world);
 	}
 	
+	public boolean isWorldLoaded() {
+		World w = getBukkitWorld();
+		return w != null;
+	}
+	
+	public boolean isChunkLoaded() {
+		World w = getBukkitWorld();
+		if(w == null) return false;
+		return w.isChunkLoaded(getChunkX(), getChunkZ());
+	}
+	
 	@Override
 	public String toString() {
 		return world + ':' + x + ':' + y + ':' + z;
