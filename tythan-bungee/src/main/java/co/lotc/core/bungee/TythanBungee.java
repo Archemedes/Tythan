@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 
-import co.lotc.core.DependencyLoader;
 import co.lotc.core.Tythan;
 import co.lotc.core.TythanProvider;
 import co.lotc.core.agnostic.Command;
@@ -87,10 +86,6 @@ public class TythanBungee extends Plugin implements Tythan {
 		var sc = (BungeeCommandData) wrapper;
 		var exec = new BungeeCommandExecutor(command, sc);
 		getProxy().getPluginManager().registerCommand(sc.getPlugin(), exec);
-	}
-	
-	static { //Thanks Tofuus for the gross hacks <3
-		DependencyLoader.loadJars(new File("plugins/Tythan/jars"));
 	}
 }
 

@@ -1,13 +1,10 @@
 package co.lotc.core.bukkit;
 
-import java.io.File;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import co.lotc.core.DependencyLoader;
 import co.lotc.core.Tythan;
 import co.lotc.core.TythanProvider;
 import co.lotc.core.agnostic.Command;
@@ -89,9 +86,5 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 	
 	private void listen(Listener l) {
 		Bukkit.getPluginManager().registerEvents(l, this);
-	}
-	
-	static { //Thanks Tofuus for the gross hacks <3
-		DependencyLoader.loadJars(new File("plugins/Tythan/jars"));
 	}
 }
