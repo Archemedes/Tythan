@@ -43,6 +43,9 @@ public class ItemUtil {
 	 * @param value Value to be stored as an NBTString
 	 */
 	public static void setCustomTag(ItemStack item, String key, String value) {
+		if("true".equals(value) || "false".equals(value))
+			throw new IllegalArgumentException("Values true/false cannot be serialized so they are forbidden!");
+		
 		var meta = item.getItemMeta();
 		var container = meta.getCustomTagContainer();
 		container.setCustomTag(fuckYouBukkitJustGiveMeAKey(key), ItemTagType.STRING, value);
