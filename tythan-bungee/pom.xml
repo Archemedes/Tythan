@@ -49,6 +49,12 @@
 		<version>1.13-SNAPSHOT</version>
 		<scope>provided</scope>
 	</dependency>
+	<dependency>
+		<groupId>com.mojang</groupId>
+		<artifactId>brigadier</artifactId>
+		<version>1.0.17</version>
+		<scope>provided</scope>
+	</dependency>
    </dependencies>
 
   <build>
@@ -89,7 +95,6 @@
               <artifactSet>
                 <includes>
                   <include>co.lotc:tythan-common</include>
-                  <include>de.exceptionflug:protocolize-api</include>
                 </includes>
               </artifactSet>
             </configuration>
