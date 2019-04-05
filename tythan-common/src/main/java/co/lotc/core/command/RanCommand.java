@@ -161,7 +161,7 @@ public class RanCommand implements CommandHandle {
 						flagArg = flag.getArg().getDefaultInput();
 					}
 					
-					Object resolved = Optional.of(flagArg).map(flag.getArg()::resolve).orElse(null);
+					Object resolved = Optional.of(flagArg).map(xx->flag.getArg().resolve(sender, xx)).orElse(null);
 					if(resolved == null) error(ERROR_FLAG_ARG + flag.getName());
 					else putFlag(flag, resolved);
 				}
@@ -197,8 +197,8 @@ public class RanCommand implements CommandHandle {
 		for(int i = 0; i < cmdArgs.size(); i++) {
 			CmdArg<?> arg = cmdArgs.get(i);
 			Object o = null;
-			if(i >= args.size()) o = arg.resolveDefault();
-			else o = arg.resolve(args, i);
+			if(i >= args.size()) o = arg.resolveDefault(sender);
+			else o = arg.resolve(sender, args, i);
 			
 			if(o == null) error("at argument " + (i+1) + ": " + arg.getErrorMessage());
 			else argResults.add(o);

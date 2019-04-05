@@ -3,6 +3,7 @@ package co.lotc.core.command;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -36,7 +37,7 @@ public class ParameterType<T> {
 	
 	public static boolean argumentTypeExists(Class<?> clazz) {
 		var x = customTypes.get(clazz);
-		return x != null && x.mapper() != null;
+		return x != null && (x.mapper() != null || x.mapperWithSender != null);
 	}
 	
 	/* END OF STATICS */
@@ -44,6 +45,7 @@ public class ParameterType<T> {
 	protected final Class<T> forClass;
 	
 	@Getter private Function<String, T> mapper;
+	@Setter private BiFunction<Sender, String, T> mapperWithSender;
 	@Getter private Function<Sender, T> senderMapper;
 	@Getter private Predicate<T> filter;
 	private ArgumentType<?> brigadierType;
@@ -88,9 +90,12 @@ public class ParameterType<T> {
 	}
 	
 	public void settle(CmdArg<T> arg) {
+		if(mapper != null && mapperWithSender != null)
+			throw new IllegalStateException("Tried to define the mapping of an argument from string twice! Once with and once without sender! Please define only one");
 		if(completer != null) arg.setCompleter(completer);
 		if(filter != null) arg.setFilter(filter);
 		if(mapper != null) arg.setMapper(mapper);
+		if(mapperWithSender != null) arg.setMapperWithSender(mapperWithSender);
 		if(brigadierType!=null) arg.setBrigadierType(brigadierType);
 	}
 	

@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
-import com.mojang.brigadier.arguments.ArgumentType;
-
+import co.lotc.core.agnostic.Sender;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -22,6 +23,7 @@ public class CmdArg<T> {
 	private static final Supplier<Collection<String>> NULL_COMPLETER = ArrayList::new;
 	
 	@Setter private Function<String, T> mapper;
+	@Setter private BiFunction<Sender, String, T> mapperWithSender = ($,s)->mapper.apply(s);
 	@Setter private Predicate<T> filter = $->true;
 	@Setter private Supplier<? extends Collection<String>> completer = NULL_COMPLETER;
 	
@@ -30,17 +32,17 @@ public class CmdArg<T> {
 	
 	private final String name, errorMessage, defaultInput, description;
 	
-	T resolveDefault() {
+	T resolveDefault(Sender s) {
 		if(defaultInput == null) return null;
-		return resolve(defaultInput);
+		return resolve(s, defaultInput);
 	}
 	
-	T resolve(List<String> input, int i) {
-		return resolve(input.get(i));
+	T resolve(Sender s, List<String> input, int i) {
+		return resolve(s, input.get(i));
 	}
 	
-	T resolve(String input) {
-		T mapped = mapper.apply(input);
+	T resolve(Sender s, String input) {
+		T mapped = mapperWithSender.apply(s, input);
 		if(mapped == null || !filter.test(mapped)) return null;
 		
 		return mapped;

@@ -30,7 +30,8 @@ public final class SenderTypes {
 	public static void registerPlayerType() {
 		new ParameterType<>(Player.class)
 			.senderMapper(UNWRAP_PLAYER)
-			.mapper(s->{
+			.mapperWithSender((send,s)->{
+				if("@p".equals(s)) s = send.getName();
 				if(s.length() == 36) {
 					try {return Bukkit.getPlayer(UUID.fromString(s));}
 					catch(IllegalArgumentException e) {return null;}
@@ -45,7 +46,9 @@ public final class SenderTypes {
 	@SuppressWarnings("deprecation")
 	public static void registerOfflinePlayerType() {
 		new ParameterType<>(OfflinePlayer.class)
-		.mapper(s->{
+		.mapperWithSender((send,s)->{
+			if("@p".equals(s)) s = send.getName();
+			
 			UUID u = uuidFromString(s);
 			
 			OfflinePlayer op = null;
