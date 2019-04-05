@@ -19,7 +19,7 @@
 
   <properties>
     <project.build.sourceEncodeing>UTF-8</project.build.sourceEncodeing>
-    <revision>0.3</revision>
+    <revision>0.4</revision>
   </properties>
 
   <distributionManagement>
