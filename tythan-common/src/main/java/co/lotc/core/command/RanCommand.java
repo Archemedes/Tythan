@@ -188,7 +188,7 @@ public class RanCommand implements CommandHandle {
 		List<CmdArg<?>> cmdArgs = command.getArgs();
 		
 		HelpCommand help = command.getHelp();
-		if(args.size() == 0 && cmdArgs.size() > 0 && help != null) {
+		if(args.size() == 0 && cmdArgs.size() > 0 && !cmdArgs.get(0).hasDefaultInput() && help != null) {
 			CoreLog.debug("Found 0 args for a command that takes more. Defaulting to help output.");
 			flags.put("h", 0);
 			return;
