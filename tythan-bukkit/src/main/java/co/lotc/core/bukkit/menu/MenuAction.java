@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
+import co.lotc.core.bukkit.menu.icon.Icon;
 import co.lotc.core.bukkit.util.InventoryUtil.MovedItem;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -26,5 +27,9 @@ public class MenuAction {
 	
 	public Player getPlayer() {
 		return menuAgent.getPlayer();
+	}
+	
+	public void refreshItem(Icon icon) {
+		this.getMenuAgent().getMenu().updateIconItem(icon);
 	}
 }

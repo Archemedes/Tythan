@@ -29,6 +29,7 @@ import com.comphenix.protocol.wrappers.nbt.NbtFactory;
 import com.comphenix.protocol.wrappers.nbt.NbtList;
 
 import co.lotc.core.CoreLog;
+import lombok.NonNull;
 import lombok.var;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TranslatableComponent;
@@ -42,7 +43,7 @@ public class ItemUtil {
 	 * @param key Key, will be lowercased and must match [a-z0-9/._-]
 	 * @param value Value to be stored as an NBTString
 	 */
-	public static void setCustomTag(ItemStack item, String key, String value) {
+	public static void setCustomTag(@NonNull ItemStack item, String key, String value) {
 		if("true".equals(value) || "false".equals(value))
 			throw new IllegalArgumentException("Values true/false cannot be serialized so they are forbidden!");
 		
@@ -53,18 +54,20 @@ public class ItemUtil {
 	}
 	
 	public static String getCustomTag(ItemStack item, String key) {
+		if(!exists(item)) return null;
 		var meta = item.getItemMeta();
 		var container = meta.getCustomTagContainer();
 		return container.getCustomTag(fuckYouBukkitJustGiveMeAKey(key), ItemTagType.STRING);
 	}
 	
 	public static boolean hasCustomTag(ItemStack item, String key) {
+		if(!exists(item)) return false;
 		var meta = item.getItemMeta();
 		var container = meta.getCustomTagContainer();
 		return container.hasCustomTag(fuckYouBukkitJustGiveMeAKey(key), ItemTagType.STRING);
 	}
 	
-	public static void removeCustomTag(ItemStack item, String key) {
+	public static void removeCustomTag(@NonNull ItemStack item, String key) {
 		var meta = item.getItemMeta();
 		var container = meta.getCustomTagContainer();
 		container.removeCustomTag(fuckYouBukkitJustGiveMeAKey(key));

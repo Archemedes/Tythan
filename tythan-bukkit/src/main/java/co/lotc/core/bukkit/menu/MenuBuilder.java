@@ -21,6 +21,7 @@ import co.lotc.core.bukkit.menu.icon.Link;
 import co.lotc.core.bukkit.menu.icon.Pad;
 import co.lotc.core.bukkit.menu.icon.SimpleButton;
 import co.lotc.core.bukkit.util.ItemUtil;
+import lombok.NonNull;
 
 public class MenuBuilder {
 	final String title;
@@ -50,7 +51,7 @@ public class MenuBuilder {
 		return icon(firstEmpty(), icon);
 	}
 	
-	public MenuBuilder icon(int i, Icon icon) {
+	public MenuBuilder icon(int i, @NonNull Icon icon) {
 		checkDuplicates(icon);
 		icons.set(i, icon);
 		return this;
@@ -134,6 +135,8 @@ public class MenuBuilder {
 	
 	private void checkDuplicates(Icon x) {
 		if(x instanceof Pad) return;
-		if(icons.contains(x)) throw new IllegalArgumentException("");
+		for(Icon o : icons) {
+			if(o == x) throw new IllegalArgumentException("Please make each icon added to the menu a unique object!");
+		}
 	}
 }
