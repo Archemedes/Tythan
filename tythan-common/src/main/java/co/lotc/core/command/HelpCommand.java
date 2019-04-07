@@ -123,6 +123,7 @@ public class HelpCommand extends ArcheCommand {
 		List<ArcheCommand> subs = parent.getSubCommands().stream()
 				.filter(sub->sub!=this)
 				.filter(sub->sub.hasPermission(s))
+				.sorted((s1,s2)-> s1.getMainCommand().compareTo(s2.getMainCommand()))
 				.collect(Collectors.toList());
 		
 		String alias = "/" + c.getUsedAlias();
@@ -138,7 +139,7 @@ public class HelpCommand extends ArcheCommand {
 					.append(trailing).color(GRAY).append(" ==-").color(DARK_AQUA);
 			
 			if(min > 0) b.append(" [").hover("Previous Page").color(RED).command(alias + " -h " + (min/7)).append('\u2190').append("]");
-			if(subs.size() >= max) b.append(" [").hover("Next Page").color(RED).command(alias + " -h " + ((min+2)/7+1)).append('\u2192').append("]");
+			if(subs.size() > max) b.append(" [").hover("Next Page").color(RED).command(alias + " -h " + ((min+2)/7+1)).append('\u2192').append("]");
 			
 			c.msg(b.build());
 		}
