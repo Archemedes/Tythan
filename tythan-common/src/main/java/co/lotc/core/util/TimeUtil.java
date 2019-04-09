@@ -69,9 +69,11 @@ public final class TimeUtil {
 
 	public static Duration parseDuration(String parsable) {
 		Duration duration = Duration.ZERO;
+		boolean anything = false;
 		Pattern pat = Pattern.compile("(\\d+)([wdhms])");
 		Matcher matcher = pat.matcher(parsable);
 		while(matcher.find()) {
+			anything = true;
 			int quantity = Integer.parseInt(matcher.group(1));
 			String timescale = matcher.group(2);
 
@@ -99,7 +101,8 @@ public final class TimeUtil {
 			}
 			duration = duration.plus(quantity, unit);
 		}
-		return duration;
+		if(anything) return duration;
+		else return null;
 	}
 
 	
