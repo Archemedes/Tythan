@@ -3,6 +3,20 @@ package co.lotc.core.util;
 import static java.util.concurrent.TimeUnit.*;
 import static net.md_5.bungee.api.ChatColor.*;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.google.common.primitives.Longs;
+
 import co.lotc.core.Tythan;
 import co.lotc.core.agnostic.AbstractChatBuilder;
 import net.md_5.bungee.api.ChatColor;
@@ -12,6 +26,82 @@ public final class TimeUtil {
 
 	private TimeUtil() {}
 	
+	public static Instant parseEager(String input) {
+		Long simple = Longs.tryParse(input);
+		if(simple != null) return Instant.ofEpochMilli(simple);
+
+		Duration duration = parseDuration(input);
+		if(duration != null) return Instant.now().minus(duration);
+		
+		LocalDateTime t = tryParseTime(input);
+		if(t == null) t = tryParseDate(input);
+		if(t == null) t = tryParseDateTime(input);
+		if(t == null) return null;
+		return t.toInstant(ZoneOffset.UTC);
+	}
+
+	public static LocalDateTime tryParseTime(String input) {
+		try {
+			LocalTime t = LocalTime.parse(input);
+			return t.atDate(LocalDate.now());
+		}catch(DateTimeParseException e) {
+			return null;
+		}
+	}
+
+	public static LocalDateTime tryParseDate(String input) {
+		try {
+			LocalDate t = LocalDate.parse(input);
+			return t.atStartOfDay();
+		}catch(DateTimeParseException e) {
+			return null;
+		}
+	}
+
+	public static LocalDateTime tryParseDateTime(String input) {
+		try {
+			return LocalDateTime.parse(input);
+		}catch(DateTimeParseException e) {
+			return null;
+		}
+	}
+
+
+	public static Duration parseDuration(String parsable) {
+		Duration duration = Duration.ZERO;
+		Pattern pat = Pattern.compile("(\\d+)([wdhms])");
+		Matcher matcher = pat.matcher(parsable);
+		while(matcher.find()) {
+			int quantity = Integer.parseInt(matcher.group(1));
+			String timescale = matcher.group(2);
+
+			TemporalUnit unit = null;
+			switch (timescale) {
+			case "w":
+				quantity *= 7*24;
+				unit = ChronoUnit.HOURS;
+				break;
+			case "d":
+				quantity *=24;
+				unit = ChronoUnit.HOURS;
+				break;
+			case "h":
+				unit = ChronoUnit.HOURS;
+				break;
+			case "m":
+				unit = ChronoUnit.MINUTES;
+				break;
+			case "s":
+				unit = ChronoUnit.SECONDS;
+				break;
+			default:
+				return null;
+			}
+			duration = duration.plus(quantity, unit);
+		}
+		return duration;
+	}
+
 	
 	public static BaseComponent printTicks(long ticks) {
 		return printMillis(ticks * 50l);
