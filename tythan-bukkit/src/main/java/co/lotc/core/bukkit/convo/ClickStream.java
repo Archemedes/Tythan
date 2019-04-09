@@ -1,4 +1,4 @@
-package co.lotc.core.bukkit.util;
+package co.lotc.core.bukkit.convo;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;

@@ -1,4 +1,4 @@
-package co.lotc.core.bukkit.util;
+package co.lotc.core.bukkit.convo;
 
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -22,6 +22,7 @@ import com.google.common.base.Predicates;
 import co.lotc.core.CoreLog;
 import co.lotc.core.agnostic.AbstractChatStream;
 import co.lotc.core.bukkit.TythanBukkit;
+import co.lotc.core.bukkit.util.Run;
 import co.lotc.core.bukkit.wrapper.BukkitSender;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
