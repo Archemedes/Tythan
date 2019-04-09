@@ -43,6 +43,11 @@ public class Menu implements InventoryHolder{
 			inventory = Bukkit.createInventory(this, builder.type, builder.title);
 	}
 	
+	/**
+	 * this is the correct way to open a new menu session. This will flush the Agent.
+	 * Navigating between menus shouldn't be done with this one but with MenuAgent#open
+	 * @param p Player to open the Menu for
+	 */
 	public void openSession(Player p) {
 		MenuAgent a = new MenuAgent(this, p);
 		viewers.put(p.getUniqueId(), a);
@@ -51,7 +56,9 @@ public class Menu implements InventoryHolder{
 	
 	void init() {
 		if(!initialized) {
-			CoreLog.debug("Initializing menu with title: " + inventory.getTitle());
+			@SuppressWarnings("deprecation")
+			String title = inventory.getTitle();
+			CoreLog.debug("Initializing menu with title: " + title);
 			updateIconItems();
 			initialized = true;
 		}

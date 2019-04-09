@@ -37,6 +37,10 @@ public class MenuListener implements Listener {
 		if(agent != null) {
 			CoreLog.debug("Closing Menu with title " + e.getInventory().getTitle() + " for player: " + e.getPlayer().getName());
 			agent.getMenu().clearViewer(agent);
+			if(!agent.isNavigating()) {
+				//Session ended. Player either closed inv manually or MenuAgent::close was called.
+				agent.runSessionClosureCallbacks();
+			}
 		}
 	}
 	

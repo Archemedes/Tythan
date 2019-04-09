@@ -1,18 +1,27 @@
 package co.lotc.core.bukkit.menu;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import co.lotc.core.bukkit.TythanBukkit;
 import co.lotc.core.bukkit.util.Run;
 import co.lotc.core.util.Context;
+import lombok.AccessLevel;
 import lombok.Getter;
 
 public class MenuAgent {
 	@Getter private final Player player;
 	@Getter private	Menu menu = null; //Current menu focused on, may change
+
+	//We need this state to discern between player closing inventory manually and us closing the inventory to navigate
+	@Getter(AccessLevel.PACKAGE) private boolean navigating;
 	
 	private final Context context = new Context();
+	private final List<Consumer<Context>> closure = new ArrayList<>();
 	
 	MenuAgent(Menu menu, Player player) {
 		this.menu = menu;
@@ -28,11 +37,21 @@ public class MenuAgent {
 			//The ordering here is very important. Any change to it will break stuff
 			//This is due to interleaving of the Open and Close events...
 			//which interact and read state from this object
-			player.getOpenInventory().close(); //Will remove the viewer too
+			navigating = true; //lets InventoryCloseEvent know the session shouldn't end
+			player.closeInventory(); //InventoryCloseEvent is called here --> Will remove the viewer too
+			navigating = false;
 			menu = newMenu;
 			menu.addViewer(this);
 			player.getPlayer().openInventory(menu.getInventory());
 		});
+	}
+	
+	public void onSessionClose(Consumer<Context> callback) {
+		closure.add(callback);
+	}
+	
+	void runSessionClosureCallbacks() {
+		closure.forEach(c->c.accept(context));
 	}
 	
 	public void close() {
