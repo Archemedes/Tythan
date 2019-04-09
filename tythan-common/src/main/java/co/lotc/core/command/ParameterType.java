@@ -1,5 +1,7 @@
 package co.lotc.core.command;
 
+import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.HashMap;
@@ -67,6 +69,8 @@ public class ParameterType<T> {
 		if(forClass == String.class) return false;
 		if(forClass == Sender.class) return false;
 		if(forClass == Instant.class) return false;
+		if(forClass == Duration.class) return false;
+		if(forClass == Timestamp.class) return false;
 		return true;
 	}
 	

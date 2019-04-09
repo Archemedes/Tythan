@@ -3,6 +3,7 @@ package co.lotc.core.util;
 import static java.util.concurrent.TimeUnit.*;
 import static net.md_5.bungee.api.ChatColor.*;
 
+import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -27,8 +28,8 @@ public final class TimeUtil {
 	private TimeUtil() {}
 	
 	public static Instant parseEager(String input) {
-		Long simple = Longs.tryParse(input);
-		if(simple != null) return Instant.ofEpochMilli(simple);
+		Timestamp timestamp = parseTimestamp(input);
+		if(timestamp != null) return timestamp.toInstant();
 
 		Duration duration = parseDuration(input);
 		if(duration != null) return Instant.now().minus(duration);
@@ -105,6 +106,11 @@ public final class TimeUtil {
 		else return null;
 	}
 
+	public static Timestamp parseTimestamp(String input) {
+		Long simple = Longs.tryParse(input);
+		if(simple != null) return new Timestamp(simple);
+		else return null;
+	}
 	
 	public static BaseComponent printTicks(long ticks) {
 		return printMillis(ticks * 50l);

@@ -1,5 +1,7 @@
 package co.lotc.core.command;
 
+import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.function.DoublePredicate;
@@ -185,9 +187,23 @@ public class ArgBuilder {
 	}
 	
 	public ArcheCommandBuilder asInstant() {
-		defaults("time","Please provide a valid date (YYYY-MM-DD), time (hh:mm:ss), datetime or duration (e.g.: 3w10d5h7m40s)");
+		defaults("time","Please provide a valid date (YYYY-MM-DD), time (hh:mm:ss), datetime (YYYY-MM-DDThh:mm:ss) or duration (e.g.: 3w10d5h7m40s)");
 		val arg = build(Instant.class);
 		arg.setMapper(TimeUtil::parseEager);
+		return command;
+	}
+	
+	public ArcheCommandBuilder asDuration() {
+		defaults("duration","Please provide a duration (e.g.: 3w10d5h17m40s)");
+		val arg = build(Duration.class);
+		arg.setMapper(TimeUtil::parseDuration);
+		return command;
+	}
+	
+	public ArcheCommandBuilder asTimestamp() {
+		defaults("timestamp","Provide a timestamp in miliseconds");
+		val arg = build(Timestamp.class);
+		arg.setMapper(TimeUtil::parseTimestamp);
 		return command;
 	}
 	
@@ -242,6 +258,10 @@ public class ArgBuilder {
 			asBoolean();
 		} else if(c==Instant.class) {
 			asInstant();
+		} else if(c==Timestamp.class) {
+			asTimestamp();
+		} else if(c==Duration.class) {
+			asDuration();
 		} else if(c.isEnum() && !ParameterType.argumentTypeExists(c)) {
 			asEnum((Class<Enum>) c);
 		} else {
