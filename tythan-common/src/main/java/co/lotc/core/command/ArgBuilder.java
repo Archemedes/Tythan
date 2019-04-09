@@ -1,5 +1,6 @@
 package co.lotc.core.command;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
@@ -17,6 +18,7 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 
 import co.lotc.core.CoreLog;
+import co.lotc.core.util.TimeUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -182,6 +184,13 @@ public class ArgBuilder {
 		return command;
 	}
 	
+	public ArcheCommandBuilder asInstant() {
+		defaults("time","Please provide a valid date (YYYY-MM-DD), time (hh:mm:ss), datetime or duration (e.g.: 3w10d5h7m40s)");
+		val arg = build(Instant.class);
+		arg.setMapper(TimeUtil::parseEager);
+		return command;
+	}
+	
 	public ArcheCommandBuilder asBoolean() {
 		return asBoolean(false);
 	}
@@ -231,6 +240,8 @@ public class ArgBuilder {
 			asDouble();
 		} else if(c==Boolean.class || c==boolean.class) {
 			asBoolean();
+		} else if(c==Instant.class) {
+			asInstant();
 		} else if(c.isEnum() && !ParameterType.argumentTypeExists(c)) {
 			asEnum((Class<Enum>) c);
 		} else {

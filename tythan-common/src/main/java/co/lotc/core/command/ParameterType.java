@@ -1,5 +1,6 @@
 package co.lotc.core.command;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,6 +66,7 @@ public class ParameterType<T> {
 		if(forClass == Boolean.class) return false;
 		if(forClass == String.class) return false;
 		if(forClass == Sender.class) return false;
+		if(forClass == Instant.class) return false;
 		return true;
 	}
 	
