@@ -1,4 +1,4 @@
-package co.lotc.core.bukkit.util;
+package co.lotc.core.util;
 
 import static java.util.concurrent.TimeUnit.*;
 import static net.md_5.bungee.api.ChatColor.*;
