@@ -12,7 +12,6 @@ import co.lotc.core.bukkit.command.ArcheCommandExecutor;
 import co.lotc.core.bukkit.command.BrigadierProvider;
 import co.lotc.core.bukkit.command.ItemArg;
 import co.lotc.core.bukkit.command.SenderTypes;
-import co.lotc.core.bukkit.listener.ChatStreamListener;
 import co.lotc.core.bukkit.menu.MenuListener;
 import co.lotc.core.bukkit.util.ChatBuilder;
 import co.lotc.core.bukkit.util.Run;
@@ -44,8 +43,6 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 		debugging = getConfig().getBoolean("debug");
 		
 		registerCommandParameterTypes();
-		
-		listen(new ChatStreamListener(this));
 		listen(new MenuListener());
 		
 		Run.as(this).delayed(2, ()->{ //Brigadier singleton deep inside NMS: get and inject
