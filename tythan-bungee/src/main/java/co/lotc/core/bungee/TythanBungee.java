@@ -69,7 +69,7 @@ public class TythanBungee extends Plugin implements Tythan {
 						return ProxyServer.getInstance().getPlayer(s);
 					}
 				})
-				.completer(PLAYER_COMPLETER);
+				.completer(PLAYER_COMPLETER).register();
 	}
 	
 	@Override
