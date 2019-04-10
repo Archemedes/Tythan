@@ -7,7 +7,7 @@ import co.lotc.core.bukkit.menu.MenuAgent;
 
 public abstract class Icon {
 	
-	protected Icon(){}
+	Icon(){}
 	
 	/**
 	 * This gives the itemstack the Icon should be displaying
