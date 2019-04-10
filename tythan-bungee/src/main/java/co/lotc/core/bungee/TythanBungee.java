@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import co.lotc.core.Tythan;
 import co.lotc.core.TythanProvider;
 import co.lotc.core.agnostic.Command;
-import co.lotc.core.bungee.command.BrigadierInjector;
 import co.lotc.core.bungee.command.BungeeCommandData;
 import co.lotc.core.bungee.command.BungeeCommandExecutor;
 import co.lotc.core.bungee.util.ChatBuilder;
@@ -16,7 +15,6 @@ import co.lotc.core.bungee.wrapper.BungeeConfig;
 import co.lotc.core.bungee.wrapper.BungeeSender;
 import co.lotc.core.command.ArcheCommand;
 import co.lotc.core.command.ParameterType;
-import de.exceptionflug.protocolize.api.protocol.ProtocolAPI;
 import lombok.Getter;
 import lombok.var;
 import net.md_5.bungee.api.CommandSender;
@@ -37,7 +35,6 @@ public class TythanBungee extends Plugin implements Tythan {
 	public void onEnable(){
 		saveDefaultConfig();
 		registerCommandParameterTypes();
-		ProtocolAPI.getEventManager().registerListener(new BrigadierInjector());
 	}
 
 	@Override
