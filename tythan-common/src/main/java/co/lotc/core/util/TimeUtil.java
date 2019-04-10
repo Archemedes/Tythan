@@ -71,7 +71,7 @@ public final class TimeUtil {
 	public static Duration parseDuration(String parsable) {
 		Duration duration = Duration.ZERO;
 		boolean anything = false;
-		Pattern pat = Pattern.compile("(\\d+)([wdhms])");
+		Pattern pat = Pattern.compile("(\\d+)([ywdhms])");
 		Matcher matcher = pat.matcher(parsable);
 		while(matcher.find()) {
 			anything = true;
@@ -80,6 +80,10 @@ public final class TimeUtil {
 
 			TemporalUnit unit = null;
 			switch (timescale) {
+			case "y":
+				quantity *= 365*24;
+				unit = ChronoUnit.HOURS;
+				break;
 			case "w":
 				quantity *= 7*24;
 				unit = ChronoUnit.HOURS;

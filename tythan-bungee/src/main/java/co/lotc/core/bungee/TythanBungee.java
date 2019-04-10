@@ -1,28 +1,5 @@
 package co.lotc.core.bungee;
 
-import co.lotc.core.Tythan;
-import co.lotc.core.TythanProvider;
-import co.lotc.core.agnostic.Command;
-import co.lotc.core.agnostic.Sender;
-import co.lotc.core.bungee.command.BrigadierInjector;
-import co.lotc.core.bungee.command.BungeeCommandData;
-import co.lotc.core.bungee.command.BungeeCommandExecutor;
-import co.lotc.core.bungee.util.ChatBuilder;
-import co.lotc.core.bungee.wrapper.BungeeConfig;
-import co.lotc.core.bungee.wrapper.BungeeSender;
-import co.lotc.core.command.ArcheCommand;
-import co.lotc.core.command.ParameterType;
-import de.exceptionflug.protocolize.api.protocol.ProtocolAPI;
-import lombok.Getter;
-import lombok.var;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.config.Configuration;
-import net.md_5.bungee.config.ConfigurationProvider;
-import net.md_5.bungee.config.YamlConfiguration;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +9,27 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import co.lotc.core.Tythan;
+import co.lotc.core.TythanProvider;
+import co.lotc.core.agnostic.Command;
+import co.lotc.core.agnostic.Sender;
+import co.lotc.core.bungee.command.BungeeCommandData;
+import co.lotc.core.bungee.command.BungeeCommandExecutor;
+import co.lotc.core.bungee.util.ChatBuilder;
+import co.lotc.core.bungee.wrapper.BungeeConfig;
+import co.lotc.core.bungee.wrapper.BungeeSender;
+import co.lotc.core.command.ArcheCommand;
+import co.lotc.core.command.ParameterType;
+import lombok.Getter;
+import lombok.var;
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
 
 public class TythanBungee extends Plugin implements Tythan {
 	@Getter private boolean debugging;
@@ -48,7 +46,6 @@ public class TythanBungee extends Plugin implements Tythan {
 	public void onEnable(){
 		saveDefaultConfig();
 		registerCommandParameterTypes();
-		ProtocolAPI.getEventManager().registerListener(new BrigadierInjector());
 	}
 
 	@Override

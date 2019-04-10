@@ -12,7 +12,7 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(makeFinal=true, level=AccessLevel.PRIVATE)
-public class Link extends Icon {
+public class Link extends Button {
 	Supplier<Menu> to;
 	ItemStack item;
 	
