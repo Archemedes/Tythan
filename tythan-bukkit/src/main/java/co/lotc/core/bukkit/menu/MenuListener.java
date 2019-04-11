@@ -21,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import co.lotc.core.CoreLog;
 import co.lotc.core.bukkit.menu.icon.Icon;
 import co.lotc.core.bukkit.util.InventoryUtil;
+import co.lotc.core.bukkit.util.ItemUtil;
 import co.lotc.core.bukkit.util.InventoryUtil.MovedItem;
 import lombok.var;
 
@@ -60,7 +61,7 @@ public class MenuListener implements Listener {
 			var action = new MenuAction(agent, InventoryUtil.getResultOfEvent(e), e.getClick());
 			boolean cancel = setCancel(e, action);
 			if(cancel) { //button-like action
-				if(action.getMovedItems().size() == 1) {
+				if(action.getMovedItems().size() == 1 && ItemUtil.exists(e.getView().getItem(e.getRawSlot())) ) {
 					asIcon(e, e.getRawSlot(), action).ifPresent(i->i.click(action));
 				}
 			} else { //Slot-like action?

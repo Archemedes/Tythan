@@ -23,10 +23,14 @@ public abstract class AbstractChatStream<T extends AbstractChatStream<T>> {
 	
 	protected Consumer<Context> onAbandon, onActivate;
 	
+	public T prompt(Prompt prompt) {
+		prompts.add(prompt);
+		return getThis();
+	}
+	
 	public T prompt(String contextTag, BaseComponent promptText, Consumer<Prompt> fulfillment) {
 		Prompt p = new Prompt(this, contextTag, promptText, fulfillment);
-		prompts.add(p);
-		return getThis();
+		return prompt(p);
 	}
 	
 	public T withContext(String key, Object value) {
