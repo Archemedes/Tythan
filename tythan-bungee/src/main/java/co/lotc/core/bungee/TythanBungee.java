@@ -22,6 +22,7 @@ import co.lotc.core.bungee.wrapper.BungeeConfig;
 import co.lotc.core.bungee.wrapper.BungeeSender;
 import co.lotc.core.command.ArcheCommand;
 import co.lotc.core.command.ParameterType;
+import co.lotc.core.command.brigadier.CommandNodeManager;
 import de.exceptionflug.protocolize.api.protocol.ProtocolAPI;
 import lombok.Getter;
 import lombok.var;
@@ -42,6 +43,7 @@ public class TythanBungee extends Plugin implements Tythan {
 	@Override
 	public void onLoad() {
 		TythanProvider.init(this);
+		CommandNodeManager.getInstance().setBungee(true);
 	}
 	
 	@Override
