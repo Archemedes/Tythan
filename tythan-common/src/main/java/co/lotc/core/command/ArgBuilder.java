@@ -15,9 +15,11 @@ import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Floats;
 import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.LongArgumentType;
 
 import co.lotc.core.CoreLog;
 import co.lotc.core.util.TimeUtil;
@@ -204,6 +206,7 @@ public class ArgBuilder {
 		defaults("timestamp","Provide a timestamp in miliseconds");
 		val arg = build(Timestamp.class);
 		arg.setMapper(TimeUtil::parseTimestamp);
+		arg.setBrigadierType(LongArgumentType.longArg());
 		return command;
 	}
 	
@@ -220,6 +223,7 @@ public class ArgBuilder {
 			else if(Stream.of("false","no","n").anyMatch(s::equalsIgnoreCase)) return false;
 			else return null;
 		});
+		arg.setBrigadierType(BoolArgumentType.bool());
 		return command;
 	}
 	
