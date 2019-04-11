@@ -3,10 +3,3 @@ main: co.lotc.core.bukkit.TythanBukkit
 version: ${project.version}
 depend: [ProtocolLib]
 api-version: 1.13
-
-#Tythan should never have commands
-#Tythan should never have permissions
-#Tythan needs no authors. Don't flatter yourself those bugs you fixed weren't that hard
-#You're tresspassing on this yml
-#Kindly fuck off and go work on something else
-#Attaboy
