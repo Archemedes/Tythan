@@ -19,7 +19,6 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.LongArgumentType;
 
 import co.lotc.core.CoreLog;
 import co.lotc.core.util.TimeUtil;
@@ -206,16 +205,10 @@ public class ArgBuilder {
 		defaults("timestamp","Provide a timestamp in miliseconds");
 		val arg = build(Timestamp.class);
 		arg.setMapper(TimeUtil::parseTimestamp);
-		arg.setBrigadierType(LongArgumentType.longArg());
 		return command;
 	}
 	
 	public ArcheCommandBuilder asBoolean() {
-		return asBoolean(false);
-	}
-	
-	public ArcheCommandBuilder asBoolean(boolean def) {
-		this.defaultInput = def? "y":"n";
 		defaults("bool","Please provide either true/false.");
 		val arg = build(Boolean.class);
 		arg.setMapper(s -> {
@@ -225,6 +218,11 @@ public class ArgBuilder {
 		});
 		arg.setBrigadierType(BoolArgumentType.bool());
 		return command;
+	}
+	
+	public ArcheCommandBuilder asBoolean(boolean def) {
+		this.defaultInput = def? "y":"n";
+		return asBoolean();
 	}
 	
 	public ArcheCommandBuilder asVoid() {
