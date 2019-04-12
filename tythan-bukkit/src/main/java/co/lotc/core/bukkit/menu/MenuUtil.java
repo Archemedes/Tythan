@@ -42,7 +42,7 @@ public final class MenuUtil {
 		return is;
 	}
 	
-	public static List<Menu> createMultiPageMenu(Menu origin, String title, List<Icon> icons){
+	public static List<Menu> createMultiPageMenu(Menu origin, String title, List<? extends Icon> icons){
 		int size = icons.size();
 		
 		List<Menu> result = new ArrayList<>();

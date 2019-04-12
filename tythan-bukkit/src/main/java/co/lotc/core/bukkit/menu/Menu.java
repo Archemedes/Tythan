@@ -26,11 +26,11 @@ public class Menu implements InventoryHolder{
 
 	private boolean initialized = false;
 	
-	public static Menu fromIcons(String title, List<Icon> icons) {
+	public static Menu fromIcons(String title, List<? extends Icon> icons) {
 		return MenuUtil.createMultiPageMenu(null, title, icons).get(0);
 	}
 	
-	public static Menu fromIcons(Menu origin, String title, List<Icon> icons) {
+	public static Menu fromIcons(Menu origin, String title, List<? extends Icon> icons) {
 		return MenuUtil.createMultiPageMenu(origin, title, icons).get(0);
 	}
 	
