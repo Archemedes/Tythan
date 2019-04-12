@@ -15,6 +15,7 @@ import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Floats;
 import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -208,19 +209,20 @@ public class ArgBuilder {
 	}
 	
 	public ArcheCommandBuilder asBoolean() {
-		return asBoolean(false);
-	}
-	
-	public ArcheCommandBuilder asBoolean(boolean def) {
-		this.defaultInput = def? "y":"n";
-		defaults("y/n","Please provide either true/false.");
+		defaults("bool","Please provide either true/false.");
 		val arg = build(Boolean.class);
 		arg.setMapper(s -> {
 			if(Stream.of("true","yes","y").anyMatch(s::equalsIgnoreCase)) return true;
 			else if(Stream.of("false","no","n").anyMatch(s::equalsIgnoreCase)) return false;
 			else return null;
 		});
+		arg.setBrigadierType(BoolArgumentType.bool());
 		return command;
+	}
+	
+	public ArcheCommandBuilder asBoolean(boolean def) {
+		this.defaultInput = def? "y":"n";
+		return asBoolean();
 	}
 	
 	public ArcheCommandBuilder asVoid() {

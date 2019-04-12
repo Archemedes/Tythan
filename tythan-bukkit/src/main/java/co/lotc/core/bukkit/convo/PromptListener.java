@@ -10,6 +10,7 @@ import org.bukkit.event.EventException;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.scheduler.BukkitTask;
@@ -42,14 +43,18 @@ class PromptListener<T extends Event> implements Consumer<Prompt>,Listener,Event
 		var m = Bukkit.getPluginManager();
 		
 		m.registerEvent(AsyncPlayerChatEvent.class, this, EventPriority.LOW, this, tythan, true);
-		if(clazz != AsyncPlayerChatEvent.class) m.registerEvent(clazz, this, EventPriority.LOW, this, tythan, true);
+		m.registerEvent(InventoryOpenEvent.class, this, EventPriority.LOW, this, tythan, true);
+		if(clazz != AsyncPlayerChatEvent.class && clazz != InventoryOpenEvent.class)
+			m.registerEvent(clazz, this, EventPriority.LOW, this, tythan, true);
 	}
 
 	@Override
 	public void execute(Listener listener, Event event) throws EventException {
 		CoreLog.debug("Catching Event as " + this);
 		
-		if(event instanceof AsyncPlayerChatEvent) {
+		if(event instanceof InventoryOpenEvent) { //Cant open inventories while in coversation
+			((InventoryOpenEvent) event).setCancelled(true);
+		}else if(event instanceof AsyncPlayerChatEvent) {
 			var as = (AsyncPlayerChatEvent) event;
 			as.setCancelled(true);
 			if("stop".equals(as.getMessage().toLowerCase()) && as.getPlayer().getUniqueId().equals(uuid) ) {

@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import co.lotc.core.bukkit.TythanBukkit;
+import co.lotc.core.bukkit.convo.ChatStream;
 import co.lotc.core.bukkit.util.Run;
 import co.lotc.core.util.Context;
 import lombok.AccessLevel;
@@ -37,13 +38,23 @@ public class MenuAgent {
 			//The ordering here is very important. Any change to it will break stuff
 			//This is due to interleaving of the Open and Close events...
 			//which interact and read state from this object
-			navigating = true; //lets InventoryCloseEvent know the session shouldn't end
-			player.closeInventory(); //InventoryCloseEvent is called here --> Will remove the viewer too
-			navigating = false;
+			closeDontExit(); //Viewer removed
 			menu = newMenu;
 			menu.addViewer(this);
 			player.getPlayer().openInventory(menu.getInventory());
 		});
+	}
+	
+	public ChatStream startChatStream() {
+		closeDontExit();
+		menu.addViewer(this); //Readding viewer which invClose removed...
+		return new MenuChatStream(this).withContext(this.context);
+	}
+	
+	private void closeDontExit() {
+		navigating = true; //lets InventoryCloseEvent know the session shouldn't end
+		player.closeInventory(); //InventoryCloseEvent is called here --> Will remove the viewer too
+		navigating = false;
 	}
 	
 	public void onSessionClose(Consumer<Context> callback) {
@@ -72,5 +83,9 @@ public class MenuAgent {
 	
 	public String getContextString(String tag) {
 		return context.getString(tag);
+	}
+	
+	void mergeContext(Context other) {
+		other.getMap().forEach( (k,v) -> this.context.set(k, v));
 	}
 }

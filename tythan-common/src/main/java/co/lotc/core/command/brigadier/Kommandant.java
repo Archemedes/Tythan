@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
@@ -67,7 +69,18 @@ public class Kommandant {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private CommandNode<Object> buildNodeForArg(String name, CmdArg<?> arg, boolean executes){
-		var builder = RequiredArgumentBuilder.argument(name, arg.getBrigadierType());
+		
+		ArgumentType argumentType = arg.getBrigadierType();
+		boolean bungee = CommandNodeManager.getInstance().isBungee();
+		
+		//So basically Bungee Commands packet only lets us encode StringArgumentType
+		//There are no PROPER_PROVIDERS for other types, causing an error trying to write the packet
+		//Because intercepting a packet is the main handle for bungee to change the brigadier command nodes
+		//We must restrict ourselves to the StringArgumentType for bungee types
+		if(bungee && !(argumentType instanceof StringArgumentType))
+			argumentType = StringArgumentType.word();
+		
+		var builder = RequiredArgumentBuilder.argument(name, argumentType);
 		if(executes) builder.executes( $->0 );
 		if(arg.hasCustomCompleter()) builder.suggests(new ArcheSuggestionProvider<>(arg));
 		return builder.build();
