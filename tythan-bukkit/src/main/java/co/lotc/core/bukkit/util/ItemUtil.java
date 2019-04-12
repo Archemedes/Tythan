@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -163,6 +165,23 @@ public class ItemUtil {
 			return compound.toString();
 		}catch(Throwable t){t.printStackTrace();}
 		return null;
+	}
+	
+	public static String getItemYaml(ItemStack is) {
+		YamlConfiguration yaml = new YamlConfiguration();
+		yaml.set("i", is);
+		return yaml.saveToString().substring(3);
+	}
+	
+	public static ItemStack getItemFromYaml(String yamlItem) {
+		yamlItem = "item:\n" + yamlItem;
+		YamlConfiguration yaml = new YamlConfiguration();
+		try {
+			yaml.loadFromString(yamlItem);
+			return yaml.getItemStack("item");
+		} catch (InvalidConfigurationException e) {
+			throw new IllegalArgumentException(e);
+		}
 	}
 	
 	/**

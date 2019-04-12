@@ -11,6 +11,8 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Animals;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
@@ -63,6 +65,33 @@ public class InventoryUtil {
 	public static void addOrDropItem(Location location, Inventory inv, ItemStack... items) {
 		var left = addItem(inv, items);
 		left.forEach((k,is)->location.getWorld().dropItemNaturally(location, is));
+	}
+	
+	public static String serializeItems(Inventory inv) {
+		return serializeItems(inv.getContents());
+	}
+	
+	public static String serializeItems(ItemStack...items) {
+		List<ItemStack> list = Lists.newArrayList(items);
+		return serializeItems(list);
+	}
+	
+	public static String serializeItems(List<ItemStack> items) {
+		YamlConfiguration yaml = new YamlConfiguration();
+		yaml.set("c", items);
+		return yaml.saveToString();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<ItemStack> deserializeItems(String listOfItems) {
+		YamlConfiguration yaml = new YamlConfiguration();
+		try {
+			yaml.loadFromString(listOfItems);
+			if(!yaml.isList("c")) throw new IllegalArgumentException("String must have list of items under key 'c'");
+			return (List<ItemStack>) yaml.getList("c");
+		} catch (InvalidConfigurationException e) {
+			throw new IllegalArgumentException(e);
+		}
 	}
 	
 	/**
