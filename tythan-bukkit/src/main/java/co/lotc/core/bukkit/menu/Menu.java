@@ -48,10 +48,11 @@ public class Menu implements InventoryHolder{
 	 * Navigating between menus shouldn't be done with this one but with MenuAgent#open
 	 * @param p Player to open the Menu for
 	 */
-	public void openSession(Player p) {
+	public MenuAgent openSession(Player p) {
 		MenuAgent a = new MenuAgent(this, p);
 		viewers.put(p.getUniqueId(), a);
 		p.openInventory(inventory);
+		return a;
 	}
 	
 	void init() {
