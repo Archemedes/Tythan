@@ -7,6 +7,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
@@ -65,6 +68,10 @@ public class InventoryUtil {
 	public static void addOrDropItem(Location location, Inventory inv, ItemStack... items) {
 		var left = addItem(inv, items);
 		left.forEach((k,is)->location.getWorld().dropItemNaturally(location, is));
+	}
+	
+	public static List<ItemStack> getItems(Inventory inv){
+		return Stream.of(inv.getContents()).filter(Objects::nonNull).collect(Collectors.toList());
 	}
 	
 	public static String serializeItems(Inventory inv) {
