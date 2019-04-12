@@ -81,16 +81,15 @@ public final class TimeUtil {
 			TemporalUnit unit = null;
 			switch (timescale) {
 			case "y":
-				quantity *= 365*24;
-				unit = ChronoUnit.HOURS;
+				quantity *= 365;
+				unit = ChronoUnit.DAYS;
 				break;
 			case "w":
-				quantity *= 7*24;
-				unit = ChronoUnit.HOURS;
+				quantity *= 7;
+				unit = ChronoUnit.DAYS;
 				break;
 			case "d":
-				quantity *=24;
-				unit = ChronoUnit.HOURS;
+				unit = ChronoUnit.DAYS;
 				break;
 			case "h":
 				unit = ChronoUnit.HOURS;
