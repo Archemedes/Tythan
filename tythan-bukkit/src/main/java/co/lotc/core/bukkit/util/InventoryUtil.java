@@ -5,6 +5,7 @@ import static org.bukkit.event.inventory.InventoryAction.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,6 +108,13 @@ public class InventoryUtil {
 			throw new IllegalArgumentException(e);
 		}
 	}
+	
+	/**
+	 * See {@link InventoryUtil#addItem(Inventory, ItemStack...)}
+	 */
+    public static HashMap<Integer, ItemStack> addItem(final Inventory inv, Collection<ItemStack> items) {
+    	return addItem(inv, items.toArray(new ItemStack[0]));
+    }
 	
 	/**
 	 * Like the Bukkit method, but respects max ItemStack size
