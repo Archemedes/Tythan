@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -85,7 +86,10 @@ public class InventoryUtil {
 	
 	public static String serializeItems(List<ItemStack> items) {
 		YamlConfiguration yaml = new YamlConfiguration();
-		yaml.set("c", items);
+		yaml.set("c", items.stream()
+				.map(is->is==null?null:is.serialize())
+				.collect(Collectors.toList())
+				);
 		return yaml.saveToString();
 	}
 	
@@ -95,7 +99,10 @@ public class InventoryUtil {
 		try {
 			yaml.loadFromString(listOfItems);
 			if(!yaml.isList("c")) throw new IllegalArgumentException("String must have list of items under key 'c'");
-			return (List<ItemStack>) yaml.getList("c");
+      return yaml.getList("c").stream()
+          .map(ent -> (Map<String, Object>) ent)
+          .map(ent -> ent == null ? null : ItemStack.deserialize(ent))
+          .collect(Collectors.toList());
 		} catch (InvalidConfigurationException e) {
 			throw new IllegalArgumentException(e);
 		}

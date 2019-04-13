@@ -169,7 +169,7 @@ public class ItemUtil {
 	
 	public static String getItemYaml(ItemStack is) {
 		YamlConfiguration yaml = new YamlConfiguration();
-		yaml.set("i", is);
+		yaml.set("i", is.serialize());
 		return yaml.saveToString().substring(3);
 	}
 	
@@ -178,7 +178,7 @@ public class ItemUtil {
 		YamlConfiguration yaml = new YamlConfiguration();
 		try {
 			yaml.loadFromString(yamlItem);
-			return yaml.getItemStack("item");
+			return ItemStack.deserialize(yaml.getConfigurationSection("item").getValues(true));
 		} catch (InvalidConfigurationException e) {
 			throw new IllegalArgumentException(e);
 		}
