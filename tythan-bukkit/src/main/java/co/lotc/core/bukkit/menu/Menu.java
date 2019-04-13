@@ -57,11 +57,11 @@ public class Menu implements InventoryHolder{
 	
 	void init() {
 		if(!initialized) {
+			initialized = true;
 			@SuppressWarnings("deprecation")
 			String title = inventory.getTitle();
 			CoreLog.debug("Initializing menu with title: " + title);
 			updateIconItems();
-			initialized = true;
 		}
 	}
 	
@@ -153,10 +153,15 @@ public class Menu implements InventoryHolder{
 	}
 	
 	private ItemStack itemOrBust(Icon i) {
-		var opt = viewers.values().stream().findFirst().map(i::getItemStack);
-		if(opt.isPresent()) return opt.get();
+		try {
+			var opt = viewers.values().stream().findFirst().map(i::getItemStack);
+			if(opt.isPresent()) return opt.get();
+			else initialized = false;
+		} catch(Exception e) {
+			CoreLog.warning(" User error trying to get ItemStack from Icon of type " + i.getClass().getSimpleName());
+			e.printStackTrace();
+		}
 		
-		initialized = false;
 		return null;
 	}
 }
