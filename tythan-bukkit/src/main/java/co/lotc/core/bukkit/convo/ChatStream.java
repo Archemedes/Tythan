@@ -80,6 +80,7 @@ public class ChatStream extends AbstractChatStream<ChatStream>{
 		return listen(contextTag, message, PlayerInteractEvent.class, e->{
 				if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 					Block b = e.getClickedBlock();
+					e.setCancelled(true);
 					if(filter.test(b)) return b;
 				}
 				return null;
@@ -101,6 +102,7 @@ public class ChatStream extends AbstractChatStream<ChatStream>{
 	public ChatStream clickEntityPrompt(String contextTag, BaseComponent message, Predicate<Entity> filter) {
 		return listen(contextTag, message, PlayerInteractEntityEvent.class, e->{
 				Entity entity = e.getRightClicked();
+				e.setCancelled(true);
 				if(filter.test(entity)) return entity;
 				return null;
 		});
