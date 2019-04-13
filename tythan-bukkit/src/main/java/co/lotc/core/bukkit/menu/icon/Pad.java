@@ -1,5 +1,7 @@
 package co.lotc.core.bukkit.menu.icon;
 
+import static net.md_5.bungee.api.ChatColor.GRAY;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -14,9 +16,9 @@ public final class Pad extends Icon {
 	@Getter private final ItemStack itemStack;
 
 	public Pad(Material m) {
-		itemStack = new ItemBuilder(m).name("").build();
+		itemStack = new ItemBuilder(m).name(GRAY+"").build();
 	}
-	
+		
 	@Override
 	public void click(MenuAction action) {}
 
