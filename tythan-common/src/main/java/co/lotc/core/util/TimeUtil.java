@@ -53,7 +53,7 @@ public final class TimeUtil {
 	public static LocalDateTime tryParseDate(String input) {
 		try {
 			LocalDate t = LocalDate.parse(input);
-			return t.atStartOfDay();
+			return t.atTime(LocalTime.NOON);
 		}catch(DateTimeParseException e) {
 			return null;
 		}
