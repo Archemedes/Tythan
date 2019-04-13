@@ -19,6 +19,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Animals;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -65,6 +66,10 @@ public class InventoryUtil {
 			if(is != null) return false;
 		}
 		return true;
+	}
+	
+	public static void addOrDropItem(Player p, ItemStack... items) {
+		addOrDropItem(p.getLocation(), p.getInventory(), items);
 	}
 	
 	public static void addOrDropItem(Location location, Inventory inv, ItemStack... items) {
