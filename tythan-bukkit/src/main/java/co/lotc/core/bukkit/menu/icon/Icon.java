@@ -27,7 +27,7 @@ public abstract class Icon {
 	public boolean mayInteract(ItemStack moved) { return false; }
 	
 	/**
-	 * Shortcut to let you update the displayed item within the mnenu quickly for this icon
+	 * Shortcut to let you update the displayed item within the menu quickly for this icon
 	 */
 	protected void updateItem(MenuAgent agent) {
 		agent.getMenu().updateIconItem(this);
