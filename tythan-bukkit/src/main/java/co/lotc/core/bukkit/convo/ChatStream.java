@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -29,8 +30,12 @@ public class ChatStream extends AbstractChatStream<ChatStream>{
 		this.uuid = p.getUniqueId();
 	}
 
-	public <T extends Event> ChatStream listen(String contextTag, BaseComponent message, Class<T> c, Function<T, Object> listener) {
-		prompt(contextTag, message, new PromptListener<>(uuid, c, listener));
+	public <T extends PlayerEvent> ChatStream listen(String contextTag, BaseComponent message, Class<T> c, Function<T, Object> listener) {
+		return listen(contextTag, message, c, listener, e->e.getPlayer());
+	}
+	
+	public <T extends Event> ChatStream listen(String contextTag, BaseComponent message, Class<T> c, Function<T, Object> listener, Function<T, Player> howToGetPlayer) {
+		prompt(contextTag, message, new PromptListener<>(uuid, c, listener, howToGetPlayer));
 		return this;
 	}
 	
