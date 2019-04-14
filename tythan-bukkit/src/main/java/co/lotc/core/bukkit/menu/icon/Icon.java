@@ -2,6 +2,7 @@ package co.lotc.core.bukkit.menu.icon;
 
 import org.bukkit.inventory.ItemStack;
 
+import co.lotc.core.bukkit.menu.Menu;
 import co.lotc.core.bukkit.menu.MenuAction;
 import co.lotc.core.bukkit.menu.MenuAgent;
 
@@ -29,7 +30,7 @@ public abstract class Icon {
 	/**
 	 * Shortcut to let you update the displayed item within the menu quickly for this icon
 	 */
-	protected void updateItem(MenuAgent agent) {
-		agent.getMenu().updateIconItem(this);
+	public void updateItem(Menu menu) {
+		menu.updateIconItem(this);
 	}
 }
