@@ -18,7 +18,7 @@ public class ArcheSuggestionProvider<T> implements SuggestionProvider<T> {
 	@Override
 	public CompletableFuture<Suggestions> getSuggestions(CommandContext<T> unused, SuggestionsBuilder builder) throws CommandSyntaxException {
 		 for(String sugg : arg.getCompleter().get()) {
-			 if (sugg.startsWith(builder.getRemaining().toLowerCase())) {
+			 if (sugg.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
 				 builder.suggest(sugg);
 			 }
 		 }
