@@ -17,12 +17,13 @@ import co.lotc.core.agnostic.Sender;
 import co.lotc.core.bungee.command.BrigadierInjector;
 import co.lotc.core.bungee.command.BungeeCommandData;
 import co.lotc.core.bungee.command.BungeeCommandExecutor;
+import co.lotc.core.bungee.command.BungeeKommandant;
 import co.lotc.core.bungee.util.ChatBuilder;
 import co.lotc.core.bungee.wrapper.BungeeConfig;
 import co.lotc.core.bungee.wrapper.BungeeSender;
 import co.lotc.core.command.ArcheCommand;
 import co.lotc.core.command.ParameterType;
-import co.lotc.core.command.brigadier.CommandNodeManager;
+import co.lotc.core.command.brigadier.Kommandant;
 import de.exceptionflug.protocolize.api.protocol.ProtocolAPI;
 import lombok.Getter;
 import lombok.var;
@@ -43,7 +44,6 @@ public class TythanBungee extends Plugin implements Tythan {
 	@Override
 	public void onLoad() {
 		TythanProvider.init(this);
-		CommandNodeManager.getInstance().setBungee(true);
 	}
 	
 	@Override
@@ -111,6 +111,11 @@ public class TythanBungee extends Plugin implements Tythan {
 		var sc = (BungeeCommandData) wrapper;
 		var exec = new BungeeCommandExecutor(command, sc);
 		getProxy().getPluginManager().registerCommand(sc.getPlugin(), exec);
+	}
+
+	@Override
+	public Kommandant newKommandant(ArcheCommand built) {
+		return new BungeeKommandant(built);
 	}
 }
 

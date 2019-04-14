@@ -27,6 +27,12 @@
 	</repositories>
 
    <dependencies>
+    <dependency>
+        <groupId>com.mojang</groupId>
+        <artifactId>brigadier</artifactId>
+        <version>1.0.17</version>
+        <scope>provided</scope>
+    </dependency>
 	<dependency>
 		<groupId>net.md-5</groupId>
 		<artifactId>bungeecord-api</artifactId>
@@ -47,12 +53,6 @@
 		<groupId>net.md-5</groupId>
 		<artifactId>bungeecord-protocol</artifactId>
 		<version>1.13-SNAPSHOT</version>
-		<scope>provided</scope>
-	</dependency>
-	<dependency>
-		<groupId>com.mojang</groupId>
-		<artifactId>brigadier</artifactId>
-		<version>1.0.17</version>
 		<scope>provided</scope>
 	</dependency>
    </dependencies>

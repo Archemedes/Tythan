@@ -7,8 +7,6 @@ import java.util.List;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.var;
 
 public class CommandNodeManager {
@@ -16,8 +14,6 @@ public class CommandNodeManager {
 	public static CommandNodeManager getInstance() { return INSTANCE; }
 	
 	private final List<CommandNode<Object>> nodes = Collections.synchronizedList(new ArrayList<>());
-	@Getter @Setter private boolean bungee = false; //On Bungee-side only StringArgumentType works
-	
 	
 	private CommandNodeManager() {
 		//This space intentionally left blank

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.mojang.brigadier.arguments.ArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
@@ -20,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.var;
 
 @RequiredArgsConstructor
-public class Kommandant {
+public abstract class Kommandant {
 	private final ArcheCommand head;
 	private final List<CommandNode<Object>> rootNodes = new ArrayList<>();
 	
@@ -67,24 +66,18 @@ public class Kommandant {
 		return node;
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private CommandNode<Object> buildNodeForArg(String name, CmdArg<?> arg, boolean executes){
 		
 		ArgumentType argumentType = arg.getBrigadierType();
-		boolean bungee = CommandNodeManager.getInstance().isBungee();
-		
-		//So basically Bungee Commands packet only lets us encode StringArgumentType
-		//There are no PROPER_PROVIDERS for other types, causing an error trying to write the packet
-		//Because intercepting a packet is the main handle for bungee to change the brigadier command nodes
-		//We must restrict ourselves to the StringArgumentType for bungee types
-		if(bungee && !(argumentType instanceof StringArgumentType))
-			argumentType = StringArgumentType.word();
-		
-		var builder = RequiredArgumentBuilder.argument(name, argumentType);
+
+		var builder = makeBuilderWithSuggests(name, argumentType, arg);
 		if(executes) builder.executes( $->0 );
-		if(arg.hasCustomCompleter() && !bungee) builder.suggests(new ArcheSuggestionProvider<>(arg));
 		return builder.build();
 	}
+	
+	@SuppressWarnings("rawtypes") //Any of the Brigadier generic types are never important.
+	protected abstract RequiredArgumentBuilder makeBuilderWithSuggests(String name, ArgumentType<?> type, CmdArg<?>arg);
 	
 	private void redirectAliases(ArcheCommand cmd, CommandNode<Object> parent, CommandNode<Object> theOneTrueNode) {
 		for(String alias : cmd.getAliases()) {

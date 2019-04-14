@@ -1,4 +1,4 @@
-package co.lotc.core.command.brigadier;
+package co.lotc.core.bukkit.command;
 
 import java.util.concurrent.CompletableFuture;
 

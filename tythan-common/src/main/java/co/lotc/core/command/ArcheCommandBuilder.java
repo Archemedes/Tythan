@@ -175,7 +175,7 @@ public class ArcheCommandBuilder {
 		
 		//If there's no more builders up the chain we've reached the top. Means we're done and we can make an executor
 		if(parentBuilder == null) {
-			Kommandant kommandant = new Kommandant(built);
+			Kommandant kommandant = Tythan.get().newKommandant(built);
 			kommandant.addBrigadier();
 			CommandNodeManager.getInstance().register(kommandant);
 			Tythan.get().registerRootCommand(this.command, built);
