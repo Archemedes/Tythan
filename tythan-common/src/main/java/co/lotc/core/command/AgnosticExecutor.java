@@ -48,7 +48,12 @@ public class AgnosticExecutor{
 			if(args.size() == 1) options = subCompletions(sender, command, last);
 			else options = new ArrayList<>();
 			
-			if(index < command.getArgs().size()) command.getArgs().get(index).getCompleter().get().forEach(options::add);
+			if(index < command.getArgs().size())
+				command.getArgs()
+				.get(index)
+				.getCompleter()
+				.suggest(sender, args.get(index))
+				.forEach(options::add);
 			
 			return options.stream().filter(s->s.toLowerCase().startsWith(last)).collect(Collectors.toList());
 		}

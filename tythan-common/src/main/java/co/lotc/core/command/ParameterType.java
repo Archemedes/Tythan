@@ -53,7 +53,7 @@ public class ParameterType<T> {
 	@Getter private Predicate<T> filter;
 	private ArgumentType<?> brigadierType;
 
-	private Supplier<? extends Collection<String>> completer;
+	private CommandCompleter completer;
 	private String defaultName;
 	private String defaultError;
 	
@@ -93,6 +93,11 @@ public class ParameterType<T> {
 		} else {
 			customTypes.put(forClass, this);
 		}
+	}
+	
+	public ParameterType<T> completer(Supplier<? extends Collection<String>> supplier ) {
+		this.completer = new CommandCompleter(supplier);
+		return this;
 	}
 	
 	public void settle(CmdArg<T> arg) {

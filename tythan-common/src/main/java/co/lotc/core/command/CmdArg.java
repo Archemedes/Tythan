@@ -1,6 +1,5 @@
 package co.lotc.core.command;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -20,12 +19,11 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @Getter
 public class CmdArg<T> {
-	private static final Supplier<Collection<String>> NULL_COMPLETER = ArrayList::new;
-	
 	@Setter private Function<String, T> mapper;
 	@Setter private BiFunction<Sender, String, T> mapperWithSender = ($,s)->mapper.apply(s);
 	@Setter private Predicate<T> filter = $->true;
-	@Setter private Supplier<? extends Collection<String>> completer = NULL_COMPLETER;
+	
+	private CommandCompleter completer = CommandCompleter.NULL_COMPLETER;
 	
 	@SuppressWarnings("rawtypes")
 	@Setter private ArgumentType brigadierType = StringArgumentType.word();
@@ -49,11 +47,19 @@ public class CmdArg<T> {
 	}
 	
 	void completeMe(String... opts) {
-		setCompleter(()->Arrays.asList(opts));
+		setCompleter( new CommandCompleter(()->Arrays.asList(opts)) );
+	}
+	
+	public void setCompleter(CommandCompleter completer) {
+		this.completer = completer;
+	}
+	
+	public void setCompleter(Supplier<? extends Collection<String>> supplier) {
+		setCompleter( new CommandCompleter(supplier));
 	}
 	
 	public boolean hasCustomCompleter() {
-		return this.completer != NULL_COMPLETER;
+		return this.completer != CommandCompleter.NULL_COMPLETER;
 	}
 	
 	public boolean hasDefaultInput() {

@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.command.CommandSender;
 
 import com.comphenix.protocol.utility.MinecraftReflection;
 import com.mojang.brigadier.CommandDispatcher;
@@ -11,6 +12,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 
 import co.lotc.core.CoreLog;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.var;
 
 public class BrigadierProvider {
@@ -25,6 +27,8 @@ public class BrigadierProvider {
 	private Method getItemStack;
 	
 	private Constructor<ArgumentType<Object>> itemStackArgument;
+	
+	private Method getBukkitSender = null;
 	
 	@SuppressWarnings("unchecked")
 	private BrigadierProvider() {
@@ -94,6 +98,15 @@ public class BrigadierProvider {
 	
 	public Method getItemStackParser() {
 		return getItemStack;
+	}
+	
+	@SneakyThrows
+	public CommandSender getBukkitSender(Object commandListenerWrapper) {
+		if(getBukkitSender == null) {
+			getBukkitSender = commandListenerWrapper.getClass().getMethod("getBukkitSender");
+		}
+		
+		return (CommandSender) getBukkitSender.invoke(commandListenerWrapper);
 	}
 	
 

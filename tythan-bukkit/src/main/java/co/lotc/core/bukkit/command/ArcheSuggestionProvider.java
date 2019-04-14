@@ -8,6 +8,8 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
+import co.lotc.core.agnostic.Sender;
+import co.lotc.core.bukkit.wrapper.BukkitSender;
 import co.lotc.core.command.CmdArg;
 import lombok.RequiredArgsConstructor;
 
@@ -16,13 +18,17 @@ public class ArcheSuggestionProvider<T> implements SuggestionProvider<T> {
 	private final CmdArg<T> arg;
 
 	@Override
-	public CompletableFuture<Suggestions> getSuggestions(CommandContext<T> unused, SuggestionsBuilder builder) throws CommandSyntaxException {
-		 for(String sugg : arg.getCompleter().get()) {
-			 if (sugg.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
-				 builder.suggest(sugg);
-			 }
-		 }
-		 return builder.buildFuture();
+	public CompletableFuture<Suggestions> getSuggestions(CommandContext<T> context, SuggestionsBuilder builder) throws CommandSyntaxException {
+		T source = context.getSource();
+		Sender sender = new BukkitSender(BrigadierProvider.get().getBukkitSender(source));
+		
+		for(String sugg : arg.getCompleter().suggest(sender, builder.getRemaining())) {
+			if (sugg.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
+				builder.suggest(sugg);
+			}
+		}
+
+		return builder.buildFuture();
 	}
 
 }

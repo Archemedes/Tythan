@@ -11,11 +11,11 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class CommandCompleter {
-	public static final BiFunction<Sender, String, ? extends Collection<String>> NULL_COMPLETER = ($1,$2)->Collections.emptyList();
+	public static final CommandCompleter NULL_COMPLETER = new CommandCompleter(($1,$2)->Collections.emptyList());
 	
 	private final BiFunction<Sender, String, ? extends Collection<String>> suggestions;
 	
-	public CommandCompleter(Supplier<Collection<String>> supplier) {
+	public CommandCompleter(Supplier<? extends Collection<String>> supplier) {
 		suggestions = ($1,$2) -> supplier.get();
 	}
 	
