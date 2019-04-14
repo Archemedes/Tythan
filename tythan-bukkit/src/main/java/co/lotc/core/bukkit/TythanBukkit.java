@@ -78,14 +78,13 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 	
 	@Override
 	public void registerRootCommand(Command wrapper, ArcheCommand handler) {
+		Kommandant kommandant = new BukkitKommandant(handler);
+		kommandant.addBrigadier();
+		CommandNodeManager.getInstance().register(kommandant);
+		
 		var pluginCommand = ((BukkitCommand) wrapper).getHandle();
 		ArcheCommandExecutor executor = new ArcheCommandExecutor(handler);
 		pluginCommand.setExecutor(executor);
-	}
-	
-	@Override
-	public Kommandant newKommandant(ArcheCommand built) {
-		return new BukkitKommandant(built);
 	}
 	
 	private void listen(Listener l) {

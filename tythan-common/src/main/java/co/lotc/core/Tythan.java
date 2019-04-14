@@ -7,7 +7,6 @@ import co.lotc.core.agnostic.AbstractChatBuilder;
 import co.lotc.core.agnostic.Command;
 import co.lotc.core.agnostic.Config;
 import co.lotc.core.command.ArcheCommand;
-import co.lotc.core.command.brigadier.Kommandant;
 
 public interface Tythan {
 	static Tythan get() { return TythanProvider.INSTANCE; }
@@ -23,6 +22,4 @@ public interface Tythan {
 	AbstractChatBuilder<?> chatBuilder();
 	
 	void registerRootCommand(Command wrapper, ArcheCommand handler);
-	
-	Kommandant newKommandant(ArcheCommand built);
 }
