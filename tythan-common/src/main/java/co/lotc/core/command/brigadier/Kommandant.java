@@ -82,7 +82,7 @@ public class Kommandant {
 		
 		var builder = RequiredArgumentBuilder.argument(name, argumentType);
 		if(executes) builder.executes( $->0 );
-		if(arg.hasCustomCompleter()) builder.suggests(new ArcheSuggestionProvider<>(arg));
+		if(arg.hasCustomCompleter() && !bungee) builder.suggests(new ArcheSuggestionProvider<>(arg));
 		return builder.build();
 	}
 	
