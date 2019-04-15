@@ -74,7 +74,7 @@ class PromptListener<T extends Event> implements Consumer<Prompt>,Listener,Event
 		if(clazz.isInstance(event)) {
 			T theEvent = clazz.cast(event);
 			Player who = howToGetPlayer.apply(theEvent);
-			if(who.getUniqueId().equals(uuid)) {
+			if(who != null && who.getUniqueId().equals(uuid)) {
 				task();
 				Object result = function.apply(theEvent);
 				if(result != null) {
