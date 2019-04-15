@@ -1,6 +1,5 @@
 package co.lotc.core.bukkit.convo;
 
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -28,11 +27,9 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class ChatStream extends AbstractChatStream<ChatStream>{
-	private final UUID uuid;
 	
 	public ChatStream(Player p) {
-		super(new BukkitSender(p));
-		this.uuid = p.getUniqueId();
+		super(new BukkitSender(p), p.getUniqueId());
 	}
 
 	public <T extends PlayerEvent> ChatStream listen(String contextTag, BaseComponent message, Class<T> c, Function<T, Object> listener) {

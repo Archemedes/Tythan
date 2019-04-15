@@ -2,6 +2,7 @@ package co.lotc.core.agnostic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang.Validate;
@@ -18,6 +19,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 @RequiredArgsConstructor
 public abstract class AbstractChatStream<T extends AbstractChatStream<T>> {
 	protected final Sender converser;
+	protected final UUID uuid;
 	protected final Context context = new Context();
 	protected final List<Prompt> prompts = new ArrayList<>();
 	

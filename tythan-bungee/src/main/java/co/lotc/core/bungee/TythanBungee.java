@@ -42,6 +42,10 @@ public class TythanBungee extends Plugin implements Tythan {
 	public static final Function<Sender, ProxiedPlayer> UNWRAP_PLAYER = UNWRAP_SENDER.andThen(s->(s instanceof ProxiedPlayer)? ((ProxiedPlayer) s):null);
 	public static final Supplier<List<String>> PLAYER_COMPLETER = ()-> ProxyServer.getInstance().getPlayers().stream().map(ProxiedPlayer::getName).collect(Collectors.toList());
 	
+	public static TythanBungee get(){
+		return (TythanBungee) Tythan.get();
+	}
+	
 	@Override
 	public void onLoad() {
 		TythanProvider.init(this);
