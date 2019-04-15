@@ -1,5 +1,7 @@
 package co.lotc.core.agnostic;
 
+import static net.md_5.bungee.api.ChatColor.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -8,6 +10,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.math.NumberUtils;
 
@@ -18,6 +21,7 @@ import co.lotc.core.util.Context;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.var;
 import lombok.experimental.FieldDefaults;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -42,6 +46,21 @@ public abstract class AbstractChatStream<T extends AbstractChatStream<T>> {
 		return prompt(p);
 	}
 	
+	public T confirmPrompt() {
+		var msg = Tythan.get().chatBuilder().append("Are you sure you want to continue? Type ").color(WHITE)
+				.append("YES").color(RED).bold().append(" in all capitals to confirm.").color(WHITE).build();
+		return confirmPrompt(msg, "YES");
+	}
+	
+	public T confirmPrompt(String whatTheyShouldType) {
+		var msg = Tythan.get().chatBuilder().append("Are you sure you want to continue? Type ").color(WHITE)
+				.append(whatTheyShouldType).color(RED).bold().append(" to confirm (case-sensitive).").color(WHITE).build();
+		return confirmPrompt(msg, "YES");
+	}
+	
+	public T confirmPrompt(BaseComponent message, String whatTheyShouldType) {
+		return prompt(null, message, s->s.equals(whatTheyShouldType), $->$);
+	}
 	
 	public T choice(String contextTag, BaseComponent message, String... options) {
 		AbstractChatBuilder<? extends AbstractChatBuilder<?>> cb = Tythan.get().chatBuilder().append(message).newline();
@@ -134,7 +153,7 @@ public abstract class AbstractChatStream<T extends AbstractChatStream<T>> {
 		}
 		
 		public void fulfil(Object value) {
-			if(contextTag != null) stream.context.set(contextTag, value);
+			if(StringUtils.isNotEmpty(contextTag)) stream.context.set(contextTag, value);
 			next();
 		}
 		
