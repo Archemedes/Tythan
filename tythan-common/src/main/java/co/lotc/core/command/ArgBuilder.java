@@ -173,6 +173,17 @@ public class ArgBuilder {
 		return command;
 	}
 	
+	public ArcheCommandBuilder asStringArray() {
+		if(flag != null) throw new IllegalStateException("Cannot use joined arguments for parameters/flags");
+		
+		defaults("args", "Provide multiple arguments");
+		ArrayArgs arg = new ArrayArgs(name, errorMessage, defaultInput, description);
+		command.noMoreArgs = true;
+		command.addArg(arg);
+		return command;
+	}
+	
+	
 	public <T extends Enum<T>> ArcheCommandBuilder asEnum(Class<T>  clazz) {
 		defaults(clazz.getSimpleName(),"Not a valid " + clazz.getSimpleName());
 		val arg = build(clazz);
@@ -258,6 +269,8 @@ public class ArgBuilder {
 			asDouble();
 		} else if(c==Boolean.class || c==boolean.class) {
 			asBoolean();
+		} else if (c==String[].class) {
+			asStringArray();
 		} else if(c==Instant.class) {
 			asInstant();
 		} else if(c==Timestamp.class) {

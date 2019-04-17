@@ -98,6 +98,7 @@ public class ArcheCommand {
 	private int maxArgs() {
 		int s = args.size();
 		if(s > 0 && args.get(s-1) instanceof JoinedArg) return 255;
+		else if(s > 0 && args.get(s-1) instanceof ArrayArgs) return 255;
 		else return s;
 	}
 	

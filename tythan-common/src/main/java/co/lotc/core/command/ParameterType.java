@@ -68,6 +68,7 @@ public class ParameterType<T> {
 		if(forClass == Boolean.class) return false;
 		if(forClass == String.class) return false;
 		if(forClass == Sender.class) return false;
+		if(forClass == String[].class) return false;
 		if(forClass == Instant.class) return false;
 		if(forClass == Duration.class) return false;
 		if(forClass == Timestamp.class) return false;
