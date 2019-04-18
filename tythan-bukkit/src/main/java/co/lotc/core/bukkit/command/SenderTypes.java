@@ -32,6 +32,8 @@ public final class SenderTypes {
 			.senderMapper(UNWRAP_PLAYER)
 			.mapperWithSender((send,s)->{
 				if("@p".equals(s)) s = send.getName();
+				else if("@s".equals(s)) s = send.getName();
+				
 				if(s.length() == 36) {
 					try {return Bukkit.getPlayer(UUID.fromString(s));}
 					catch(IllegalArgumentException e) {return null;}
