@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 
 import co.lotc.core.CoreLog;
+import co.lotc.core.Tythan;
 import co.lotc.core.agnostic.Command;
 import co.lotc.core.agnostic.Sender;
 import co.lotc.core.command.RanCommand.CmdParserException;
@@ -30,7 +31,7 @@ public class AnnotatedCommandParser {
 	private final Command pluginCommand;
 	
 	public ArcheCommandBuilder invokeParse() {
-		ArcheCommandBuilder acb = new ArcheCommandBuilder(pluginCommand);
+		ArcheCommandBuilder acb = new ArcheCommandBuilder((b,c)->Tythan.get().registerRootCommand(b, c), pluginCommand);
 		return parse(template, acb);
 	}
 	

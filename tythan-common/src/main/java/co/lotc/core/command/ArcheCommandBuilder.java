@@ -5,12 +5,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang.Validate;
 
 import co.lotc.core.CoreLog;
-import co.lotc.core.Tythan;
 import co.lotc.core.agnostic.Command;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,6 +20,7 @@ import lombok.experimental.Accessors;
 //We're reaching levels of Telanir that shouldn't be even possible
 @Accessors(fluent=true)
 public class ArcheCommandBuilder {
+	private final BiConsumer<Command, ArcheCommand> registrationHandler;
 	private final ArcheCommandBuilder parentBuilder;
 	private final Command command;
 	
@@ -42,7 +43,8 @@ public class ArcheCommandBuilder {
 	boolean buildHelpFile = true;
 	
 	
-	public ArcheCommandBuilder(Command command) {
+	public ArcheCommandBuilder(BiConsumer<Command, ArcheCommand> registration, Command command) {
+		registrationHandler = registration;
 		parentBuilder = null;
 		this.command = command;
 		
@@ -55,6 +57,7 @@ public class ArcheCommandBuilder {
 	}
 	
 	ArcheCommandBuilder(ArcheCommandBuilder dad, String name, boolean inheritOptions){
+		registrationHandler = null;
 		parentBuilder = dad;
 		command = dad.command;
 		this.mainCommand = name;
@@ -172,7 +175,7 @@ public class ArcheCommandBuilder {
 		}
 		
 		//If there's no more builders up the chain we've reached the top. Means we're done and we can make an executor
-		if(parentBuilder == null) Tythan.get().registerRootCommand(this.command, built);
+		if(parentBuilder == null) registrationHandler.accept(command, built);
 		
 		return parentBuilder;
 	}
