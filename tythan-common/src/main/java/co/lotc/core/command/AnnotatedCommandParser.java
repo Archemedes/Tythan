@@ -3,7 +3,7 @@ package co.lotc.core.command;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,7 +30,7 @@ public class AnnotatedCommandParser {
 	private final Supplier<CommandTemplate> template;
 	private final Command pluginCommand;
 	
-	public ArcheCommandBuilder invokeParse(BiConsumer<Command, ArcheCommand> registrationHandler) {
+	public ArcheCommandBuilder invokeParse(Consumer<ArcheCommand> registrationHandler) {
 		ArcheCommandBuilder acb = new ArcheCommandBuilder(registrationHandler, pluginCommand);
 		return parse(template, acb);
 	}

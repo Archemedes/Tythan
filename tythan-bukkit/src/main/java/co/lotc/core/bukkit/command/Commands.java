@@ -22,8 +22,8 @@ public class Commands {
 	 * @return
 	 */
 	public static ArcheCommandBuilder builder(PluginCommand command, Supplier<CommandTemplate> template) {
-		var wrapped = new BukkitCommand(command);
-		return new AnnotatedCommandParser(template, wrapped).invokeParse((wrapper,handler)->{
+		var wrapper = new BukkitCommand(command);
+		return new AnnotatedCommandParser(template, wrapper).invokeParse((handler)->{
 			Kommandant kommandant = new BukkitKommandant(handler);
 			kommandant.addBrigadier();
 			CommandNodeManager.getInstance().register(kommandant);

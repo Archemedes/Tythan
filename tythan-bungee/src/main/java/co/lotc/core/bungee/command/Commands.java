@@ -19,8 +19,8 @@ public class Commands {
 	 * @param template A supplier for the CommandTemplate subclass you wish to use. Should Supply unique instances if intending to use Runnables
 	 * @return
 	 */
-	public static ArcheCommandBuilder builder(BungeeCommandData bungee, Supplier<CommandTemplate> template) {
-		return new AnnotatedCommandParser(template, bungee).invokeParse((wrapper,command)->{
+	public static ArcheCommandBuilder builder(BungeeCommandData wrapper, Supplier<CommandTemplate> template) {
+		return new AnnotatedCommandParser(template, wrapper).invokeParse((command)->{
 			Kommandant kommandant = new BungeeKommandant(command);
 			kommandant.addBrigadier();
 			CommandNodeManager.getInstance().register(kommandant);

@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang.Validate;
@@ -20,7 +19,7 @@ import lombok.experimental.Accessors;
 //We're reaching levels of Telanir that shouldn't be even possible
 @Accessors(fluent=true)
 public class ArcheCommandBuilder {
-	private final BiConsumer<Command, ArcheCommand> registrationHandler;
+	private final Consumer<ArcheCommand> registrationHandler;
 	private final ArcheCommandBuilder parentBuilder;
 	private final Command command;
 	
@@ -43,7 +42,7 @@ public class ArcheCommandBuilder {
 	boolean buildHelpFile = true;
 	
 	
-	public ArcheCommandBuilder(BiConsumer<Command, ArcheCommand> registration, Command command) {
+	public ArcheCommandBuilder(Consumer<ArcheCommand> registration, Command command) {
 		registrationHandler = registration;
 		parentBuilder = null;
 		this.command = command;
@@ -175,7 +174,7 @@ public class ArcheCommandBuilder {
 		}
 		
 		//If there's no more builders up the chain we've reached the top. Means we're done and we can make an executor
-		if(parentBuilder == null) registrationHandler.accept(command, built);
+		if(parentBuilder == null) registrationHandler.accept(built);
 		
 		return parentBuilder;
 	}
