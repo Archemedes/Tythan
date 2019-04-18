@@ -12,22 +12,14 @@ import java.util.stream.Collectors;
 
 import co.lotc.core.Tythan;
 import co.lotc.core.TythanProvider;
-import co.lotc.core.agnostic.Command;
 import co.lotc.core.agnostic.Sender;
 import co.lotc.core.bungee.command.BrigadierInjector;
-import co.lotc.core.bungee.command.BungeeCommandData;
-import co.lotc.core.bungee.command.BungeeCommandExecutor;
-import co.lotc.core.bungee.command.BungeeKommandant;
 import co.lotc.core.bungee.util.ChatBuilder;
 import co.lotc.core.bungee.wrapper.BungeeConfig;
 import co.lotc.core.bungee.wrapper.BungeeSender;
-import co.lotc.core.command.ArcheCommand;
 import co.lotc.core.command.ParameterType;
-import co.lotc.core.command.brigadier.CommandNodeManager;
-import co.lotc.core.command.brigadier.Kommandant;
 import de.exceptionflug.protocolize.api.protocol.ProtocolAPI;
 import lombok.Getter;
-import lombok.var;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -109,17 +101,6 @@ public class TythanBungee extends Plugin implements Tythan {
 	@Override
 	public ChatBuilder chatBuilder() {
 		return new ChatBuilder();
-	}
-	
-	@Override
-	public void registerRootCommand(Command wrapper, ArcheCommand command) {
-		Kommandant kommandant = new BungeeKommandant(command);
-		kommandant.addBrigadier();
-		CommandNodeManager.getInstance().register(kommandant);
-		
-		var sc = (BungeeCommandData) wrapper;
-		var exec = new BungeeCommandExecutor(command, sc);
-		getProxy().getPluginManager().registerCommand(sc.getPlugin(), exec);
 	}
 }
 

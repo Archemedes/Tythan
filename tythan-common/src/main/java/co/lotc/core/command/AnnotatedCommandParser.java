@@ -3,6 +3,7 @@ package co.lotc.core.command;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -11,7 +12,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 
 import co.lotc.core.CoreLog;
-import co.lotc.core.Tythan;
 import co.lotc.core.agnostic.Command;
 import co.lotc.core.agnostic.Sender;
 import co.lotc.core.command.RanCommand.CmdParserException;
@@ -30,8 +30,8 @@ public class AnnotatedCommandParser {
 	private final Supplier<CommandTemplate> template;
 	private final Command pluginCommand;
 	
-	public ArcheCommandBuilder invokeParse() {
-		ArcheCommandBuilder acb = new ArcheCommandBuilder((b,c)->Tythan.get().registerRootCommand(b, c), pluginCommand);
+	public ArcheCommandBuilder invokeParse(BiConsumer<Command, ArcheCommand> registrationHandler) {
+		ArcheCommandBuilder acb = new ArcheCommandBuilder(registrationHandler, pluginCommand);
 		return parse(template, acb);
 	}
 	

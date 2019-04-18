@@ -2,10 +2,14 @@ package co.lotc.core.bungee.command;
 
 import java.util.function.Supplier;
 
+import co.lotc.core.bungee.TythanBungee;
 import co.lotc.core.command.AnnotatedCommandParser;
 import co.lotc.core.command.ArcheCommandBuilder;
 import co.lotc.core.command.CommandTemplate;
 import co.lotc.core.command.ParameterType;
+import co.lotc.core.command.brigadier.CommandNodeManager;
+import co.lotc.core.command.brigadier.Kommandant;
+import lombok.var;
 
 public class Commands {
 
@@ -15,8 +19,16 @@ public class Commands {
 	 * @param template A supplier for the CommandTemplate subclass you wish to use. Should Supply unique instances if intending to use Runnables
 	 * @return
 	 */
-	public static ArcheCommandBuilder builder(BungeeCommandData command, Supplier<CommandTemplate> template) {
-		return new AnnotatedCommandParser(template, command).invokeParse();
+	public static ArcheCommandBuilder builder(BungeeCommandData bungee, Supplier<CommandTemplate> template) {
+		return new AnnotatedCommandParser(template, bungee).invokeParse((wrapper,command)->{
+			Kommandant kommandant = new BungeeKommandant(command);
+			kommandant.addBrigadier();
+			CommandNodeManager.getInstance().register(kommandant);
+			
+			var sc = (BungeeCommandData) wrapper;
+			var exec = new BungeeCommandExecutor(command, sc);
+			TythanBungee.get().getProxy().getPluginManager().registerCommand(sc.getPlugin(), exec);
+		});
 	}
 	
 	/**
