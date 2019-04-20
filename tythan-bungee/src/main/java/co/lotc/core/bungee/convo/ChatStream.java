@@ -9,7 +9,6 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
-import net.md_5.bungee.api.plugin.Event;
 
 public class ChatStream extends AbstractChatStream<ChatStream> {
 
@@ -17,8 +16,8 @@ public class ChatStream extends AbstractChatStream<ChatStream> {
 		super(new BungeeSender(player), player.getUniqueId());
 	}
 	
-	public <T extends Event> ChatStream listen(String contextTag, BaseComponent message, Class<T> c, Function<T, Object> listener, Function<T, ProxiedPlayer> howToGetPlayer) {
-		prompt(contextTag, message, new PromptListener<>(uuid, c, listener, howToGetPlayer));
+	public <T extends ChatEvent> ChatStream listen(String contextTag, BaseComponent message, Function<ChatEvent, Object> listener, Function<ChatEvent, ProxiedPlayer> howToGetPlayer) {
+		prompt(contextTag, message, new ChatEventListener(uuid, listener, howToGetPlayer));
 		return this;
 	}
 	
@@ -35,7 +34,7 @@ public class ChatStream extends AbstractChatStream<ChatStream> {
 			else return null;
 		};
 		
-		return listen(contextTag, message, ChatEvent.class, x->{
+		return listen(contextTag, message, x->{
 			if(filter.test(x.getMessage())) return mapper.apply(x.getMessage());
 			else return null;
 		}, howToGetPlayer);

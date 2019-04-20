@@ -23,10 +23,11 @@ import net.md_5.bungee.api.plugin.Event;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 
 @FieldDefaults(level=AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-class PromptListener<T extends Event> implements Consumer<Prompt>,Listener {
+abstract class PromptListener<T extends Event> implements Consumer<Prompt>,Listener {
 	final UUID uuid;
 	final Class<T> clazz;
 	final Function<T, Object> function;
@@ -34,6 +35,8 @@ class PromptListener<T extends Event> implements Consumer<Prompt>,Listener {
 	
 	Prompt prompt;
 	ScheduledTask giveUp;
+	
+	boolean active = true;
 	
 	@Override
 	public void accept(Prompt p) {
@@ -45,38 +48,40 @@ class PromptListener<T extends Event> implements Consumer<Prompt>,Listener {
 		m.registerListener(tythan, this);
 	}
 	
-	@EventHandler
-	public void execute(Event event) {
-		CoreLog.debug("Catching Event as " + this);
-		
-		if(event instanceof ChatEvent) {
-			var ce = (ChatEvent) event;
-			if(ce.getSender() instanceof ProxiedPlayer) {
-				ProxiedPlayer player = (ProxiedPlayer) ce.getSender();
-				if(player.getUniqueId().equals(uuid)) {
-					ce.setCancelled(true);
-					if("stop".equals(ce.getMessage().toLowerCase())) {
-						new ChatBuilder("Stop command received. Exiting").color(GRAY).send(player);
-						abandon();
-						return;
-					}
+	@EventHandler(priority=EventPriority.LOWEST)
+	public void chat(ChatEvent e) {
+		if(e.getSender() instanceof ProxiedPlayer) {
+			ProxiedPlayer player = (ProxiedPlayer) e.getSender();
+			if(player.getUniqueId().equals(uuid)) {
+				e.setCancelled(true);
+				if("stop".equals(e.getMessage().toLowerCase())) {
+					new ChatBuilder("Stop command received. Exiting").color(GRAY).send(player);
+					abandon();
+					return;
 				}
 			}
 		}
+	}
+	
+	protected void execute(T event) {
+		CoreLog.debug("Catching Event as " + this);
 		
-		if(clazz.isInstance(event)) {
-			T theEvent = clazz.cast(event);
-			ProxiedPlayer who = howToGetPlayer.apply(theEvent);
-			if(who != null && who.getUniqueId().equals(uuid)) {
-				task();
-				Object result = function.apply(theEvent);
-				if(result != null) {
-					abandon();
-					prompt.fulfil(result);
-					CoreLog.debug("Prompt was fulfilled: " + this);
-				} else {
-					prompt.sendPrompt();
-				}
+		if(!active) {
+			CoreLog.debug("But the event Listener has fulfilled its purpse (abandoned, active=false)");
+			return;
+		}
+		
+		T theEvent = clazz.cast(event);
+		ProxiedPlayer who = howToGetPlayer.apply(theEvent);
+		if(who != null && who.getUniqueId().equals(uuid)) {
+			task();
+			Object result = function.apply(theEvent);
+			if(result != null) {
+				abandon();
+				prompt.fulfil(result);
+				CoreLog.debug("Prompt was fulfilled: " + this);
+			} else {
+				prompt.sendPrompt();
 			}
 		}
 	}
@@ -94,6 +99,7 @@ class PromptListener<T extends Event> implements Consumer<Prompt>,Listener {
 	
 	private void abandon() {
 		proxy().getPluginManager().unregisterListener(this);
+		active = false;
 		if(giveUp != null) giveUp.cancel();
 	}
 	
