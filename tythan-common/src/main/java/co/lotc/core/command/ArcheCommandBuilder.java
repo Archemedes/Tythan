@@ -119,8 +119,8 @@ public class ArcheCommandBuilder {
 		if(ParameterType.senderTypeExists(senderClass)) {
 			senderType = ParameterType.getCustomType(senderClass);
 			
-			CoreLog.debug("cmd " + mainCommand() + " requires as its sender: " + senderClass.getSimpleName());
 			if(senderType.mapper() != null) { //Can also replace the sender as Console with -p flag
+				CoreLog.debug("Sender can also be mapped by means of a 'p' flag: " );
 				ArgBuilder b = CmdFlag.make(this, "p", "archecore.mod", new String[0]);
 				b.asType(senderType.getTargetType());
 			}
@@ -146,8 +146,8 @@ public class ArcheCommandBuilder {
 			payload = ArcheCommand.NULL_COMMAND;
 		}
 		
-		CoreLog.debug("Now Building ArcheCommand: " + mainCommand + " it has " + subCommands.size()
-			+ " subcommands and parent: " +(parentBuilder == null? "none":parentBuilder.mainCommand));
+/*		CoreLog.debug("Now Building ArcheCommand: " + mainCommand + " it has " + subCommands.size()
+			+ " subcommands and parent: " +(parentBuilder == null? "none":parentBuilder.mainCommand));*/
 		ArcheCommand built = new ArcheCommand(
 				mainCommand,
 				Collections.unmodifiableSet(aliases),
