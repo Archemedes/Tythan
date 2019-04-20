@@ -11,4 +11,5 @@ import java.lang.annotation.Target;
 public @interface Cmd {
 	String value();
 	String permission() default "";
+	boolean flags() default true;
 }
