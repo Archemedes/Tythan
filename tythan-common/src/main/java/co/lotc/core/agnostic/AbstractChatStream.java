@@ -48,13 +48,13 @@ public abstract class AbstractChatStream<T extends AbstractChatStream<T>> {
 	
 	public T confirmPrompt() {
 		var msg = Tythan.get().chatBuilder().append("Are you sure you want to continue? Type ").color(WHITE)
-				.append("YES").color(RED).bold().append(" in all capitals to confirm.").color(WHITE).build();
+				.append("YES").color(RED).bold().append(" in all capitals to confirm your choice.").bold(false).color(WHITE).build();
 		return confirmPrompt(msg, "YES");
 	}
 	
 	public T confirmPrompt(String whatTheyShouldType) {
 		var msg = Tythan.get().chatBuilder().append("Are you sure you want to continue? Type ").color(WHITE)
-				.append(whatTheyShouldType).color(RED).bold().append(" to confirm (case-sensitive).").color(WHITE).build();
+				.append(whatTheyShouldType).color(RED).bold().append(" to confirm your choice (case-sensitive).").bold(false).color(WHITE).build();
 		return confirmPrompt(msg, "YES");
 	}
 	
