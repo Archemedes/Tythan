@@ -119,8 +119,8 @@ public class ArcheCommandBuilder {
 		if(ParameterType.senderTypeExists(senderClass)) {
 			senderType = ParameterType.getCustomType(senderClass);
 			
-			if(senderType.mapper() != null) { //Can also replace the sender as Console with -p flag
-				CoreLog.debug("Sender can also be mapped by means of a 'p' flag: " );
+			if(senderType.mapper() != null || senderType.mapperWithSender() != null ) {
+				CoreLog.debug("Sender can also be mapped by means of a 'p' flag");
 				ArgBuilder b = CmdFlag.make(this, "p", "archecore.mod", new String[0]);
 				b.asType(senderType.getTargetType());
 			}
