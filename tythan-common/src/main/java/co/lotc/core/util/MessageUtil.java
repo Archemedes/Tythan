@@ -5,6 +5,8 @@ import net.md_5.bungee.api.chat.*;
 
 import java.util.Arrays;
 
+import co.lotc.core.Tythan;
+
 import static net.md_5.bungee.api.ChatColor.*;
 
 /**
@@ -23,6 +25,17 @@ public final class MessageUtil {
 		Arrays.stream(TextComponent.fromLegacyText(toAdd))
 			.forEach(bc->m.addExtra(bc));
 		return m;
+	}
+	
+	public static String asError(String text) {
+		return DARK_RED + "ERROR: " + RED + text;
+	}
+	
+	public static BaseComponent asErrorComponent(String text) {
+		return Tythan.get().chatBuilder()
+				.append("ERROR: ").color(DARK_RED)
+				.append(text).color(RED)
+				.build();
 	}
 	
 	public static HoverEvent hoverEvent(String text) {
