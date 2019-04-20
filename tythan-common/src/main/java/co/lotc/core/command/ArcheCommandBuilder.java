@@ -40,6 +40,7 @@ public class ArcheCommandBuilder {
 	boolean argsHaveDefaults = false; //When arg is added that has default input
 	boolean noMoreArgs = false; //When an unity argument is used
 	boolean buildHelpFile = true;
+	boolean noFlags = false;
 	
 	
 	public ArcheCommandBuilder(Consumer<ArcheCommand> registration, Command command) {
@@ -101,7 +102,14 @@ public class ArcheCommandBuilder {
 	}
 	
 	void addFlag(CmdFlag flag) {
-		flags.add(flag);
+		if(noFlags) CoreLog.warning("Ignoring flag addition due to noFlags set: " + flag.getName());
+		else flags.add(flag);
+	}
+	
+	public ArcheCommandBuilder noFlags() {
+		this.flags.clear();
+		this.noFlags = true;
+		return this;
 	}
 	
 	public ArcheCommandBuilder alias(String... aliases) {
@@ -119,7 +127,7 @@ public class ArcheCommandBuilder {
 		if(ParameterType.senderTypeExists(senderClass)) {
 			senderType = ParameterType.getCustomType(senderClass);
 			
-			if(senderType.mapper() != null || senderType.mapperWithSender() != null ) {
+			if(!noFlags && (senderType.mapper() != null || senderType.mapperWithSender() != null) ) {
 				CoreLog.debug("Sender can also be mapped by means of a 'p' flag");
 				ArgBuilder b = CmdFlag.make(this, "p", "archecore.mod", new String[0]);
 				b.asType(senderType.getTargetType());
@@ -170,7 +178,7 @@ public class ArcheCommandBuilder {
 			HelpCommand help = new HelpCommand(built);
 			this.subCommands.add(help);
 			if(noneSpecified) payload = c->help.runHelp(c, 0);
-			flag("h").description("Get help and subcommands").defaultInput("0").asInt();
+			if(!noFlags) flag("h").description("Get help and subcommands").defaultInput("0").asInt();
 		}
 		
 		//If there's no more builders up the chain we've reached the top. Means we're done and we can make an executor
