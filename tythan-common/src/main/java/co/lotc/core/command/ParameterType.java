@@ -48,7 +48,7 @@ public class ParameterType<T> {
 	protected final Class<T> forClass;
 	
 	@Getter private Function<String, T> mapper;
-	@Setter private BiFunction<Sender, String, T> mapperWithSender;
+	@Getter private BiFunction<Sender, String, T> mapperWithSender;
 	@Getter private Function<Sender, T> senderMapper;
 	@Getter private Predicate<T> filter;
 	private ArgumentType<?> brigadierType;

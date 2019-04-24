@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 import org.apache.commons.lang.Validate;
 
 import co.lotc.core.CoreLog;
-import co.lotc.core.Tythan;
 import co.lotc.core.agnostic.Command;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,6 +19,7 @@ import lombok.experimental.Accessors;
 //We're reaching levels of Telanir that shouldn't be even possible
 @Accessors(fluent=true)
 public class ArcheCommandBuilder {
+	private final Consumer<ArcheCommand> registrationHandler;
 	private final ArcheCommandBuilder parentBuilder;
 	private final Command command;
 	
@@ -40,9 +40,11 @@ public class ArcheCommandBuilder {
 	boolean argsHaveDefaults = false; //When arg is added that has default input
 	boolean noMoreArgs = false; //When an unity argument is used
 	boolean buildHelpFile = true;
+	boolean useFlags = true;
 	
 	
-	public ArcheCommandBuilder(Command command) {
+	public ArcheCommandBuilder(Consumer<ArcheCommand> registration, Command command) {
+		registrationHandler = registration;
 		parentBuilder = null;
 		this.command = command;
 		
@@ -55,6 +57,7 @@ public class ArcheCommandBuilder {
 	}
 	
 	ArcheCommandBuilder(ArcheCommandBuilder dad, String name, boolean inheritOptions){
+		registrationHandler = null;
 		parentBuilder = dad;
 		command = dad.command;
 		this.mainCommand = name;
@@ -99,7 +102,14 @@ public class ArcheCommandBuilder {
 	}
 	
 	void addFlag(CmdFlag flag) {
-		flags.add(flag);
+		if(useFlags) flags.add(flag);
+		else CoreLog.warning("Ignoring flag addition due to noFlags set: " + flag.getName());
+	}
+	
+	public ArcheCommandBuilder noFlags() {
+		this.flags.clear();
+		useFlags = false;
+		return this;
 	}
 	
 	public ArcheCommandBuilder alias(String... aliases) {
@@ -117,8 +127,8 @@ public class ArcheCommandBuilder {
 		if(ParameterType.senderTypeExists(senderClass)) {
 			senderType = ParameterType.getCustomType(senderClass);
 			
-			CoreLog.debug("cmd " + mainCommand() + " requires as its sender: " + senderClass.getSimpleName());
-			if(senderType.mapper() != null) { //Can also replace the sender as Console with -p flag
+			if(useFlags && (senderType.mapper() != null || senderType.mapperWithSender() != null) ) {
+				CoreLog.debug("Sender can also be mapped by means of a 'p' flag");
 				ArgBuilder b = CmdFlag.make(this, "p", "archecore.mod", new String[0]);
 				b.asType(senderType.getTargetType());
 			}
@@ -144,8 +154,8 @@ public class ArcheCommandBuilder {
 			payload = ArcheCommand.NULL_COMMAND;
 		}
 		
-		CoreLog.debug("Now Building ArcheCommand: " + mainCommand + " it has " + subCommands.size()
-			+ " subcommands and parent: " +(parentBuilder == null? "none":parentBuilder.mainCommand));
+/*		CoreLog.debug("Now Building ArcheCommand: " + mainCommand + " it has " + subCommands.size()
+			+ " subcommands and parent: " +(parentBuilder == null? "none":parentBuilder.mainCommand));*/
 		ArcheCommand built = new ArcheCommand(
 				mainCommand,
 				Collections.unmodifiableSet(aliases),
@@ -168,11 +178,11 @@ public class ArcheCommandBuilder {
 			HelpCommand help = new HelpCommand(built);
 			this.subCommands.add(help);
 			if(noneSpecified) payload = c->help.runHelp(c, 0);
-			flag("h").description("Get help and subcommands").defaultInput("0").asInt();
+			if(useFlags) flag("h").description("Get help and subcommands").defaultInput("0").asInt();
 		}
 		
 		//If there's no more builders up the chain we've reached the top. Means we're done and we can make an executor
-		if(parentBuilder == null) Tythan.get().registerRootCommand(this.command, built);
+		if(parentBuilder == null) registrationHandler.accept(built);
 		
 		return parentBuilder;
 	}

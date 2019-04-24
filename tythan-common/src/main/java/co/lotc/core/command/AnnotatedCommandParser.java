@@ -3,6 +3,7 @@ package co.lotc.core.command;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -29,8 +30,8 @@ public class AnnotatedCommandParser {
 	private final Supplier<CommandTemplate> template;
 	private final Command pluginCommand;
 	
-	public ArcheCommandBuilder invokeParse() {
-		ArcheCommandBuilder acb = new ArcheCommandBuilder(pluginCommand);
+	public ArcheCommandBuilder invokeParse(Consumer<ArcheCommand> registrationHandler) {
+		ArcheCommandBuilder acb = new ArcheCommandBuilder(registrationHandler, pluginCommand);
 		return parse(template, acb);
 	}
 	
@@ -72,8 +73,10 @@ public class AnnotatedCommandParser {
 		Cmd anno = method.getAnnotation(Cmd.class);
 		String desc = anno.value();
 		String pex = anno.permission();
+		boolean flags = anno.flags();
 		
 		var result = parent.subCommand(name, false);
+		if(!flags) result.noFlags();
 		if(desc !=  null) result.description(desc);
 		if(StringUtils.isNotEmpty(pex)) result.permission(pex);
 		

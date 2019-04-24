@@ -178,7 +178,10 @@ public class ItemUtil {
 		YamlConfiguration yaml = new YamlConfiguration();
 		try {
 			yaml.loadFromString(yamlItem);
-			return ItemStack.deserialize(yaml.getConfigurationSection("item").getValues(true));
+			ItemStack is = ItemStack.deserialize(yaml.getConfigurationSection("item").getValues(true));
+			//We prefer a ItemStack here instead of a CraftItemStack (the deserialize creates CIS by some strange salem witchcraft)
+			//Doing this ensures future isSimilar methods against the deserialized item wont fail on Damage:0 nbt tag equals checks
+			return is == null? null : new ItemStack(is);
 		} catch (InvalidConfigurationException e) {
 			throw new IllegalArgumentException(e);
 		}

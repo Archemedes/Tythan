@@ -64,6 +64,7 @@ class PromptListener<T extends Event> implements Consumer<Prompt>,Listener,Event
 			if(as.getPlayer().getUniqueId().equals(uuid)) {
 				as.setCancelled(true);
 				if("stop".equals(as.getMessage().toLowerCase())) {
+					as.getPlayer().sendMessage(GRAY + "Stop command received. Exiting");
 					Run.as(TythanBukkit.get()).sync(()->abandon());
 					return;
 				}
@@ -73,7 +74,7 @@ class PromptListener<T extends Event> implements Consumer<Prompt>,Listener,Event
 		if(clazz.isInstance(event)) {
 			T theEvent = clazz.cast(event);
 			Player who = howToGetPlayer.apply(theEvent);
-			if(who.getUniqueId().equals(uuid)) {
+			if(who != null && who.getUniqueId().equals(uuid)) {
 				task();
 				Object result = function.apply(theEvent);
 				if(result != null) {
@@ -95,7 +96,7 @@ class PromptListener<T extends Event> implements Consumer<Prompt>,Listener,Event
 			Player p = Bukkit.getPlayer(uuid);
 			if(p != null) p.sendMessage(GRAY + "We didn't receive your input in time. Exiting.");
 			CoreLog.debug("Giving up on prompt " + this);
-		}, 20*20);
+		}, 15*20);
 	}
 	
 	private void abandon() {

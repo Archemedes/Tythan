@@ -9,6 +9,8 @@ import co.lotc.core.command.AnnotatedCommandParser;
 import co.lotc.core.command.ArcheCommandBuilder;
 import co.lotc.core.command.CommandTemplate;
 import co.lotc.core.command.ParameterType;
+import co.lotc.core.command.brigadier.CommandNodeManager;
+import co.lotc.core.command.brigadier.Kommandant;
 import lombok.var;
 
 public class Commands {
@@ -21,7 +23,15 @@ public class Commands {
 	 */
 	public static ArcheCommandBuilder builder(PluginCommand command, Supplier<CommandTemplate> template) {
 		var wrapper = new BukkitCommand(command);
-		return new AnnotatedCommandParser(template, wrapper).invokeParse();
+		return new AnnotatedCommandParser(template, wrapper).invokeParse((handler)->{
+			Kommandant kommandant = new BukkitKommandant(handler);
+			kommandant.addBrigadier();
+			CommandNodeManager.getInstance().register(kommandant);
+			
+			var pluginCommand = ((BukkitCommand) wrapper).getHandle();
+			ArcheCommandExecutor executor = new ArcheCommandExecutor(handler);
+			pluginCommand.setExecutor(executor);
+		});
 	}
 	
 	/**

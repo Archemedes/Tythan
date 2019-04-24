@@ -1,6 +1,5 @@
 package co.lotc.core.bukkit.convo;
 
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -14,7 +13,6 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import com.google.common.base.Functions;
 import com.google.common.base.Predicates;
 
 import co.lotc.core.agnostic.AbstractChatStream;
@@ -23,11 +21,9 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class ChatStream extends AbstractChatStream<ChatStream>{
-	private final UUID uuid;
 	
 	public ChatStream(Player p) {
-		super(new BukkitSender(p));
-		this.uuid = p.getUniqueId();
+		super(new BukkitSender(p), p.getUniqueId());
 	}
 
 	public <T extends PlayerEvent> ChatStream listen(String contextTag, BaseComponent message, Class<T> c, Function<T, Object> listener) {
@@ -39,33 +35,11 @@ public class ChatStream extends AbstractChatStream<ChatStream>{
 		return this;
 	}
 	
-	public ChatStream prompt(String contextTag, String message) {
-		return prompt(contextTag, new TextComponent(message));
-	}
-	
-	public ChatStream prompt(String contextTag, BaseComponent message) {
-		return prompt(contextTag, message, Predicates.alwaysTrue());
-	}
-	
-	public ChatStream prompt(String contextTag, String message, Predicate<String> filter) {
-		return prompt(contextTag, new TextComponent(message), filter);
-	}
-	
-	public ChatStream prompt(String contextTag, BaseComponent message, Predicate<String> filter) {
-		return prompt(contextTag, message, filter, Functions.identity());
-	}
-	
-	public ChatStream prompt(String contextTag, String message, Predicate<String> filter, Function<String, ?> mapper) {
-		return prompt(contextTag, new TextComponent(message), filter, mapper);
-	}
-	
+	@Override
 	public ChatStream prompt(String contextTag, BaseComponent message, Predicate<String> filter, Function<String, ?> mapper) {
 		return listen(contextTag, message, AsyncPlayerChatEvent.class, x->{
-			if(x.getPlayer().getUniqueId().equals(uuid)) {
-				if(filter.test(x.getMessage())) return mapper.apply(x.getMessage());
-			}
-			
-			return null;
+			if(filter.test(x.getMessage())) return mapper.apply(x.getMessage());
+			else return null;
 		});
 	}
 	
