@@ -96,6 +96,17 @@ public class ParameterType<T> {
 		}
 	}
 	
+	
+	public ParameterType<T> completer(CommandCompleter completer) {
+		this.completer = completer;
+		return this;
+	}
+	
+	public ParameterType<T> completer( BiFunction<Sender, String, ? extends Collection<String>> suggestions) {
+		this.completer = new CommandCompleter(suggestions);
+		return this;
+	}
+	
 	public ParameterType<T> completer(Supplier<? extends Collection<String>> supplier ) {
 		this.completer = new CommandCompleter(supplier);
 		return this;
