@@ -16,6 +16,10 @@ import java.util.stream.Stream;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Container;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Animals;
@@ -40,7 +44,7 @@ import lombok.var;
 
 public class InventoryUtil {
 	private InventoryUtil() {}
-	
+
 	/**
 	 * Counts all instances of an itemstack across an inventory using {@link ItemStack#isSimilar(ItemStack)} as a comparator
 	 * @param inv inventory to check in
@@ -56,6 +60,15 @@ public class InventoryUtil {
 		return count;
 	}
 	
+	public static boolean isDoubleChest(Block b) {
+		BlockState bs = b.getState();
+		if(bs instanceof Container) {
+			return ((Container) bs).getInventory().getHolder() instanceof DoubleChest;
+		} else {
+			return false;
+		}
+	}
+
 	/**
 	 * Checks if the inventory has no items at all
 	 * @param inv Inventory to check
@@ -67,29 +80,29 @@ public class InventoryUtil {
 		}
 		return true;
 	}
-	
+
 	public static void addOrDropItem(Player p, ItemStack... items) {
 		addOrDropItem(p.getLocation(), p.getInventory(), items);
 	}
-	
+
 	public static void addOrDropItem(Location location, Inventory inv, ItemStack... items) {
 		var left = addItem(inv, items);
 		left.forEach((k,is)->location.getWorld().dropItemNaturally(location, is));
 	}
-	
+
 	public static List<ItemStack> getItems(Inventory inv){
 		return Stream.of(inv.getContents()).filter(Objects::nonNull).collect(Collectors.toList());
 	}
-	
+
 	public static String serializeItems(Inventory inv) {
 		return serializeItems(inv.getContents());
 	}
-	
+
 	public static String serializeItems(ItemStack...items) {
 		List<ItemStack> list = Lists.newArrayList(items);
 		return serializeItems(list);
 	}
-	
+
 	public static String serializeItems(List<ItemStack> items) {
 		YamlConfiguration yaml = new YamlConfiguration();
 		yaml.set("c", items.stream()
@@ -98,29 +111,29 @@ public class InventoryUtil {
 				);
 		return yaml.saveToString();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static List<ItemStack> deserializeItems(String listOfItems) {
 		YamlConfiguration yaml = new YamlConfiguration();
 		try {
 			yaml.loadFromString(listOfItems);
 			if(!yaml.isList("c")) throw new IllegalArgumentException("String must have list of items under key 'c'");
-      return yaml.getList("c").stream()
-          .map(ent -> (Map<String, Object>) ent)
-          .map(ent -> ent == null ? null : ItemStack.deserialize(ent))
-          .collect(Collectors.toList());
+			return yaml.getList("c").stream()
+					.map(ent -> (Map<String, Object>) ent)
+					.map(ent -> ent == null ? null : ItemStack.deserialize(ent))
+					.collect(Collectors.toList());
 		} catch (InvalidConfigurationException e) {
 			throw new IllegalArgumentException(e);
 		}
 	}
-	
+
 	/**
 	 * See {@link InventoryUtil#addItem(Inventory, ItemStack...)}
 	 */
-    public static HashMap<Integer, ItemStack> addItem(final Inventory inv, Collection<ItemStack> items) {
-    	return addItem(inv, items.toArray(new ItemStack[0]));
-    }
-	
+	public static HashMap<Integer, ItemStack> addItem(final Inventory inv, Collection<ItemStack> items) {
+		return addItem(inv, items.toArray(new ItemStack[0]));
+	}
+
 	/**
 	 * Like the Bukkit method, but respects max ItemStack size
 	 * See also: {@link org.bukkit.inventory.Inventory#addItem(ItemStack...)}
@@ -128,62 +141,62 @@ public class InventoryUtil {
 	 * @param items Items to add
 	 * @return What couldn't be added
 	 */
-    public static HashMap<Integer, ItemStack> addItem(final Inventory inv, final ItemStack... items) {
-        Validate.noNullElements(items, "Item cannot be null");
-        final HashMap<Integer, ItemStack> leftover = new HashMap<>();
-        for (int i = 0; i < items.length; ++i) {
-            final ItemStack item = items[i];
-            while (true) {
-                final int firstPartial = firstPartial(item, inv);
-                if (firstPartial == -1) {
-                    final int firstFree = inv.firstEmpty();
-                    if (firstFree == -1) {
-                        leftover.put(i, item);
-                        break;
-                    }
-                    final int max = Math.min(item.getMaxStackSize(), inv.getMaxStackSize());
-                    if (item.getAmount() <= max) {
-                        inv.setItem(firstFree, item);
-                        break;
-                    }
-                    final ItemStack stack = item.clone();
-                    stack.setAmount(max);
-                    inv.setItem(firstFree, stack);
-                    item.setAmount(item.getAmount() - max);
-                }
-                else {
-                    final ItemStack partialItem = inv.getItem(firstPartial);
-                    final int amount = item.getAmount();
-                    final int partialAmount = partialItem.getAmount();
-                    final int maxAmount = partialItem.getMaxStackSize();
-                    if (amount + partialAmount <= maxAmount) {
-                        partialItem.setAmount(amount + partialAmount);
-                        break;
-                    }
-                    partialItem.setAmount(maxAmount);
-                    item.setAmount(amount + partialAmount - maxAmount);
-                }
-            }
-        }
-        return leftover;
-    }
-    
-    private static int firstPartial(final ItemStack item, final Inventory inv) {
-        final ItemStack[] inventory = inv.getContents();
-        if (item == null) {
-            return -1;
-        }
-        final ItemStack filteredItem = item.clone();
-        for (int i = 0; i < inventory.length; ++i) {
-            final ItemStack cItem = inventory[i];
-            if (cItem != null && cItem.getAmount() < cItem.getMaxStackSize() && cItem.isSimilar(filteredItem)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-	
-	
+	public static HashMap<Integer, ItemStack> addItem(final Inventory inv, final ItemStack... items) {
+		Validate.noNullElements(items, "Item cannot be null");
+		final HashMap<Integer, ItemStack> leftover = new HashMap<>();
+		for (int i = 0; i < items.length; ++i) {
+			final ItemStack item = items[i];
+			while (true) {
+				final int firstPartial = firstPartial(item, inv);
+				if (firstPartial == -1) {
+					final int firstFree = inv.firstEmpty();
+					if (firstFree == -1) {
+						leftover.put(i, item);
+						break;
+					}
+					final int max = Math.min(item.getMaxStackSize(), inv.getMaxStackSize());
+					if (item.getAmount() <= max) {
+						inv.setItem(firstFree, item);
+						break;
+					}
+					final ItemStack stack = item.clone();
+					stack.setAmount(max);
+					inv.setItem(firstFree, stack);
+					item.setAmount(item.getAmount() - max);
+				}
+				else {
+					final ItemStack partialItem = inv.getItem(firstPartial);
+					final int amount = item.getAmount();
+					final int partialAmount = partialItem.getAmount();
+					final int maxAmount = partialItem.getMaxStackSize();
+					if (amount + partialAmount <= maxAmount) {
+						partialItem.setAmount(amount + partialAmount);
+						break;
+					}
+					partialItem.setAmount(maxAmount);
+					item.setAmount(amount + partialAmount - maxAmount);
+				}
+			}
+		}
+		return leftover;
+	}
+
+	private static int firstPartial(final ItemStack item, final Inventory inv) {
+		final ItemStack[] inventory = inv.getContents();
+		if (item == null) {
+			return -1;
+		}
+		final ItemStack filteredItem = item.clone();
+		for (int i = 0; i < inventory.length; ++i) {
+			final ItemStack cItem = inventory[i];
+			if (cItem != null && cItem.getAmount() < cItem.getMaxStackSize() && cItem.isSimilar(filteredItem)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+
 	/**
 	 * Represents an item that was moved during a certain InventoryInteractEvent
 	 * Magic values CURSOR_SLOT and DROPPED_SLOT represent items moved from
@@ -196,18 +209,18 @@ public class InventoryUtil {
 		private final ItemStack is;
 		private int initialSlot;
 		private final int finalSlot;
-		
+
 		public MovedItem(ItemStack is, int initial, int fin) {
 			this.is = is;
 			initialSlot = initial;
 			finalSlot = fin;
 		}
-		
+
 		public ItemStack getItem() { return is; }
 		public int getInitialSlot() { return initialSlot; }
 		public int getFinalSlot() { return finalSlot; }
 	}
-	
+
 	/**
 	 * Gets a list of ItemStacks that is potentially affected by this Inventory Event if not modified or cancelled.
 	 * This method is much coarser than {@link InventoryUtil#getResultOfEvent(InventoryInteractEvent)} and should execute faster, but is less accurate and provides less information
@@ -218,13 +231,13 @@ public class InventoryUtil {
 	public static List<ItemStack> getTouchedByEvent(InventoryInteractEvent e){
 		List<ItemStack> result = new ArrayList<>();
 		String dbg = null;
-		
+
 		if(Tythan.get().isDebugging()) {
 			dbg = "[Debug] InventoryUtil touched items " + (e instanceof InventoryClickEvent?
 					((InventoryClickEvent) e).getAction() : ((InventoryDragEvent) e).getType());
 			CoreTimer.startTiming(dbg);
 		}
-		
+
 		if(e instanceof InventoryClickEvent) {
 			InventoryClickEvent ev = (InventoryClickEvent) e;
 			InventoryAction a = ev.getAction();
@@ -282,12 +295,12 @@ public class InventoryUtil {
 			InventoryDragEvent ev = (InventoryDragEvent) e;
 			result.add(ev.getCursor()); //Cursor dragged along multiple spots
 		}
-		
-		
+
+
 		CoreTimer.stopTiming(dbg);
 		return result;
 	}
-	
+
 	/**
 	 * Predictive method to study an event and returning a list of ItemStacks being affected as well as the inventory slots they are moved from and to).
 	 * The itemstacks returned by this method are non-reflective. Changing them does not alter the event or involved inventories
@@ -300,7 +313,7 @@ public class InventoryUtil {
 		String dbg = null;
 
 		List<MovedItem> result = new ArrayList<>();
-		
+
 		try {
 			if(Tythan.get().isDebugging()) {
 				dbg = "[Debug] InventoryUtil moved items " + (e instanceof InventoryClickEvent?
@@ -328,9 +341,9 @@ public class InventoryUtil {
 					//Full stack can't collect other items
 					if(is.getAmount() >= is.getMaxStackSize()) return result;
 
-                    //Doing the double click over an occupied slot doesn't cause a collect
-                    if(ev.getCurrentItem().getType() != Material.AIR) return result;
-					
+					//Doing the double click over an occupied slot doesn't cause a collect
+					if(ev.getCurrentItem().getType() != Material.AIR) return result;
+
 					InventoryView v = ev.getView();
 					InventoryType type = v.getType();
 					int upper = v.countSlots() - (v.getType() == InventoryType.CRAFTING? 0 : 5);
@@ -405,13 +418,13 @@ public class InventoryUtil {
 											if(i != 0 && slotToCheck == slotsToCheck[0]) continue;
 											ItemStack toCheck = v.getItem(slotToCheck);
 											if( (phase == 0 && target.isSimilar(toCheck) && toCheck.getAmount() < toCheck.getMaxStackSize())
-												|| (phase == 1 &&  toCheck.getType() == Material.AIR)) {
+													|| (phase == 1 &&  toCheck.getType() == Material.AIR)) {
 												System.out.println("yes");
 												spot = slotToCheck;
 												break;
 											}
 										}
-										
+
 										if(spot > 0) break;
 									}
 									result.add(new MovedItem(target.clone(), raw, spot));
@@ -419,11 +432,11 @@ public class InventoryUtil {
 									is.setAmount(1);
 									result.add(new MovedItem(is, hotbarRawSlot, raw));
 								}
-								
+
 								return result; //Both slots occupied but hotbar is full
 							}
 						}
-						
+
 						if(is.getType() != Material.AIR) result.add(new MovedItem(is.clone(), hotbarRawSlot, raw));
 						is = ev.getCurrentItem();
 						if(is.getType() != Material.AIR) result.add(new MovedItem(is.clone(), raw, hotbarRawSlot));
@@ -454,11 +467,11 @@ public class InventoryUtil {
 						if(enchanting && ev.getCurrentItem().getType() != Material.AIR) return result;
 						amount = enchanting? 1 :
 							a == PLACE_ALL? is.getAmount() :
-							a == PLACE_ONE? 1 : //else it's place some
-								Math.min(is.getMaxStackSize(), ev.getClickedInventory().getMaxStackSize()) - ev.getCurrentItem().getAmount();
-						
-						is.setAmount(amount);
-						result.add(new MovedItem(is, MovedItem.CURSOR_SLOT, raw));
+								a == PLACE_ONE? 1 : //else it's place some
+									Math.min(is.getMaxStackSize(), ev.getClickedInventory().getMaxStackSize()) - ev.getCurrentItem().getAmount();
+
+							is.setAmount(amount);
+							result.add(new MovedItem(is, MovedItem.CURSOR_SLOT, raw));
 					}
 					break;
 				case SWAP_WITH_CURSOR:
@@ -481,17 +494,17 @@ public class InventoryUtil {
 			CoreTimer.stopTiming(dbg);
 		}
 	}
-	
+
 	private static boolean isEnchantingSlot(int raw, InventoryView v) {
 		return (raw == 0 && v.getType() == InventoryType.ENCHANTING)
 				|| (raw == 1 && v.getType() == InventoryType.CHEST &&
 				v.getTopInventory().getHolder() instanceof Animals);
 	}
-	
+
 	private static Method civ_getHandle = null;
 	private static Method con_getSlot = null;
 	private static Method slot_isAllowed = null;
-	
+
 	private static boolean isItemAllowed(int rawSlot, ItemStack is, InventoryView view) {
 		if(is.getType() == Material.AIR) return true;
 		Object nmsItem = MinecraftReflection.getMinecraftItemStack(is);
@@ -513,10 +526,10 @@ public class InventoryUtil {
 			throw e;
 		}
 	}
-	
+
 	private static void handleMoveToOther(List<MovedItem> result, int raw, InventoryView view) {
 		final int topSize = view.getTopInventory().getSize();
-	
+
 		switch(view.getType()) {
 		case ANVIL:
 		case BEACON:
@@ -527,7 +540,7 @@ public class InventoryUtil {
 			//Assume that the clicked item goes to the other inventory, but leave it there.
 			int possibleTargetSpot = raw < view.getTopInventory().getSize()?
 					view.getTopInventory().getSize() : 0;
-			result.add(new MovedItem(view.getItem(raw).clone(), raw, possibleTargetSpot));
+					result.add(new MovedItem(view.getItem(raw).clone(), raw, possibleTargetSpot));
 		case CHEST:
 		case ENDER_CHEST:
 		case DISPENSER:
@@ -538,7 +551,7 @@ public class InventoryUtil {
 			int initialValue = topToBottom?  view.countSlots() - 6 : 0;
 			int finalValue = topToBottom? topSize-1 : topSize;
 			int modder = topToBottom? -1 : 1;
-			
+
 			//Could be donkey or lama. Some special code needed to handle this
 			ItemStack hacker = null;
 			int removed = -1;
@@ -561,13 +574,13 @@ public class InventoryUtil {
 						} else {
 							return;
 						}
-						
+
 					}
 				}
-				
+
 				initialValue = 2;
 			}
-			
+
 			moveToOtherMainLoop(result, view, raw, topToBottom, initialValue, finalValue, modder);
 			if(removed > 0) hacker.setAmount(hacker.getAmount()+removed);
 			break;
@@ -587,13 +600,13 @@ public class InventoryUtil {
 			} else {
 				//Inventory slot, move hotbar to invspace or vice-versa
 				ItemStack is = view.getItem(raw);
-				
+
 				//Special pre-treatment of shields, which get moved to offhand
 				if(is.getType() == Material.SHIELD && view.getItem(45).getType() == Material.AIR) {
 					result.add(new MovedItem(is.clone(), raw, 45));
 					return;
 				}
-				
+
 				//Special treatment of armor
 				boolean performAnUglyHack = false;
 				for(int i = 5; i < 9; i++) {
@@ -611,7 +624,7 @@ public class InventoryUtil {
 						}
 					}
 				}
-				
+
 				//Now contraints are taken care of handle like the main loop
 				int invSpaceSize = 36; //The 27 slots over the armor slot
 				boolean toHotbar = raw < invSpaceSize; //clicked spots in the invspace get moved to hotbar
@@ -623,33 +636,33 @@ public class InventoryUtil {
 			break;
 		case MERCHANT:
 		case WORKBENCH:
-		//Behavior of these inventories:
-		//Anything in the bottom (player) inv is moved from hotbar to invspace or invspace to hotbar
-		//The crafting result slot (raw slot 0) gets moved to inventory in reverse order
-		if(raw == 0) { //Crafting result slot
-			initialValue = view.countSlots() - 6;
-			finalValue = topSize-1;
-			modder = -1;
-			moveToOtherMainLoop(result, view, raw, true, initialValue, finalValue, modder);
-		} else if(raw < topSize) { //One of the crafting slots
-			initialValue = topSize;
-			finalValue = view.countSlots() - 5;
-			modder = 1;
-			moveToOtherMainLoop(result, view, raw, true, initialValue, finalValue, modder);
-		} else { //Inventory slot, move hotbar to inspace or vice-versa
-			int invSpaceSize = topSize + 27;
-			boolean toHotbar = raw < invSpaceSize; //clicked spots in the invspace get moved to hotbar
-			initialValue = toHotbar? invSpaceSize : topSize;
-			finalValue = toHotbar? invSpaceSize + 9: invSpaceSize;
-			moveToOtherMainLoop(result, view, raw, true, initialValue, finalValue, 1);
-		}
-		break;
+			//Behavior of these inventories:
+			//Anything in the bottom (player) inv is moved from hotbar to invspace or invspace to hotbar
+			//The crafting result slot (raw slot 0) gets moved to inventory in reverse order
+			if(raw == 0) { //Crafting result slot
+				initialValue = view.countSlots() - 6;
+				finalValue = topSize-1;
+				modder = -1;
+				moveToOtherMainLoop(result, view, raw, true, initialValue, finalValue, modder);
+			} else if(raw < topSize) { //One of the crafting slots
+				initialValue = topSize;
+				finalValue = view.countSlots() - 5;
+				modder = 1;
+				moveToOtherMainLoop(result, view, raw, true, initialValue, finalValue, modder);
+			} else { //Inventory slot, move hotbar to inspace or vice-versa
+				int invSpaceSize = topSize + 27;
+				boolean toHotbar = raw < invSpaceSize; //clicked spots in the invspace get moved to hotbar
+				initialValue = toHotbar? invSpaceSize : topSize;
+				finalValue = toHotbar? invSpaceSize + 9: invSpaceSize;
+				moveToOtherMainLoop(result, view, raw, true, initialValue, finalValue, 1);
+			}
+			break;
 		default:
 			break;
-		
+
 		}
 	}
-	
+
 	private static void moveToOtherMainLoop(List<MovedItem> result, InventoryView view, int raw,
 			boolean topToBottom, int initialValue, int finalValue, int modder) {
 		ItemStack is = view.getItem(raw);
@@ -657,7 +670,7 @@ public class InventoryUtil {
 		boolean oversized = amount > is.getMaxStackSize();
 		int maxInvRoom = topToBottom? view.getBottomInventory().getMaxStackSize() : view.getTopInventory().getMaxStackSize();
 		int maxRoom = oversized? maxInvRoom : Math.min(is.getMaxStackSize(), maxInvRoom);
-				
+
 		//Moving goes in 2 phases: First fill up existing stacks, then look for empty slots
 		for(int phase = (oversized? 1 : 0); phase < 2; phase++) {
 			for(int i = initialValue; i != finalValue; i += modder) {
