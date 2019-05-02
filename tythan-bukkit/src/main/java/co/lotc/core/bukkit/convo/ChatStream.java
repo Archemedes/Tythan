@@ -3,6 +3,7 @@ package co.lotc.core.bukkit.convo;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -16,6 +17,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.google.common.base.Predicates;
 
 import co.lotc.core.agnostic.AbstractChatStream;
+import co.lotc.core.bukkit.TythanBukkit;
+import co.lotc.core.bukkit.util.Run;
 import co.lotc.core.bukkit.wrapper.BukkitSender;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -90,5 +93,11 @@ public class ChatStream extends AbstractChatStream<ChatStream>{
 	@Override
 	protected ChatStream getThis() {
 		return this;
+	}
+
+	@Override
+	protected void resolveFinishedStream() {
+		if(Bukkit.isPrimaryThread()) onActivate.accept(context);
+		else Run.as(TythanBukkit.get()).sync(()->onActivate.accept(context));
 	}
 }

@@ -40,4 +40,9 @@ public class ChatStream extends AbstractChatStream<ChatStream> {
 		}, howToGetPlayer);
 	}
 
+	@Override
+	protected void resolveFinishedStream() {
+		onActivate.accept(context);
+	}
+
 }
