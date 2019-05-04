@@ -10,6 +10,10 @@ import lombok.Getter;
 public class Context implements Iterable<Entry<String, Object>> {
 	@Getter private final Map<String, Object> map = new HashMap<>();
 
+	public boolean contains(String key) {
+		return has(key);
+	}
+	
 	public boolean has(String key) {
 		return map.containsKey(key);
 	}
