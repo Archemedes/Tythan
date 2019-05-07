@@ -173,6 +173,9 @@ public class ArcheCommandBuilder {
 				Collections.unmodifiableList(subCommands),
 				payload);
 		
+		if(built.isInvokeOverload() && !built.getSubCommands().isEmpty())
+			throw new IllegalStateException("Found subcommands on an invoke overload for " + this.parentBuilder.mainCommand);
+		
 		if(parentBuilder != null) {
 			if(built.collides(parentBuilder.subCommands))
 			//Note this checks invoke overloads with each other due to invoke's magical alias

@@ -16,6 +16,7 @@ import co.lotc.core.command.ArcheCommand;
 import co.lotc.core.command.CmdArg;
 import co.lotc.core.command.HelpCommand;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import lombok.var;
 
 @RequiredArgsConstructor
@@ -32,14 +33,20 @@ public abstract class Kommandant {
 	}
 	
 	private CommandNode<Object> buildNode(ArcheCommand cmd, CommandNode<Object> dad) {
-		var builder = LiteralArgumentBuilder.literal(cmd.getMainCommand());
-		if(!cmd.hasArgs() && !cmd.isEmptyCommand()) builder.executes($->0);
-		var node = builder.build();
+		CommandNode<Object> node = null;
+
+		if(cmd.isInvokeOverload()) {
+			node = dad;
+		} else {
+			val builder = LiteralArgumentBuilder.literal(cmd.getMainCommand());
+			if(!cmd.hasArgs() && !cmd.isEmptyCommand()) builder.executes($->0);
+			node = builder.build();
+		}
 		
 		for(var sub : cmd.getSubCommands()) {
 			if(sub instanceof HelpCommand) continue;
 			var subNode = buildNode(sub, node); //Recurses
-			node.addChild(subNode);
+			if(!sub.isInvokeOverload()) node.addChild(subNode);
 		}
 		
 		CommandNode<Object> argument = null;
