@@ -87,9 +87,13 @@ public class AgnosticExecutor{
 	}
 	
 	private void runSubCommand(Sender sender, ArcheCommand subCommand, String usedAlias, List<String> args) {
-		String usedSubcommandAlias = args.remove(0).toLowerCase();
-		String newAlias = usedAlias + ' ' + usedSubcommandAlias;
-		runCommand(sender, subCommand, newAlias, args);
+		if(subCommand.isInvokeOverload()) {
+			runCommand(sender, subCommand, usedAlias, args);
+		} else {
+			String usedSubcommandAlias = args.remove(0).toLowerCase();
+			String newAlias = usedAlias + ' ' + usedSubcommandAlias;
+			runCommand(sender, subCommand, newAlias, args);
+		}
 	}
 	
 	private void executeCommand(ArcheCommand command, RanCommand c) {
@@ -113,7 +117,6 @@ public class AgnosticExecutor{
 	}
 	
 	private ArcheCommand wantsSubCommand(ArcheCommand cmd, List<String> args) {
-		if(args.isEmpty()) return null;
 		
 		List<ArcheCommand> matches = new ArrayList<>();
 
@@ -127,6 +130,7 @@ public class AgnosticExecutor{
 		else if(matches.size() == 1) return matches.get(0);
 			
 		//Otherwise, Check for literals that match a subcommand
+		if(args.isEmpty()) return null;
 		String subArg = args.get(0).toLowerCase();
 		
 		cmd.getSubCommands().stream()
