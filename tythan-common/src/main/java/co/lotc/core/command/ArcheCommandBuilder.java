@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.Validate;
 
@@ -14,6 +15,7 @@ import co.lotc.core.agnostic.Command;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import lombok.experimental.Accessors;
 
 //We're reaching levels of Telanir that shouldn't be even possible
@@ -66,6 +68,10 @@ public class ArcheCommandBuilder {
 		if(inheritOptions) {
 			this.buildHelpFile = dad.buildHelpFile;
 		}
+	}
+	
+	ArcheCommandBuilder overloadInvoke() {
+		return subCommand("").noHelp();
 	}
 	
 	public ArcheCommandBuilder subCommand(String name) {
@@ -169,9 +175,15 @@ public class ArcheCommandBuilder {
 		
 		if(parentBuilder != null) {
 			if(built.collides(parentBuilder.subCommands))
+			//Note this checks invoke overloads with each other due to invoke's magical alias
 				throw new IllegalStateException("Detected ambiguous subcommand: "
 			  + built.getMainCommand() + ". Aliases and argument range overlap with other commands!");
 			parentBuilder.subCommands.add(built);
+		} else { //Check for collision of the root command with its invoke overloads
+			val overloads = this.subCommands.stream().filter(ArcheCommand::isInvokeOverload).collect(Collectors.toList());
+			if(overloads.stream().anyMatch(built::argRangeOverlaps))
+				throw new IllegalStateException("Detected ambiguous overloads: "
+			  + built.getMainCommand() + ". argument range overlap at the top level!");
 		}
 		
 		if(buildHelpFile) {

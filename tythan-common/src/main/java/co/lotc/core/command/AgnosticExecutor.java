@@ -114,10 +114,23 @@ public class AgnosticExecutor{
 	
 	private ArcheCommand wantsSubCommand(ArcheCommand cmd, List<String> args) {
 		if(args.isEmpty()) return null;
-		String subArg = args.get(0).toLowerCase();
 		
 		List<ArcheCommand> matches = new ArrayList<>();
+
+		//Check if one of the overloads matches better based on arg count
 		cmd.getSubCommands().stream()
+		  .filter(ArcheCommand::isInvokeOverload)
+		  .filter(ac->ac.fitsArgSize(args.size()))
+		  .forEach(matches::add);
+		
+		if(matches.size() > 1) throw new IllegalStateException("Invoke overload ambiguity: Same arg size took multiple args!!");
+		else if(matches.size() == 1) return matches.get(0);
+			
+		//Otherwise, Check for literals that match a subcommand
+		String subArg = args.get(0).toLowerCase();
+		
+		cmd.getSubCommands().stream()
+			.filter(s->!s.getMainCommand().isEmpty())
 		  .filter(s->s.isAlias(subArg))
 		  .forEach(matches::add);
 		if(matches.isEmpty()) return null;

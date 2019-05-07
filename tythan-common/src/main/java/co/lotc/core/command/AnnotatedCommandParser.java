@@ -50,12 +50,17 @@ public class AnnotatedCommandParser {
 	
 	private void addInvoke(Class<? extends CommandTemplate> c, Supplier<CommandTemplate> template, ArcheCommandBuilder acb) {
 		//This breaks polymorphism but whatever
+		boolean multipleInvokes = false;
 		for(Method m : c.getDeclaredMethods()) {
 			if(m.getParameterCount() > 0 && Modifier.isPublic(m.getModifiers()) && m.getName().equals("invoke") && m.getReturnType() == Void.TYPE) {
 				//This is a invoke method declared in the class, assumed this is what we want for the default invocation of the command
 				//Due to logic of the ArcheCommandExecutor this still makes the no-argument default a help command
-				parseCommandMethod(m, template, acb);
-				return;
+				if(!multipleInvokes) {
+					parseCommandMethod(m, template, acb);
+					multipleInvokes = true;
+				} else {
+					parseCommandMethod(m, template, acb.overloadInvoke());
+				}
 			}
 		}
 		
