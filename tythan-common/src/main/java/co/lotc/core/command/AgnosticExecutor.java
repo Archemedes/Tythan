@@ -53,7 +53,7 @@ public class AgnosticExecutor{
 				.get(index)
 				.getCompleter()
 				.suggest(sender, args.get(index))
-				.forEach(options::add);
+				.forEach(sugg->options.add(sugg.getLiteral()));
 			
 			return options.stream().filter(s->s.toLowerCase().startsWith(last)).collect(Collectors.toList());
 		}

@@ -11,6 +11,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import co.lotc.core.agnostic.Sender;
 import co.lotc.core.bukkit.wrapper.BukkitSender;
 import co.lotc.core.command.CmdArg;
+import co.lotc.core.command.CommandCompleter.Suggestion;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -22,9 +23,11 @@ public class ArcheSuggestionProvider<T> implements SuggestionProvider<T> {
 		T source = context.getSource();
 		Sender sender = new BukkitSender(BrigadierProvider.get().getBukkitSender(source));
 		
-		for(String sugg : arg.getCompleter().suggest(sender, builder.getRemaining())) {
+		for(Suggestion suggestion : arg.getCompleter().suggest(sender, builder.getRemaining())) {
+			String sugg = suggestion.getLiteral();
 			if (sugg.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
-				builder.suggest(sugg);
+				if(suggestion.hasTooltip()) builder.suggest(sugg, ()->suggestion.getTooltip());
+				else builder.suggest(sugg);
 			}
 		}
 
