@@ -3,7 +3,7 @@ package co.lotc.core.command;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
+import java.util.List;
 import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
 import java.util.stream.Collectors;
@@ -21,6 +21,8 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 
 import co.lotc.core.CoreLog;
+import co.lotc.core.command.CommandCompleter.Suggestion;
+import co.lotc.core.command.brigadier.TooltipProvider;
 import co.lotc.core.util.TimeUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -191,11 +193,19 @@ public class ArgBuilder {
 			try{ return Enum.valueOf(clazz, s.toUpperCase()); }
 			catch(IllegalArgumentException e) {return null;}
 		});
-		arg.setCompleter(()->Arrays.stream(clazz.getEnumConstants())
-				.map(Enum::name)
-				.map(String::toLowerCase)
-				.collect(Collectors.toList()));
+		
+		arg.setCompleter( CommandCompleter.suggestWithTooltips( ()-> enumCompleter(clazz)  ));
 		return command;
+	}
+	
+	private <T extends Enum<T>> List<Suggestion> enumCompleter(Class<T> clazz){
+		val stream = Stream.of(clazz.getEnumConstants());
+		if(TooltipProvider.class.isAssignableFrom(clazz)) {
+			return stream.map(e-> new Suggestion(e.name().toLowerCase(), ((TooltipProvider)e).getTooltip()))
+					.collect( Collectors.toList() );
+		} else {
+			return stream.map(Enum::name).map(String::toLowerCase).map(Suggestion::new).collect(Collectors.toList());
+		}
 	}
 	
 	public ArcheCommandBuilder asInstant() {

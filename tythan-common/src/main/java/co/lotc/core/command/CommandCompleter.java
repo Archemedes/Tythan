@@ -58,7 +58,7 @@ public class CommandCompleter {
 	public static class Suggestion {
 		String literal, tooltip;
 		
-		private Suggestion(String literal) {
+		public Suggestion(String literal) {
 			this(literal, null);
 		}
 		
