@@ -78,6 +78,7 @@ public class AnnotatedCommandParser {
 		String name = method.getName();
 		
 		Cmd anno = method.getAnnotation(Cmd.class);
+		if(!anno.alias().isEmpty()) name = anno.alias();
 		String desc = anno.value();
 		String pex = anno.permission();
 		boolean flags = anno.flags();
