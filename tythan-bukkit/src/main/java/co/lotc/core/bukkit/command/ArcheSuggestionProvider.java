@@ -2,6 +2,7 @@ package co.lotc.core.bukkit.command;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
@@ -26,7 +27,7 @@ public class ArcheSuggestionProvider<T> implements SuggestionProvider<T> {
 		for(Suggestion suggestion : arg.getCompleter().suggest(sender, builder.getRemaining())) {
 			String sugg = suggestion.getLiteral();
 			if (sugg.toLowerCase().startsWith(builder.getRemaining().toLowerCase())) {
-				if(suggestion.hasTooltip()) builder.suggest(sugg, ()->suggestion.getTooltip());
+				if(suggestion.hasTooltip()) builder.suggest(sugg, new LiteralMessage(suggestion.getTooltip()) );
 				else builder.suggest(sugg);
 			}
 		}
