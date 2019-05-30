@@ -94,7 +94,7 @@ abstract class PromptListener<T extends Event> implements Consumer<Prompt>,Liste
 			ProxiedPlayer p = proxy().getPlayer(uuid);
 			if(p != null) new ChatBuilder("We didn't receive your input in time. Exiting.").color(GRAY).send(p);
 			CoreLog.debug("Giving up on prompt " + this);
-		}, 15, TimeUnit.SECONDS);
+		}, 40, TimeUnit.SECONDS);
 	}
 	
 	private void abandon() {
