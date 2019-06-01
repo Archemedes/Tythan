@@ -2,31 +2,29 @@ package co.lotc.core.save;
 
 import java.util.Queue;
 import java.util.TimerTask;
-import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import co.lotc.core.CoreLog;
-import co.lotc.core.save.rows.Row;
+import co.lotc.core.Tythan;
 import co.lotc.core.save.rows.ConsumerRow;
 import co.lotc.core.save.rows.FlexibleDeleteRow;
 import co.lotc.core.save.rows.FlexibleInsertRow;
 import co.lotc.core.save.rows.FlexibleUpdateRow;
 import co.lotc.core.save.rows.LambdaRow;
-import lombok.Getter;
+import co.lotc.core.save.rows.Row;
 
 public final class ArcheConsumer extends TimerTask implements Consumer {
 	private final Queue<Row> queue = new LinkedBlockingQueue<>();
-	@Getter private final MongoHandler mongo;
-	@Getter private final Executor executor;
+	private final MongoHandler mongo;
 	
 	private final int timePerRun;
 	private final int forceToProcess;
 	private final int warningSize;
 	private boolean bypassForce = false;
 
-	public ArcheConsumer(Executor executor, int timePerRun, int forceToProcess, int warningSize) {
-		this.mongo = new MongoHandler("archebase"); //TODO auth data from config
-		this.executor = executor;
+	public ArcheConsumer(int timePerRun, int forceToProcess, int warningSize) {
+		this.mongo = Tythan.getMongoHandler();
+		
 		this.timePerRun = timePerRun;
 		this.forceToProcess = forceToProcess;
 		this.warningSize = warningSize;
@@ -98,34 +96,35 @@ public final class ArcheConsumer extends TimerTask implements Consumer {
 		
 		int count = 0;
 		
-		MongoConnection connection = mongo.connect();
-		while (bypassForce || System.currentTimeMillis() - starttime < timePerRun|| count < forceToProcess) {
-			Row row = queue.poll();
-			if (row == null) break;
+		try(MongoConnection connection = mongo.open()){
+			while (bypassForce || System.currentTimeMillis() - starttime < timePerRun|| count < forceToProcess) {
+				Row row = queue.poll();
+				if (row == null) break;
 
-			if(row instanceof ConsumerRow) {
-				String trace = ((ConsumerRow) row).getOriginStackTrace();
-				if(trace != null) {
-					CoreLog.debug("ConsumerRow origin stack trace:");
-					CoreLog.debug(trace);
+				if(row instanceof ConsumerRow) {
+					String trace = ((ConsumerRow) row).getOriginStackTrace();
+					if(trace != null) {
+						CoreLog.debug("ConsumerRow origin stack trace:");
+						CoreLog.debug(trace);
+					}
 				}
+				try { CoreLog.debug("[Consumer] Beginning process for " + row.toString());}
+				catch(RuntimeException e) { CoreLog.debug("[Consumer] Beginning process for FAULTY " + row.getClass().getSimpleName());}
+
+				long taskstart = System.currentTimeMillis();
+
+				try { //2 calls but only 1 of them should be non-empty in normal operation
+					row.run();
+					row.accept(connection);
+				} catch(Exception e) {
+					e.printStackTrace();
+					CoreLog.severe("[Consumer] Exception on " + row.getClass().getSimpleName() + ": ", e);
+					CoreLog.severe("[Consumer] Statement body: " + row.toString());
+				}
+
+				count++;
+				CoreLog.debug("[Consumer] took " + (System.currentTimeMillis() - taskstart) + "ms for " + row.getClass().getSimpleName());
 			}
-			try { CoreLog.debug("[Consumer] Beginning process for " + row.toString());}
-			catch(RuntimeException e) { CoreLog.debug("[Consumer] Beginning process for FAULTY " + row.getClass().getSimpleName());}
-
-			long taskstart = System.currentTimeMillis();
-
-			try { //2 calls but only 1 of them should be non-empty in normal operation
-				row.run();
-				row.accept(connection);
-			} catch(Exception e) {
-				e.printStackTrace();
-				CoreLog.severe("[Consumer] Exception on " + row.getClass().getSimpleName() + ": ", e);
-				CoreLog.severe("[Consumer] Statement body: " + row.toString());
-			}
-
-			count++;
-			CoreLog.debug("[Consumer] took " + (System.currentTimeMillis() - taskstart) + "ms for " + row.getClass().getSimpleName());
 		}
 
 			long time = System.currentTimeMillis() - starttime;
