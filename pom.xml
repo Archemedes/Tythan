@@ -19,7 +19,7 @@
 
   <properties>
     <project.build.sourceEncodeing>UTF-8</project.build.sourceEncodeing>
-    <revision>0.7</revision>
+    <revision>0.8</revision>
   </properties>
 
   <distributionManagement>
@@ -114,7 +114,7 @@
   	<dependency>
   		<groupId>org.projectlombok</groupId>
   		<artifactId>lombok</artifactId>
-  		<version>1.18.4</version>
+  		<version>1.18.6</version>
   		<scope>provided</scope>
   	</dependency>
   </dependencies>
