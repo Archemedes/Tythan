@@ -8,11 +8,9 @@ import org.bson.codecs.configuration.CodecRegistry;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.IndexOptions;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.var;
 
 @Getter(AccessLevel.PACKAGE)
 public class MongoConnection implements AutoCloseable{
@@ -25,13 +23,8 @@ public class MongoConnection implements AutoCloseable{
 		session.startTransaction();
 	}
 
-	public void index(String collectionName, boolean unique, String... variables) {
-		
-		Document doc = new Document();
-		for(var var : variables) {
-			doc.append(var, 1);
-		}
-		database.getCollection(collectionName).createIndex(doc, new IndexOptions().unique(unique));
+	public MongoCollectionBuilder collection(String name) {
+		return new MongoCollectionBuilder(this, name);
 	}
 	
 	public void insert(String collectionName, Map<String, Object> map) {
