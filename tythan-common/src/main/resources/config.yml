@@ -2,8 +2,8 @@
 debug: false
 
 mongo:
-  database: tythan
-  ip: localhost
+  database: 'tythan'
+  host: localhost
   port: 27017
   username: ''
   password: ''
