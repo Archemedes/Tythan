@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.codecs.Codec;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -23,6 +26,7 @@ public class MongoHandler {
 	public MongoHandler(String dbName) {
 		this.dbName = dbName;
 		client = MongoClients.create();
+		
 	}
 	
 	public MongoHandler(String dbName, String ip, int port) {
@@ -43,7 +47,16 @@ public class MongoHandler {
 		return new MongoHandler(databaseName,client);
 	}
 	
-	public MongoConnection connect() {
-		return new MongoConnection(client, dbName);
+	public MongoConnection open() {
+		return new MongoConnection(client, dbName, getCodecRegistry());
+	}
+	
+	private CodecRegistry getCodecRegistry() {
+		return CodecRegistries.fromRegistries(
+				MongoClientSettings.getDefaultCodecRegistry(),
+				CodecRegistries.fromCodecs(codecs),
+				new PreventBukkitEncodingRegistry(),
+				CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build())
+				);
 	}
 }

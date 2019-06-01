@@ -2,6 +2,8 @@ package co.lotc.core.account;
 
 import java.util.function.Consumer;
 
+import co.lotc.core.Tythan;
+
 public class AccountHandler {
 
 	public AccountHandler() {
@@ -22,6 +24,7 @@ public class AccountHandler {
 	
 	
 	private Account fetch(int id) {
-		
+		Tythan.get();
+		return null;
 	}
 }
