@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import co.lotc.core.Tythan;
-import co.lotc.core.TythanProvider;
+import co.lotc.core.TythanInternals;
 import co.lotc.core.agnostic.Sender;
 import co.lotc.core.bungee.command.BrigadierInjector;
 import co.lotc.core.bungee.util.ChatBuilder;
@@ -40,7 +40,7 @@ public class TythanBungee extends Plugin implements Tythan {
 	
 	@Override
 	public void onLoad() {
-		TythanProvider.init(this);
+		TythanInternals.init(this);
 	}
 	
 	@Override

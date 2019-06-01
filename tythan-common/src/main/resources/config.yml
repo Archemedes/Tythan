@@ -1,1 +1,9 @@
 #Hello I am your good friend the config file
+debug: false
+
+mongo:
+  database: tythan
+  ip: localhost
+  port: 27017
+  username: ''
+  password: ''

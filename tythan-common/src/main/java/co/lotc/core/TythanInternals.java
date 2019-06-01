@@ -1,6 +1,9 @@
 package co.lotc.core;
 
-public class TythanProvider {
+import co.lotc.core.agnostic.Config;
+import co.lotc.core.save.MongoHandler;
+
+public class TythanInternals {
 	static Tythan INSTANCE = null;
 	
 	public static void init(Tythan theOneTrueTythus) {
@@ -9,6 +12,10 @@ public class TythanProvider {
 		CoreLog.set(INSTANCE);
 	}
 	
-	private TythanProvider() {throw new UnsupportedOperationException();}
-
+	
+	public static MongoHandler makeHandler(Config config) {
+		
+	}
+	
+	private TythanInternals() {throw new UnsupportedOperationException();}
 }

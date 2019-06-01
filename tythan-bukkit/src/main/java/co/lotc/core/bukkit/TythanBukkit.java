@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import co.lotc.core.Tythan;
-import co.lotc.core.TythanProvider;
+import co.lotc.core.TythanInternals;
 import co.lotc.core.bukkit.command.BrigadierProvider;
 import co.lotc.core.bukkit.command.ItemArg;
 import co.lotc.core.bukkit.command.SenderTypes;
@@ -27,7 +27,7 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 	
 	@Override
 	public void onLoad() {
-		TythanProvider.init(this);
+		TythanInternals.init(this);
 		ConfigurationSerialization.registerClass(WeakBlock.class, "WeakBlock");
 	}
 	
