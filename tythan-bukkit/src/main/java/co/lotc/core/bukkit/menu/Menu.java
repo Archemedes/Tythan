@@ -58,16 +58,9 @@ public class Menu implements InventoryHolder{
 	void init() {
 		if(!initialized) {
 			initialized = true;
-			@SuppressWarnings("deprecation")
-			String title = inventory.getTitle();
-			CoreLog.debug("Initializing menu with title: " + title);
+			CoreLog.debug("Initializing new menu of size " + this.getSize());
 			updateIconItems();
 		}
-	}
-	
-	@SuppressWarnings("deprecation")
-	public String getTitle() {
-		return inventory.getTitle();
 	}
 	
 	public int getSize() {
