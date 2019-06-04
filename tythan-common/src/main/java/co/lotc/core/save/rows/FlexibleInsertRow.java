@@ -4,18 +4,11 @@ import co.lotc.core.save.Consumer;
 import co.lotc.core.save.MongoConnection;
 
 public class FlexibleInsertRow extends FlexibleRow {
-	private final Mode mode;
 	
-	public FlexibleInsertRow(Consumer consumer, String table, Mode mode) {
+	public FlexibleInsertRow(Consumer consumer, String table) {
 		super(consumer, table);
-		this.mode = mode;
 	}
 
-	public enum Mode{
-		REPLACE,
-		IGNORE
-	}
-	
 	@Override
 	public FlexibleInsertRow set(String column, Object value) {
 		return (FlexibleInsertRow) this.where(column, value);
@@ -23,7 +16,7 @@ public class FlexibleInsertRow extends FlexibleRow {
 	
 	@Override
 	public void accept(MongoConnection con) {
-		con.insert(collecton, vars); //TODO mode: ignore, replace
+		con.insert(collecton, vars);
 	}
 	
 }

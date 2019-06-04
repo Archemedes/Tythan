@@ -8,6 +8,8 @@ import org.bson.codecs.configuration.CodecRegistry;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.ReplaceOptions;
+import com.mongodb.client.model.UpdateOptions;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,6 +31,10 @@ public class MongoConnection implements AutoCloseable{
 	
 	public void insert(String collectionName, Map<String, Object> map) {
 		database.getCollection(collectionName).insertOne(session, new Document(map));
+	}
+	
+	public void replace(String collectionName, Map<String, Object> criteria, Map<String, Object> map) {
+		database.getCollection(collectionName).replaceOne(session, new Document(criteria), new Document(map), new ReplaceOptions().upsert(true));
 	}
 	
 	public void delete(String collectionName, Map<String, Object> map) {

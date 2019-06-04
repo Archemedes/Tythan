@@ -9,6 +9,7 @@ import co.lotc.core.Tythan;
 import co.lotc.core.save.rows.ConsumerRow;
 import co.lotc.core.save.rows.FlexibleDeleteRow;
 import co.lotc.core.save.rows.FlexibleInsertRow;
+import co.lotc.core.save.rows.FlexibleReplaceRow;
 import co.lotc.core.save.rows.FlexibleUpdateRow;
 import co.lotc.core.save.rows.LambdaRow;
 import co.lotc.core.save.rows.Row;
@@ -32,12 +33,12 @@ public final class ArcheConsumer extends TimerTask implements Consumer {
 
 	@Override
 	public FlexibleInsertRow insert(String table) {
-		return new FlexibleInsertRow(this, table, FlexibleInsertRow.Mode.IGNORE);
+		return new FlexibleInsertRow(this, table);
 	}
 	
 	@Override
-	public FlexibleInsertRow replace(String table) {
-		return new FlexibleInsertRow(this, table, FlexibleInsertRow.Mode.REPLACE);
+	public FlexibleReplaceRow replace(String table) {
+		return new FlexibleReplaceRow(this, table);
 	}
 
 	@Override
