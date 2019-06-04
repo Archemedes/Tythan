@@ -66,7 +66,7 @@ public class MenuAgent {
 	}
 	
 	public void close() {
-		Run.as(TythanBukkit.get()).sync(()->player.closeInventory());
+		player.closeInventory();
 	}
 	
 	public boolean hasContext(String tag) {

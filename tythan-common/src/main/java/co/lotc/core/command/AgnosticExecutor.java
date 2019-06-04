@@ -53,7 +53,7 @@ public class AgnosticExecutor{
 				.get(index)
 				.getCompleter()
 				.suggest(sender, args.get(index))
-				.forEach(options::add);
+				.forEach(sugg->options.add(sugg.getLiteral()));
 			
 			return options.stream().filter(s->s.toLowerCase().startsWith(last)).collect(Collectors.toList());
 		}
@@ -87,9 +87,13 @@ public class AgnosticExecutor{
 	}
 	
 	private void runSubCommand(Sender sender, ArcheCommand subCommand, String usedAlias, List<String> args) {
-		String usedSubcommandAlias = args.remove(0).toLowerCase();
-		String newAlias = usedAlias + ' ' + usedSubcommandAlias;
-		runCommand(sender, subCommand, newAlias, args);
+		if(subCommand.isInvokeOverload()) {
+			runCommand(sender, subCommand, usedAlias, args);
+		} else {
+			String usedSubcommandAlias = args.remove(0).toLowerCase();
+			String newAlias = usedAlias + ' ' + usedSubcommandAlias;
+			runCommand(sender, subCommand, newAlias, args);
+		}
 	}
 	
 	private void executeCommand(ArcheCommand command, RanCommand c) {
@@ -113,11 +117,24 @@ public class AgnosticExecutor{
 	}
 	
 	private ArcheCommand wantsSubCommand(ArcheCommand cmd, List<String> args) {
+		
+		List<ArcheCommand> matches = new ArrayList<>();
+
+		//Check if one of the overloads matches better based on arg count
+		cmd.getSubCommands().stream()
+		  .filter(ArcheCommand::isInvokeOverload)
+		  .filter(ac->ac.fitsArgSize(args.size()))
+		  .forEach(matches::add);
+		
+		if(matches.size() > 1) throw new IllegalStateException("Invoke overload ambiguity: Same arg size took multiple args!!");
+		else if(matches.size() == 1) return matches.get(0);
+			
+		//Otherwise, Check for literals that match a subcommand
 		if(args.isEmpty()) return null;
 		String subArg = args.get(0).toLowerCase();
 		
-		List<ArcheCommand> matches = new ArrayList<>();
 		cmd.getSubCommands().stream()
+			.filter(s->!s.getMainCommand().isEmpty())
 		  .filter(s->s.isAlias(subArg))
 		  .forEach(matches::add);
 		if(matches.isEmpty()) return null;

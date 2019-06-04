@@ -28,12 +28,12 @@ public final class MessageUtil {
 	}
 	
 	public static String asError(String text) {
-		return DARK_RED + "ERROR: " + RED + text;
+		return DARK_RED + "Error: " + RED + text;
 	}
 	
 	public static BaseComponent asErrorComponent(String text) {
 		return Tythan.get().chatBuilder()
-				.append("ERROR: ").color(DARK_RED)
+				.append("Error: ").color(DARK_RED)
 				.append(text).color(RED)
 				.build();
 	}

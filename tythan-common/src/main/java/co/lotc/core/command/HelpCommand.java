@@ -52,9 +52,9 @@ public class HelpCommand extends ArcheCommand {
 	public void runHelp(RanCommand c, int page) {
 
 		if(page > 0) {
-			int min = 6 + (page-1)*7;
+			int min = 7 + (page-1)*8;
 			if(parent.hasDescription()) min--;
-			int max = min + 7;
+			int max = min + 8;
 			outputSubcommands(c, min, max);
 		}
 		else {
@@ -87,7 +87,7 @@ public class HelpCommand extends ArcheCommand {
 		
 		if(parent.hasDescription()) c.msg(GRAY+""+ITALIC+parent.getDescription());
 		
-		int max = parent.hasDescription()? 5:6;
+		int max = parent.hasDescription()? 6:7;
 		outputSubcommands(c, 0, max);
 	}
 	
@@ -138,8 +138,8 @@ public class HelpCommand extends ArcheCommand {
 			AbstractChatBuilder<?> b = Tythan.get().chatBuilder().append("-== Possible sub-commands for ").color(DARK_AQUA)
 					.append(trailing).color(GRAY).append(" ==-").color(DARK_AQUA);
 			
-			if(min > 0) b.append(" [").hover("Previous Page").color(RED).command(alias + " -h " + (min/7)).append('\u2190').append("]");
-			if(subs.size() > max) b.append(" [").hover("Next Page").color(RED).command(alias + " -h " + ((min+2)/7+1)).append('\u2192').append("]");
+			if(min > 0) b.append(" [").hover("Previous Page").color(RED).command(alias + " -h " + (min/8)).append('\u2190').append("]");
+			if(subs.size() > max) b.append(" [").hover("Next Page").color(RED).command(alias + " -h " + ((min+2)/8+1)).append('\u2192').append("]");
 			
 			c.msg(b.build());
 		}

@@ -46,13 +46,17 @@ public class ItemUtil {
 	 * @param value Value to be stored as an NBTString
 	 */
 	public static void setCustomTag(@NonNull ItemStack item, String key, String value) {
+		var meta = item.getItemMeta();
+		setCustomTag(meta, key, value);
+		item.setItemMeta(meta);
+	}
+
+	public static void setCustomTag(@NonNull ItemMeta meta, String key, String value) {
 		if("true".equals(value) || "false".equals(value))
 			throw new IllegalArgumentException("Values true/false cannot be serialized so they are forbidden!");
 		
-		var meta = item.getItemMeta();
 		var container = meta.getCustomTagContainer();
 		container.setCustomTag(fuckYouBukkitJustGiveMeAKey(key), ItemTagType.STRING, value);
-		item.setItemMeta(meta);
 	}
 	
 	public static String getCustomTag(ItemStack item, String key) {
@@ -64,16 +68,23 @@ public class ItemUtil {
 	
 	public static boolean hasCustomTag(ItemStack item, String key) {
 		if(!exists(item)) return false;
-		var meta = item.getItemMeta();
+		return hasCustomTag(item.getItemMeta(), key);
+	}
+	
+	public static boolean hasCustomTag(@NonNull ItemMeta meta, String key) {
 		var container = meta.getCustomTagContainer();
 		return container.hasCustomTag(fuckYouBukkitJustGiveMeAKey(key), ItemTagType.STRING);
 	}
 	
 	public static void removeCustomTag(@NonNull ItemStack item, String key) {
 		var meta = item.getItemMeta();
+		removeCustomTag(meta, key);
+		item.setItemMeta(meta);
+	}
+	
+	public static void removeCustomTag(@NonNull ItemMeta meta, String key) {
 		var container = meta.getCustomTagContainer();
 		container.removeCustomTag(fuckYouBukkitJustGiveMeAKey(key));
-		item.setItemMeta(meta);
 	}
 	
 	@SuppressWarnings("deprecation")

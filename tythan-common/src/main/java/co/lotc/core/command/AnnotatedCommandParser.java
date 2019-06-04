@@ -50,17 +50,24 @@ public class AnnotatedCommandParser {
 	
 	private void addInvoke(Class<? extends CommandTemplate> c, Supplier<CommandTemplate> template, ArcheCommandBuilder acb) {
 		//This breaks polymorphism but whatever
+		boolean firstInvokeFound = false;
 		for(Method m : c.getDeclaredMethods()) {
 			if(m.getParameterCount() > 0 && Modifier.isPublic(m.getModifiers()) && m.getName().equals("invoke") && m.getReturnType() == Void.TYPE) {
 				//This is a invoke method declared in the class, assumed this is what we want for the default invocation of the command
 				//Due to logic of the ArcheCommandExecutor this still makes the no-argument default a help command
-				parseCommandMethod(m, template, acb);
-				return;
+				if(!firstInvokeFound) {
+					parseCommandMethod(m, template, acb);
+					firstInvokeFound = true;
+				} else {
+					var overload = acb.overloadInvoke();
+					parseCommandMethod(m, template, overload);
+					overload.build();
+				}
 			}
 		}
 		
 		//Fallback option, which does use polymorphism, specifically the CommandTemplate.invoke() method
-		acb.payload(rc->{ //This is default behavior when no arguments are given, usually refers to help file
+		if(!firstInvokeFound) acb.payload(rc->{ //This is default behavior when no arguments are given, usually refers to help file
 			CommandTemplate t = template.get();
 			t.setRanCommand(rc);
 			t.invoke();
@@ -71,6 +78,7 @@ public class AnnotatedCommandParser {
 		String name = method.getName();
 		
 		Cmd anno = method.getAnnotation(Cmd.class);
+		if(!anno.alias().isEmpty()) name = anno.alias();
 		String desc = anno.value();
 		String pex = anno.permission();
 		boolean flags = anno.flags();

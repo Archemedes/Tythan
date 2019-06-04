@@ -1,11 +1,13 @@
 package co.lotc.core.bukkit.menu;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -19,9 +21,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import co.lotc.core.CoreLog;
+import co.lotc.core.bukkit.TythanBukkit;
 import co.lotc.core.bukkit.menu.icon.Icon;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.ItemUtil;
+import co.lotc.core.bukkit.util.Run;
 import co.lotc.core.bukkit.util.InventoryUtil.MovedItem;
 import lombok.var;
 
@@ -60,18 +64,37 @@ public class MenuListener implements Listener {
 		if(agent != null) {
 			var action = new MenuAction(agent, InventoryUtil.getResultOfEvent(e), e.getClick());
 			boolean cancel = setCancel(e, action);
+			
+			List<Icon> queued = new ArrayList<>();
+			
 			if(cancel) { //button-like action
 				if(action.getMovedItems().size() == 1 && ItemUtil.exists(e.getView().getItem(e.getRawSlot())) ) {
-					asIcon(e, e.getRawSlot(), action).ifPresent(i->i.click(action));
+					asIcon(e, e.getRawSlot(), action).ifPresent(queued::add);
 				}
 			} else { //Slot-like action?
 				for(MovedItem mi : action.getMovedItems()) {
 					//Should be impossible for both to be true
-					asIcon(e, mi.getInitialSlot(), action).ifPresent(i->i.click(action));
-					asIcon(e, mi.getFinalSlot(), action).ifPresent(i->i.click(action));
+					asIcon(e, mi.getInitialSlot(), action).ifPresent(queued::add);
+					asIcon(e, mi.getFinalSlot(), action).ifPresent(queued::add);
 				}
 			}
+			
+			maybeRun(queued, action);
 		}
+	}
+	
+	private void maybeRun(List<Icon> clicked, MenuAction action) {
+		if(!clicked.isEmpty()) Run.as(TythanBukkit.get()).sync( ()-> {
+			Player p = action.getPlayer();
+			if(!p.isOnline())
+				return;
+			if(p.getOpenInventory() == null)
+				return;
+			if(!(p.getOpenInventory().getTopInventory().getHolder() instanceof Menu) )
+				return;
+			
+			clicked.forEach(i->i.click(action));
+		});
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -82,9 +105,13 @@ public class MenuListener implements Listener {
 			
 			boolean cancel = setCancel(e, action);
 			if(!cancel) {
+				List<Icon> queued = new ArrayList<>();
+
 				for (Integer slot : e.getRawSlots()) {
-					asIcon(e, slot, action).ifPresent(i->i.click(action));
+					asIcon(e, slot, action).ifPresent(queued::add);
 				}
+				
+				maybeRun(queued, action);
 			}
 		}
 	}

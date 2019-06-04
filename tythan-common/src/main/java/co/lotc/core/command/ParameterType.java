@@ -122,7 +122,13 @@ public class ParameterType<T> {
 		if(brigadierType!=null) arg.setBrigadierType(brigadierType);
 	}
 	
-	public String getDefaultName() { return defaultName; }
+	public String getDefaultName() {
+		if(defaultName == null) return this.forClass.getSimpleName();
+		return defaultName;
+	}
 	
-	public String getDefaultError() { return defaultError; }
+	public String getDefaultError() {
+		if(defaultError == null) return "Please provide a valid " + getDefaultName();
+		return defaultError;
+	}
 }

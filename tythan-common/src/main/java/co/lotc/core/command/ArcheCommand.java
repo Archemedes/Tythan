@@ -19,7 +19,7 @@ import lombok.experimental.NonFinal;
 @RequiredArgsConstructor
 public class ArcheCommand {
 	public static final Consumer<RanCommand> NULL_COMMAND = rc->{};
-	
+			
 	String mainCommand;
 	Set<String> aliases;
 	String description;
@@ -68,7 +68,7 @@ public class ArcheCommand {
 		return aliases.stream().anyMatch(other::isAlias);
 	}
 	
-	private boolean argRangeOverlaps(ArcheCommand other) { //b1 <= a2 && a1 <= b2
+  boolean argRangeOverlaps(ArcheCommand other) { //b1 <= a2 && a1 <= b2
 		return other.minArgs() <= maxArgs() && minArgs() <= other.maxArgs();
 	}
 	
@@ -100,6 +100,10 @@ public class ArcheCommand {
 		if(s > 0 && args.get(s-1) instanceof JoinedArg) return 255;
 		else if(s > 0 && args.get(s-1) instanceof ArrayArgs) return 255;
 		else return s;
+	}
+	
+	public boolean isInvokeOverload() {
+		return mainCommand.isEmpty();
 	}
 	
 	public boolean fitsArgSize(int argSize) {

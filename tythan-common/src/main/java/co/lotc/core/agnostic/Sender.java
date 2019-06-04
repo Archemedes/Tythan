@@ -1,5 +1,7 @@
 package co.lotc.core.agnostic;
 
+import java.util.stream.Stream;
+
 import net.md_5.bungee.api.chat.BaseComponent;
 
 public interface Sender {
@@ -12,7 +14,8 @@ public interface Sender {
 	
 	void sendMessage(BaseComponent msg);
 	
-	void sendMessage(BaseComponent... msg);
-	
+	default void sendMessage(BaseComponent... msg) {
+		Stream.of(msg).forEach(this::sendMessage);
+	}
 	
 }

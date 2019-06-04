@@ -123,6 +123,8 @@ public abstract class AbstractChatStream<T extends AbstractChatStream<T>> {
 		prompts.get(0).open();
 	}
 	
+	protected abstract void resolveFinishedStream();
+	
 	protected abstract T getThis();
 	
 	@RequiredArgsConstructor
@@ -146,7 +148,7 @@ public abstract class AbstractChatStream<T extends AbstractChatStream<T>> {
 		
 		public void sendPrompt() {
 			Tythan.get().chatBuilder()
-			.appendButton("x", "stop", "click to exit prompt", ChatColor.RED, ChatColor.RED)
+			.appendButton("×", "stop", "click to exit prompt", ChatColor.RED, ChatColor.RED)
 			.append(" ").reset()
 			.append(text)
 			.send(stream.converser);
@@ -160,7 +162,7 @@ public abstract class AbstractChatStream<T extends AbstractChatStream<T>> {
 		void next() {
 			int i = stream.prompts.indexOf(this) + 1;
 			if(i >= stream.prompts.size()) {
-				stream.onActivate.accept(stream.context);
+				stream.resolveFinishedStream();
 			} else {
 				stream.prompts.get(i).open();
 			}

@@ -11,6 +11,7 @@ public class BrigadierInjector extends PacketAdapter<Commands> {
 	
 	public BrigadierInjector() {
 		super(Stream.DOWNSTREAM, Commands.class);
+		//addProperSerializers();
 	}
 	
 	@Override
@@ -21,4 +22,29 @@ public class BrigadierInjector extends PacketAdapter<Commands> {
 		CommandNodeManager.getInstance().inject(rootNode);
 	}
 
+/*	@SuppressWarnings("unchecked")
+	public void addProperSerializers(){
+		for(val clazz : Commands.class.getDeclaredClasses()) {
+			if(clazz.getSimpleName().equals("ArgumentRegistry")) {
+				@SuppressWarnings("rawtypes")
+				Map map = reflect(clazz, "PROPER_PROVIDERS");
+				
+				map.put(IntegerArgumentType.class, reflect(clazz, "INTEGER"));
+				map.put(DoubleArgumentType.class, reflect(clazz, "DOUBLE"));
+				map.put(BoolArgumentType.class, reflect(clazz, "BOOLEAN"));
+				map.put(FloatArgumentType.class, reflect(clazz, "FLOAT"));
+				return;
+			}
+		}
+		
+		CoreLog.severe("Couldn't find the ArgumentRegistry in Bungee's Commands packet wrapper");
+	}
+	
+	@SneakyThrows
+	@SuppressWarnings("unchecked")
+	private <T> T reflect(Class<?> clazz, String name) {
+			Field f = clazz.getDeclaredField(name);
+			f.setAccessible(true);
+			return (T) f.get(null);
+	}*/
 }
