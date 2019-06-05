@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import co.lotc.core.account.AccountHandler;
 import co.lotc.core.agnostic.AbstractChatBuilder;
+import co.lotc.core.agnostic.AbstractRun;
 import co.lotc.core.agnostic.Config;
 import co.lotc.core.save.MongoHandler;
 
@@ -22,4 +23,6 @@ public interface Tythan {
 	Config config();
 	
 	AbstractChatBuilder<?> chatBuilder();
+	
+	AbstractRun<?> run(Object plugin);
 }

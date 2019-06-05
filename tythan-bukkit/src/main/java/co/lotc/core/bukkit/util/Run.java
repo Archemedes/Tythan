@@ -1,6 +1,5 @@
 package co.lotc.core.bukkit.util;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -10,15 +9,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import co.lotc.core.agnostic.PluginOwned;
+import co.lotc.core.agnostic.AbstractRun;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor(access=AccessLevel.PUBLIC)
-public class Run implements PluginOwned<Plugin> {
-	@Getter private final Plugin plugin;
+public class Run extends AbstractRun<Plugin> {
 
+	public Run(Plugin plugin) {
+		super(plugin);
+	}
+	
 	public static void ensureSync() {
 		Validate.isTrue(Bukkit.isPrimaryThread());
 	}
@@ -31,40 +31,34 @@ public class Run implements PluginOwned<Plugin> {
 		return new Run(plugin);
 	}
 	
+	@Override
 	public Executor syncExecutor() {
 		return (r->scheduler().runTask(plugin, r));
 	}
 	
+	@Override
 	public Executor asyncExecutor() {
 		return (r->scheduler().runTaskAsynchronously(plugin, r));
 	}
 	
+	@Override
 	public void delayed(long delay, Runnable r) {
 		scheduler().runTaskLater(plugin, r, delay);
 	}
 	
-	public void repeating(long timer, Runnable r) {
-		repeating(1, timer, r);
-	}
-	
+	@Override
 	public void repeating(long delay, long timer, Runnable r) {
 		scheduler().runTaskTimer(plugin, r, delay, timer);
 	}
 	
+	@Override
 	public void sync(Runnable r) {
 		scheduler().runTask(plugin, r);
 	}
 	
+	@Override
 	public void async(Runnable r) {
 		scheduler().runTaskAsynchronously(plugin, r);
-	}
-	
-	public CompletableFuture<Void> future(Runnable r) {
-		return CompletableFuture.runAsync(r, asyncExecutor());
-	}
-	
-	public <T> CompletableFuture<T> future(Supplier<T> r) {
-		return CompletableFuture.supplyAsync(r, asyncExecutor());
 	}
 	
 	public <T> AsyncRunner<T> async(Supplier<T> s) {

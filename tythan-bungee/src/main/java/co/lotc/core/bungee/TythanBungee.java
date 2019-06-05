@@ -15,6 +15,7 @@ import co.lotc.core.TythanInternals;
 import co.lotc.core.agnostic.Sender;
 import co.lotc.core.bungee.command.BrigadierInjector;
 import co.lotc.core.bungee.util.ChatBuilder;
+import co.lotc.core.bungee.util.Run;
 import co.lotc.core.bungee.wrapper.BungeeConfig;
 import co.lotc.core.bungee.wrapper.BungeeSender;
 import co.lotc.core.command.ParameterType;
@@ -102,5 +103,12 @@ public class TythanBungee extends Plugin implements Tythan {
 	public ChatBuilder chatBuilder() {
 		return new ChatBuilder();
 	}
+	
+	@Override
+	public Run run(Object plugin) {
+		if(!(plugin instanceof Plugin)) throw new IllegalArgumentException("Please run as a plugin!!");
+		return new Run((Plugin) plugin);
+	}
+	
 }
 

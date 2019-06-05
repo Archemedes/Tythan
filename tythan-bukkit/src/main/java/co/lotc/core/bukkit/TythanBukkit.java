@@ -1,8 +1,10 @@
 package co.lotc.core.bukkit;
 
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import co.lotc.core.Tythan;
@@ -67,6 +69,12 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 	@Override
 	public ChatBuilder chatBuilder() {
 		return new ChatBuilder();
+	}
+	
+	@Override
+	public Run run(Object plugin) {
+		Validate.isTrue(plugin instanceof Plugin);
+		return new Run((Plugin) plugin);
 	}
 
 	private void listen(Listener l) {
