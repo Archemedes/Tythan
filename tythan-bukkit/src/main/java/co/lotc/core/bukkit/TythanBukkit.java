@@ -29,14 +29,13 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 	
 	@Override
 	public void onLoad() {
+		saveDefaultConfig();
 		TythanInternals.init(this);
 		ConfigurationSerialization.registerClass(WeakBlock.class, "WeakBlock");
 	}
 	
 	@Override
 	public void onEnable(){
-		saveDefaultConfig();
-
 		debugging = getConfig().getBoolean("debug");
 		
 		registerCommandParameterTypes();

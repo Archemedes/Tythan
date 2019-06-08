@@ -41,16 +41,16 @@ public class TythanBungee extends Plugin implements Tythan {
 	
 	@Override
 	public void onLoad() {
+		saveDefaultConfig();
 		TythanInternals.init(this);
 	}
 	
 	@Override
 	public void onEnable(){
-		saveDefaultConfig();
 		registerCommandParameterTypes();
 		ProtocolAPI.getEventManager().registerListener(new BrigadierInjector());
 	}
-
+			
 	@Override
 	public void onDisable(){
 
