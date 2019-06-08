@@ -1,5 +1,6 @@
 package co.lotc.core.save.rows;
 
+import co.lotc.core.Tythan;
 import co.lotc.core.save.Consumer;
 import co.lotc.core.save.MongoConnection;
 import lombok.Getter;
@@ -25,7 +26,7 @@ public abstract class ConsumerRow implements Row {
   
   public void queueAndFlush() {
   	queue();
-  	consumer.getExecutor().execute(()->consumer.runForced());
+  	Tythan.get().run(Tythan.get()).async(consumer::runForced);
   }
   
   public String getOriginStackTrace() {
