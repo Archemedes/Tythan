@@ -14,10 +14,9 @@ import com.mongodb.client.model.UpdateOptions;
 import lombok.AccessLevel;
 import lombok.Getter;
 
-@Getter(AccessLevel.PACKAGE)
 public class MongoConnection implements AutoCloseable{
-	private final MongoDatabase database;
-	private final ClientSession session;
+	@Getter(AccessLevel.PACKAGE) private final ClientSession session;
+	@Getter private final MongoDatabase database;
 	
 	MongoConnection(MongoClient client, String dbName, CodecRegistry codecs) {
 		database = client.getDatabase(dbName).withCodecRegistry(codecs);

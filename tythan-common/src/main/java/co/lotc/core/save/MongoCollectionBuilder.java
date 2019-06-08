@@ -32,6 +32,22 @@ public class MongoCollectionBuilder {
 		return this;
 	}
 	
+	public MongoCollectionBuilder intField(String name) {
+		return intField(name, false);
+	}
+	
+	public MongoCollectionBuilder intField(String name, boolean required) {
+		return field(name, required, BsonType.INT32);
+	}
+	
+	public MongoCollectionBuilder longField(String name) {
+		return longField(name, false);
+	}
+	
+	public MongoCollectionBuilder longField(String name, boolean required) {
+		return field(name, required, BsonType.INT64);
+	}
+	
 	public MongoCollectionBuilder doubleField(String name, boolean required) {
 		return field(name, required, BsonType.DOUBLE);
 	}

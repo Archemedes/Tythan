@@ -2,14 +2,12 @@ package co.lotc.core;
 
 import org.apache.commons.lang.StringUtils;
 
-import co.lotc.core.account.AccountHandler;
 import co.lotc.core.agnostic.Config;
 import co.lotc.core.save.MongoHandler;
 
 public class TythanInternals {
 	static Tythan INSTANCE = null;
 	static MongoHandler mongo;
-	static AccountHandler accounts;
 	
 	public static void init(Tythan theOneTrueTythus) {
 		if(INSTANCE != null) throw new IllegalStateException("Tythan was already initialized!");
@@ -17,7 +15,6 @@ public class TythanInternals {
 		CoreLog.set(INSTANCE);
 		
 		mongo = buildMongoHandler(theOneTrueTythus.config());
-		accounts = new AccountHandler();
 	}
 	
 	private static MongoHandler buildMongoHandler(Config config) {

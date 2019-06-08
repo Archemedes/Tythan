@@ -1,30 +1,40 @@
 package co.lotc.core.account;
 
-import java.util.function.Consumer;
+import static com.mongodb.client.model.Filters.eq;
+
+import org.bson.Document;
 
 import co.lotc.core.Tythan;
+import lombok.var;
 
-public class AccountHandler {
+public abstract class AccountHandler {
 
-	public AccountHandler() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public void tryLoadAccount(Consumer<Account> callback) {
-		
-	}
-
-	public void forceLoadAccount(Consumer<Account> callback) {
-		
-	}
 	
-	public void viewAccount(Consumer<Account> callback) {
-		
+	protected abstract void callLoadEvent(Account account);
+	
+	private void setupTables() {
+		try(var mongo = Tythan.getMongoHandler().open()){
+			mongo
+			.collection("accounts")
+			.intField("_id",true)
+			.longField("forum_id")
+			.longField("discord_id")
+			.intField("fatigue")
+			.longField("created")
+			.index(true, "_id")
+			.build();
+		}
 	}
 	
 	
 	private Account fetch(int id) {
-		Tythan.get();
+		try(var mongo = Tythan.getMongoHandler().open()){
+			Document candidate = mongo.getDatabase().getCollection("accounts").find(eq("_id", id)).first();
+			if(candidate == null) return null;
+			
+			
+		}
+		
 		return null;
 	}
 }
