@@ -1,19 +1,10 @@
 package co.lotc.core.bungee;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
 import co.lotc.core.Tythan;
 import co.lotc.core.TythanProvider;
 import co.lotc.core.agnostic.Sender;
 import co.lotc.core.bungee.command.BrigadierInjector;
+import co.lotc.core.bungee.servers.ServersUtil;
 import co.lotc.core.bungee.util.ChatBuilder;
 import co.lotc.core.bungee.wrapper.BungeeConfig;
 import co.lotc.core.bungee.wrapper.BungeeSender;
@@ -27,6 +18,16 @@ import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class TythanBungee extends Plugin implements Tythan {
 	@Getter private boolean debugging;
@@ -48,11 +49,12 @@ public class TythanBungee extends Plugin implements Tythan {
 		saveDefaultConfig();
 		registerCommandParameterTypes();
 		ProtocolAPI.getEventManager().registerListener(new BrigadierInjector());
+		ServersUtil.init();
 	}
 
 	@Override
 	public void onDisable(){
-
+		ServersUtil.disable();
 	}
 	
 	private void registerCommandParameterTypes() {
