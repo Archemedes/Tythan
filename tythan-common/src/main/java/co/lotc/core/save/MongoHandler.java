@@ -49,7 +49,7 @@ public class MongoHandler {
 		return new MongoHandler(databaseName,client);
 	}
 	
-	public MongoConnection open() {
+	public MongoConnection connect() {
 		return new MongoConnection(client, dbName, getCodecRegistry());
 	}
 	

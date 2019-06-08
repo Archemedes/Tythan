@@ -13,7 +13,7 @@ public abstract class AccountHandler {
 	protected abstract void callLoadEvent(Account account);
 	
 	private void setupTables() {
-		try(var mongo = Tythan.getMongoHandler().open()){
+		try(var mongo = Tythan.getMongoHandler().connect()){
 			mongo
 			.collection("accounts")
 			.intField("_id",true)
@@ -28,7 +28,7 @@ public abstract class AccountHandler {
 	
 	
 	private Account fetch(int id) {
-		try(var mongo = Tythan.getMongoHandler().open()){
+		try(var mongo = Tythan.getMongoHandler().connect()){
 			Document candidate = mongo.getDatabase().getCollection("accounts").find(eq("_id", id)).first();
 			if(candidate == null) return null;
 			

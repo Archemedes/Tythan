@@ -97,7 +97,7 @@ public final class ArcheConsumer extends TimerTask implements Consumer {
 		
 		int count = 0;
 		
-		try(MongoConnection connection = mongo.open()){
+		try(MongoConnection connection = mongo.connect()){
 			while (bypassForce || System.currentTimeMillis() - starttime < timePerRun|| count < forceToProcess) {
 				Row row = queue.poll();
 				if (row == null) break;

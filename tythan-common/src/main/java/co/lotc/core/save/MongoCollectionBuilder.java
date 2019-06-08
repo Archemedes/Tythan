@@ -65,13 +65,13 @@ public class MongoCollectionBuilder {
 	public MongoConnection build() {
 		val db = connection.getDatabase();
 		
-		if(filters.isEmpty()) db.createCollection(connection.getSession(), name);
-		else db.createCollection(connection.getSession(), name, validation() );
+		if(filters.isEmpty()) db.createCollection(name);
+		else db.createCollection(name, validation() );
 		
 		if(!indices.isEmpty()) {
 			val collection = db.getCollection(name);
 			for(val index : indices)
-				collection.createIndex(connection.getSession(), Indexes.ascending(index.fields), index.options);
+				collection.createIndex(Indexes.ascending(index.fields), index.options);
 		}
 		
 		return connection;
