@@ -62,7 +62,7 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 	
 	@Override
 	public void onDisable(){
-
+		TythanInternals.shutdown();
 	}
 
 	@Override

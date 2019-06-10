@@ -53,7 +53,7 @@ public class TythanBungee extends Plugin implements Tythan {
 			
 	@Override
 	public void onDisable(){
-
+		TythanInternals.shutdown();
 	}
 	
 	private void registerCommandParameterTypes() {

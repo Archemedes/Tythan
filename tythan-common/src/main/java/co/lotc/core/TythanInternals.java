@@ -17,6 +17,10 @@ public class TythanInternals {
 		mongo = buildMongoHandler(theOneTrueTythus.config());
 	}
 	
+	public static void shutdown() {
+		mongo.close();
+	}
+	
 	private static MongoHandler buildMongoHandler(Config config) {
 		String dbName = config.getString("mongo.database");
 		String host = config.getString("mongo.host");

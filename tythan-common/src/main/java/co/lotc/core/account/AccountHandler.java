@@ -14,15 +14,24 @@ public abstract class AccountHandler {
 	
 	private void setupTables() {
 		try(var mongo = Tythan.getMongoHandler().connect()){
-			mongo
-			.collection("accounts")
+			mongo.collection("accounts")
 			.intField("_id",true)
 			.longField("forum_id")
 			.longField("discord_id")
 			.intField("fatigue")
 			.longField("created")
 			.index(true, "_id")
+			.index(true, "forum_id")
+			.index(true, "discord_id")
 			.build();
+			
+			mongo.collection("account_ips")
+			.intField("_id",true)
+			.stringField("ip_address", true)
+			.index(true, "_id")
+			.index(false, "ip_address")
+			.build();
+			
 		}
 	}
 	

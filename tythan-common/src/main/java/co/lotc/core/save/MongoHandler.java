@@ -1,5 +1,6 @@
 package co.lotc.core.save;
 
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,9 +17,10 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 
 @RequiredArgsConstructor
-public class MongoHandler {
+public class MongoHandler implements Closeable {
 	private final String dbName;
 	private final MongoClient client;
 	
@@ -27,7 +29,6 @@ public class MongoHandler {
 	public MongoHandler(String dbName) {
 		this.dbName = dbName;
 		client = MongoClients.create();
-		
 	}
 	
 	public MongoHandler(String dbName, String ip, int port) {
@@ -53,12 +54,23 @@ public class MongoHandler {
 		return new MongoConnection(client, dbName, getCodecRegistry());
 	}
 	
-	private CodecRegistry getCodecRegistry() {
-		return CodecRegistries.fromRegistries(
-				MongoClientSettings.getDefaultCodecRegistry(),
+	public CodecRegistry getCodecRegistry() {
+		TythanContextCodec contexts = new TythanContextCodec();
+		
+		val result = CodecRegistries.fromRegistries(
 				CodecRegistries.fromCodecs(codecs),
+				CodecRegistries.fromCodecs(contexts),
 				new PreventBukkitEncodingRegistry(),
+				MongoClientSettings.getDefaultCodecRegistry(),
 				CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build())
 				);
+		
+		contexts.setRegistry(result);
+		return result;
+	}
+
+	@Override
+	public void close() {
+		client.close();
 	}
 }

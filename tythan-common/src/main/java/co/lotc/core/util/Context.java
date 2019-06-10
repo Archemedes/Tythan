@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BiConsumer;
 
 import lombok.Getter;
 
@@ -29,6 +30,10 @@ public class Context implements Iterable<Entry<String, Object>> {
 	
 	public String getString(String key) {
 		return String.valueOf(map.get(key));
+	}
+	
+	public void forEach(BiConsumer<? super String, Object> consumer) {
+		this.forEach( e-> consumer.accept(e.getKey(), e.getValue()) );
 	}
 	
 	@Override
