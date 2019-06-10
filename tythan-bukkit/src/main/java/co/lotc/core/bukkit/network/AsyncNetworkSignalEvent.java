@@ -1,8 +1,9 @@
 package co.lotc.core.bukkit.network;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -10,13 +11,14 @@ import org.bukkit.plugin.Plugin;
 
 import lombok.Getter;
 
-@Getter
 public class AsyncNetworkSignalEvent extends Event {
-  private final String server;
-  private final String reason;
+  @Getter private final String server;
+  @Getter private final String reason;
   
-  final List<Plugin> intents = Collections.synchronizedList(new ArrayList<>());
-  
+  private final Map<Plugin, AtomicInteger> intents = new ConcurrentHashMap<>();
+  private final AtomicBoolean fired = new AtomicBoolean();
+  private final AtomicInteger latch = new AtomicInteger();
+
 	public AsyncNetworkSignalEvent(String server, String reason) {
 		super(true);
 		this.server = server;
