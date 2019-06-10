@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bson.UuidRepresentation;
 import org.bson.codecs.Codec;
+import org.bson.codecs.UuidCodec;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -25,6 +27,10 @@ public class MongoHandler implements Closeable {
 	private final MongoClient client;
 	
 	private final List<Codec<?>> codecs = new ArrayList<>();
+	
+	public void addCodec(Codec<?> codec) {
+		codecs.add(codec);
+	}
 	
 	public MongoHandler(String dbName) {
 		this.dbName = dbName;
@@ -59,7 +65,7 @@ public class MongoHandler implements Closeable {
 		
 		val result = CodecRegistries.fromRegistries(
 				CodecRegistries.fromCodecs(codecs),
-				CodecRegistries.fromCodecs(contexts),
+				CodecRegistries.fromCodecs(contexts, new UuidCodec(UuidRepresentation.STANDARD)),
 				new PreventBukkitEncodingRegistry(),
 				MongoClientSettings.getDefaultCodecRegistry(),
 				CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build())

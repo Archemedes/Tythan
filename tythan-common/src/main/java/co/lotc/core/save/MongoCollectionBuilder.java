@@ -33,7 +33,7 @@ public class MongoCollectionBuilder {
 	}
 	
 	public MongoCollectionBuilder intField(String name) {
-		return intField(name, false);
+		return intField(name, true);
 	}
 	
 	public MongoCollectionBuilder intField(String name, boolean required) {
@@ -41,7 +41,7 @@ public class MongoCollectionBuilder {
 	}
 	
 	public MongoCollectionBuilder longField(String name) {
-		return longField(name, false);
+		return longField(name, true);
 	}
 	
 	public MongoCollectionBuilder longField(String name, boolean required) {
@@ -56,7 +56,15 @@ public class MongoCollectionBuilder {
 		return field(name, required, BsonType.STRING);
 	}
 	
-	MongoCollectionBuilder field(String name, boolean required, BsonType type) {
+	public MongoCollectionBuilder field(String name) {
+		return field(name, true);
+	}
+	
+	public MongoCollectionBuilder field(String name, boolean required) {
+		return field(name, required, null);
+	}
+	
+	public MongoCollectionBuilder field(String name, boolean required, BsonType type) {
 		if(required) filters.add(exists(name));
 		if(type != null) filters.add(type(name, type));
 		return this;

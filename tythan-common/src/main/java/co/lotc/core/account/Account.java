@@ -29,7 +29,7 @@ public class Account {
 	
 	private final Context context = new Context();
 	
-	transient long timePlayed, timePlayedThisWeek, lastSeen;
+	//transient long timePlayed, timePlayedThisWeek, lastSeen;
 	
 	@Getter(AccessLevel.NONE) transient private final Set<UUID> alts = new HashSet<>();
 	@Getter(AccessLevel.NONE) transient private final Set<String> ips = new HashSet<>();

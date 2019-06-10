@@ -2,28 +2,20 @@ package co.lotc.core.account;
 
 import static com.mongodb.client.model.Filters.eq;
 
+import org.bson.BsonType;
 import org.bson.Document;
 
 import co.lotc.core.Tythan;
 import lombok.var;
 
 public abstract class AccountHandler {
-
 	
 	protected abstract void callLoadEvent(Account account);
 	
-	private void setupTables() {
+	protected abstract boolean hasLock(int accountId);
+	
+	public void setupTables() {
 		try(var mongo = Tythan.getMongoHandler().connect()){
-			mongo.collection("accounts")
-			.intField("_id",true)
-			.longField("forum_id")
-			.longField("discord_id")
-			.intField("fatigue")
-			.longField("created")
-			.index(true, "_id")
-			.index(true, "forum_id")
-			.index(true, "discord_id")
-			.build();
 			
 			mongo.collection("account_ips")
 			.intField("_id",true)
@@ -32,6 +24,18 @@ public abstract class AccountHandler {
 			.index(false, "ip_address")
 			.build();
 			
+			mongo.collection("account_uuids")
+			.field("_id", true, BsonType.BINARY)
+			.intField("account_id", true)
+			.index(false, "account_id")
+			.build();
+			
+			/*mongo.collection("player_names")
+			.stringField("player_name", true)
+			.field("player_uuid", true, BsonType.BINARY)
+			.index(false, "player_name")
+			.index(false, "player_uuid")
+			.build();*/
 		}
 	}
 	
