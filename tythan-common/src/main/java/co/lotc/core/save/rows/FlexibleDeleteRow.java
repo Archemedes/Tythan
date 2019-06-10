@@ -1,11 +1,11 @@
 package co.lotc.core.save.rows;
 
-import co.lotc.core.save.Consumer;
 import co.lotc.core.save.MongoConnection;
+import co.lotc.core.save.Publisher;
 
 public class FlexibleDeleteRow extends FlexibleRow {
 	
-	public FlexibleDeleteRow(Consumer consumer, String table) {
+	public FlexibleDeleteRow(Publisher consumer, String table) {
 		super(consumer, table);
 	}
 	

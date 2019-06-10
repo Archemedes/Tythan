@@ -3,7 +3,7 @@ package co.lotc.core.save.rows;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import co.lotc.core.save.Consumer;
+import co.lotc.core.save.Publisher;
 
 //Because duck your overcomplicated optimizations of BS that runs async
 public abstract class FlexibleRow extends ConsumerRow {
@@ -11,7 +11,7 @@ public abstract class FlexibleRow extends ConsumerRow {
 	
 	protected final Map<String, Object> vars = new LinkedHashMap<>();
 	
-	public FlexibleRow(Consumer consumer, String table) {
+	public FlexibleRow(Publisher consumer, String table) {
 		super(consumer);
 		this.collecton = table;
 	}

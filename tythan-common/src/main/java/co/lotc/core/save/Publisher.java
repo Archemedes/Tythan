@@ -3,6 +3,7 @@ package co.lotc.core.save;
 import java.util.Queue;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Consumer;
 
 import co.lotc.core.CoreLog;
 import co.lotc.core.Tythan;
@@ -14,7 +15,7 @@ import co.lotc.core.save.rows.FlexibleUpdateRow;
 import co.lotc.core.save.rows.LambdaRow;
 import co.lotc.core.save.rows.Row;
 
-public final class ArcheConsumer extends TimerTask implements Consumer {
+public final class Publisher extends TimerTask {
 	private final Queue<Row> queue = new LinkedBlockingQueue<>();
 	private final MongoHandler mongo;
 	
@@ -23,7 +24,7 @@ public final class ArcheConsumer extends TimerTask implements Consumer {
 	private final int warningSize;
 	private boolean bypassForce = false;
 
-	public ArcheConsumer(int timePerRun, int forceToProcess, int warningSize) {
+	public Publisher(int timePerRun, int forceToProcess, int warningSize) {
 		this.mongo = Tythan.getMongoHandler();
 		
 		this.timePerRun = timePerRun;
@@ -31,22 +32,18 @@ public final class ArcheConsumer extends TimerTask implements Consumer {
 		this.warningSize = warningSize;
 	}
 
-	@Override
 	public FlexibleInsertRow insert(String table) {
 		return new FlexibleInsertRow(this, table);
 	}
 	
-	@Override
 	public FlexibleReplaceRow replace(String table) {
 		return new FlexibleReplaceRow(this, table);
 	}
 
-	@Override
 	public FlexibleDeleteRow delete(String table) {
 		return new FlexibleDeleteRow(this, table);
 	}
 
-	@Override
 	public FlexibleUpdateRow update(String table) {
 		return new FlexibleUpdateRow(this, table);
 	}
@@ -55,27 +52,22 @@ public final class ArcheConsumer extends TimerTask implements Consumer {
 		bypassForce = true;
 	}
 
-	@Override
 	public void queueRow(Runnable row) {
 		queueRow(new LambdaRow(row));
 	}
 	
-	@Override
-	public void queueRow(java.util.function.Consumer<MongoConnection> row) {
+	public void queueRow(Consumer<MongoConnection> row) {
 		queueRow(new LambdaRow(row));
 	}
 	
-	@Override
 	public void queueRow(Row row) {
 		queue.add(row);
 	}
 
-	@Override
 	public int getQueueSize() {
 		return queue.size();
 	}
 
-	@Override
 	public synchronized void runForced() {
 		this.bypassForce = true;
 		run();
@@ -134,7 +126,6 @@ public final class ArcheConsumer extends TimerTask implements Consumer {
 			else CoreLog.debug("[Consumer] Total rows processed: " + count + ". " + queue.size() + " rows left in queue");
 	}
 	
-	@Override
 	public boolean isDebugging() {
 		return CoreLog.isDebugging();
 	}

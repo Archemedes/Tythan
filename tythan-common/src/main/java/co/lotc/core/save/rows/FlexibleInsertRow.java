@@ -1,11 +1,11 @@
 package co.lotc.core.save.rows;
 
-import co.lotc.core.save.Consumer;
 import co.lotc.core.save.MongoConnection;
+import co.lotc.core.save.Publisher;
 
 public class FlexibleInsertRow extends FlexibleRow {
 	
-	public FlexibleInsertRow(Consumer consumer, String table) {
+	public FlexibleInsertRow(Publisher consumer, String table) {
 		super(consumer, table);
 	}
 

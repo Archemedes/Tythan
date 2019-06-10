@@ -1,15 +1,15 @@
 package co.lotc.core.save.rows;
 
 import co.lotc.core.Tythan;
-import co.lotc.core.save.Consumer;
 import co.lotc.core.save.MongoConnection;
+import co.lotc.core.save.Publisher;
 import lombok.Getter;
 
 public abstract class ConsumerRow implements Row {
-	@Getter private final Consumer consumer;
+	@Getter private final Publisher consumer;
 	private String briefStackTrace = null;
 	
-	public ConsumerRow(Consumer consumer) {
+	public ConsumerRow(Publisher consumer) {
 		this.consumer = consumer;
   	if(consumer.isDebugging()) {
   		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
