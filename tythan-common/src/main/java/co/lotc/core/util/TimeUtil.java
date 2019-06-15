@@ -138,7 +138,7 @@ public final class TimeUtil {
 	public static BaseComponent print(long ms, boolean brief, ChatColor numColor, ChatColor unitColor) {
 		AbstractChatBuilder<?> sb = Tythan.get().chatBuilder();
 		
-		if(ms == 0) {
+		if(ms > 10 * 365 * 24 * 3600 * 1000) {
 			sb.append("unknown");
 			if(numColor != null) sb.color(numColor);
 			return sb.build();
