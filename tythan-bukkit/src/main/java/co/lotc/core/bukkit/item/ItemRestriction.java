@@ -28,7 +28,6 @@ public enum ItemRestriction {
 		 * Advise plugins to ignore this item in all circumstances (but this is implementation-specific)
 		 */
 		PLUGIN(0x08);
-		
 
 	public static String ITEM_KEY = "tythan_itemrestriction";
 	private final int flag;
