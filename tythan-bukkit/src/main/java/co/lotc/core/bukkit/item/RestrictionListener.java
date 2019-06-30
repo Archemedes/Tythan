@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -19,7 +20,7 @@ import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.CraftingInventory;
@@ -29,9 +30,9 @@ import org.bukkit.inventory.PlayerInventory;
 
 import co.lotc.core.bukkit.TythanBukkit;
 import co.lotc.core.bukkit.util.InventoryUtil;
+import co.lotc.core.bukkit.util.InventoryUtil.MovedItem;
 import co.lotc.core.bukkit.util.ItemUtil;
 import co.lotc.core.bukkit.util.Run;
-import co.lotc.core.bukkit.util.InventoryUtil.MovedItem;
 import lombok.var;
 
 public class RestrictionListener  implements Listener {
@@ -72,13 +73,14 @@ public class RestrictionListener  implements Listener {
 			e.setCancelled(true);
 	}
 	
-	@EventHandler(ignoreCancelled = true)
-	public void use(PlayerInteractAtEntityEvent e) {
+	@EventHandler
+	public void use(PlayerInteractEntityEvent e) {
 		EquipmentSlot hand = e.getHand();
 		PlayerInventory inv = e.getPlayer().getInventory();
 		ItemStack is = hand == EquipmentSlot.HAND? inv.getItemInMainHand() : inv.getItemInOffHand();
-		if(ItemUtil.exists(is) && USE.isPresent(is))
+		if(ItemUtil.exists(is) && ( USE.isPresent(is) || (TRADE.isPresent(is) && e.getRightClicked() instanceof ItemFrame) )) {
 			e.setCancelled(true);
+		}
 	}
 	
 	@EventHandler(ignoreCancelled = true)
@@ -132,6 +134,6 @@ public class RestrictionListener  implements Listener {
 	
 	@EventHandler(ignoreCancelled = true)
 	public void equip(PlayerSwapHandItemsEvent e) {
-		if(USE.isPresent(e.getOffHandItem())) e.setCancelled(true);
+		if(ItemUtil.exists(e.getOffHandItem()) && USE.isPresent(e.getOffHandItem())) e.setCancelled(true);
 	}
 }
