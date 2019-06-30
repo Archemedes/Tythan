@@ -28,12 +28,6 @@
 
    <dependencies>
 	<dependency>
-		<groupId>org.spigotmc</groupId>
-		<artifactId>spigot-api</artifactId>
-		<version>1.13.2-R0.1-SNAPSHOT</version>
-		<scope>provided</scope>
-	</dependency>
-	<dependency>
 		<groupId>co.lotc</groupId>
 		<artifactId>tythan-common</artifactId>
 		<version>${project.version}</version>
@@ -49,6 +43,11 @@
 		<artifactId>ProtocolLib-API</artifactId>
 		<version>4.4.0</version>
 		<scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>com.destroystokyo.paper</groupId>
+		<artifactId>paper-api</artifactId>
+		<version>1.13.2-R0.1-SNAPSHOT</version>
 	</dependency>
    </dependencies>
 

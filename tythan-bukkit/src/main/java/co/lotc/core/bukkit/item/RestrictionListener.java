@@ -15,11 +15,13 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -29,25 +31,38 @@ import co.lotc.core.bukkit.TythanBukkit;
 import co.lotc.core.bukkit.util.InventoryUtil;
 import co.lotc.core.bukkit.util.ItemUtil;
 import co.lotc.core.bukkit.util.Run;
-import lombok.val;
+import co.lotc.core.bukkit.util.InventoryUtil.MovedItem;
+import lombok.var;
 
 public class RestrictionListener  implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void inv(InventoryClickEvent e) {
-		if(e.getInventory().getType() == InventoryType.CRAFTING)
-			return;
-		
-		InventoryUtil.getTouchedByEvent(e).stream()
-		.filter(TRADE::isPresent)
-		.findAny().ifPresent($->e.setCancelled(true));
+		invInternal(e);
 	}
 	
 	@EventHandler(ignoreCancelled = true)
 	public void inv(InventoryDragEvent e) {
-		InventoryUtil.getTouchedByEvent(e).stream()
-		.filter(TRADE::isPresent)
-		.findAny().ifPresent($->e.setCancelled(true));
+		invInternal(e);
+	}
+	
+	private void invInternal(InventoryInteractEvent e) {
+		if(e.getInventory().getType() == InventoryType.CRAFTING) {
+			InventoryUtil.getResultOfEvent(e).stream()
+			.filter(this::goesToArmor)
+			.map(MovedItem::getItem)
+			.filter(USE::isPresent)
+			.findAny().ifPresent($->e.setCancelled(true));
+		} else {
+			InventoryUtil.getTouchedByEvent(e).stream()
+			.filter(TRADE::isPresent)
+			.findAny().ifPresent($->e.setCancelled(true));
+		}
+	}
+	
+	private boolean goesToArmor(MovedItem mi) {
+		int finalSlot = mi.getFinalSlot();
+		return finalSlot == 45 || (finalSlot > 4 && finalSlot < 9);
 	}
 
 	@EventHandler
@@ -99,10 +114,24 @@ public class RestrictionListener  implements Listener {
 	
 	@EventHandler(ignoreCancelled = true)
 	public void die(PlayerDeathEvent e) {
-		val items = e.getDrops().stream()
+		if(e.getKeepInventory()) return; //Don't do anything if inventory is kept
+		
+		var items = e.getDrops().stream()
+				.filter(LOSE::isPresent)
+				.collect(Collectors.toList());
+				
+		items.forEach(e.getItemsToKeep()::add);
+		items.forEach(e.getDrops()::remove);
+		
+		items = e.getDrops().stream()
 				.filter(TRADE::isPresent)
 				.collect(Collectors.toList());
 		
 		items.forEach(e.getDrops()::remove);
+	}
+	
+	@EventHandler(ignoreCancelled = true)
+	public void equip(PlayerSwapHandItemsEvent e) {
+		if(USE.isPresent(e.getOffHandItem())) e.setCancelled(true);
 	}
 }
