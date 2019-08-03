@@ -55,7 +55,7 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 		ItemArg.buildItemStackParameter();
 		ItemArg.buildMaterialParameter();
 
-        BukkitTypes.registerWorldType();
+		BukkitTypes.registerWorldType();
 	}
 	
 	@Override

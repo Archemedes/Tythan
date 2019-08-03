@@ -13,21 +13,21 @@ import java.util.stream.Collectors;
 
 public final class BukkitTypes {
 
-    public static final BiFunction<Sender, String, World> UNWRAP_WORLD = (sender, worldName) -> {
-        World world = Bukkit.getWorld(worldName);
-        if (world == null) {
-            world = Bukkit.getWorld(UUID.fromString(worldName));
-        }
-        return world;
-    };
-    public static final Supplier<List<String>> WORLD_COMPLETER = () -> Bukkit.getWorlds().stream().map(World::getName).collect(Collectors.toList());
+	public static final BiFunction<Sender, String, World> UNWRAP_WORLD = (sender, worldName) -> {
+		World world = Bukkit.getWorld(worldName);
+		if (world == null) {
+			world = Bukkit.getWorld(UUID.fromString(worldName));
+		}
+		return world;
+	};
+	public static final Supplier<List<String>> WORLD_COMPLETER = () -> Bukkit.getWorlds().stream().map(World::getName).collect(Collectors.toList());
 
-    public static void registerWorldType() {
-        new ParameterType<>(World.class)
-                .defaultName("World")
-                .defaultError("Could not locate world")
-                .mapperWithSender(UNWRAP_WORLD)
-                .completer(WORLD_COMPLETER)
-                .register();
-    }
+	public static void registerWorldType() {
+		new ParameterType<>(World.class)
+				.defaultName("World")
+				.defaultError("Could not locate world")
+				.mapperWithSender(UNWRAP_WORLD)
+				.completer(WORLD_COMPLETER)
+				.register();
+	}
 }
