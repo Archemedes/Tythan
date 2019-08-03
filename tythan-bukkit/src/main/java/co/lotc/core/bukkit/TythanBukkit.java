@@ -1,13 +1,9 @@
 package co.lotc.core.bukkit;
 
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import co.lotc.core.Tythan;
 import co.lotc.core.TythanProvider;
 import co.lotc.core.bukkit.command.BrigadierProvider;
+import co.lotc.core.bukkit.command.BukkitTypes;
 import co.lotc.core.bukkit.command.ItemArg;
 import co.lotc.core.bukkit.command.SenderTypes;
 import co.lotc.core.bukkit.item.RestrictionListener;
@@ -18,6 +14,10 @@ import co.lotc.core.bukkit.util.WeakBlock;
 import co.lotc.core.bukkit.wrapper.BukkitConfig;
 import co.lotc.core.command.brigadier.CommandNodeManager;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class TythanBukkit extends JavaPlugin implements Tythan {
 	public static TythanBukkit get(){
@@ -54,6 +54,8 @@ public class TythanBukkit extends JavaPlugin implements Tythan {
 
 		ItemArg.buildItemStackParameter();
 		ItemArg.buildMaterialParameter();
+
+        BukkitTypes.registerWorldType();
 	}
 	
 	@Override
