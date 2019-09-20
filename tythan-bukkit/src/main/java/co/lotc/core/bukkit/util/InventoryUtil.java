@@ -37,7 +37,6 @@ import org.bukkit.inventory.ItemStack;
 import com.comphenix.protocol.utility.MinecraftReflection;
 import com.google.common.collect.Lists;
 
-import co.lotc.core.CoreLog;
 import co.lotc.core.CoreTimer;
 import co.lotc.core.Tythan;
 import lombok.var;
@@ -293,7 +292,8 @@ public class InventoryUtil {
 			}
 		} else { //Must be DragEvent
 			InventoryDragEvent ev = (InventoryDragEvent) e;
-			result.add(ev.getCursor()); //Cursor dragged along multiple spots
+			ItemStack is = ev.getCursor();
+			if(is != null) result.add(is); //Cursor dragged along multiple spots
 		}
 
 
@@ -514,16 +514,15 @@ public class InventoryUtil {
 			Object container = civ_getHandle.invoke(view);
 			if(con_getSlot == null) con_getSlot = container.getClass().getMethod("getSlot", int.class);
 			Object slot = con_getSlot.invoke(container, rawSlot);
-			if(slot_isAllowed == null) slot_isAllowed = slot.getClass().getMethod("isAllowed", nmsItem.getClass());
-			slot_isAllowed.setAccessible(true);
+			if(slot_isAllowed == null) {
+				slot_isAllowed = MinecraftReflection.getMinecraftClass("Slot").getMethod("isAllowed", nmsItem.getClass());
+				slot_isAllowed.setAccessible(true);
+			}
+			
 			isAllowed = slot_isAllowed.invoke(slot, nmsItem);
 			return (boolean) isAllowed;
 		} catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException | SecurityException e) {
 			throw new IllegalStateException("Reflection failed. MC probably changed its method handles. This is bad. Call someone", e);
-		} catch (ClassCastException e) {
-			String clss = isAllowed == null? "null" : isAllowed.getClass().getName();
-			CoreLog.severe("bad class cast on isItemAllowed. Wanted boolean return but got " + clss + " from " + nmsItem);
-			throw e;
 		}
 	}
 

@@ -12,5 +12,6 @@ public @interface Cmd {
 	String value();
 	String permission() default "";
 	String alias() default "";
+	String[] aliases() default {};
 	boolean flags() default true;
 }

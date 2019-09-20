@@ -62,6 +62,10 @@ public class ItemUtil {
 	public static String getCustomTag(ItemStack item, String key) {
 		if(!exists(item)) return null;
 		var meta = item.getItemMeta();
+		return getCustomTag(meta, key);
+	}
+	
+	public static String getCustomTag(ItemMeta meta, String key) {
 		var container = meta.getCustomTagContainer();
 		return container.getCustomTag(fuckYouBukkitJustGiveMeAKey(key), ItemTagType.STRING);
 	}

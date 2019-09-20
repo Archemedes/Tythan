@@ -65,7 +65,7 @@ public class ArgBuilder {
 	}
 	
 	public ArcheCommandBuilder asInt(int min, int max){
-		defaults("#","Must be a valid integer between %d ad %d", min, max);
+		defaults("#","Must be a valid integer between %d and %d", min, max);
 		val arg = asIntInternal();
 		arg.setFilter(i->(i>=min && i <= max));
 		arg.setBrigadierType(IntegerArgumentType.integer(min, max));
